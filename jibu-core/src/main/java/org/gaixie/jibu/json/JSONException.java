@@ -1,4 +1,4 @@
-package org.gaixie.json;
+package org.gaixie.jibu.json;
 
 /**
  * The JSONException is thrown by the JSON.org classes when things are amiss.

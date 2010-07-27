@@ -1,27 +1,27 @@
-package org.gaixie.json;
+package org.gaixie.jibu.json;
 
 /*
-Copyright (c) 2002 JSON.org
+  Copyright (c) 2002 JSON.org
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-The Software shall be used for Good, not Evil.
+  The Software shall be used for Good, not Evil.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 /**
@@ -33,19 +33,19 @@ SOFTWARE.
 public class XMLTokener extends JSONTokener {
 
 
-   /** The table of entity values. It initially contains Character values for
-    * amp, apos, gt, lt, quot.
-    */
-   public static final java.util.HashMap entity;
+    /** The table of entity values. It initially contains Character values for
+     * amp, apos, gt, lt, quot.
+     */
+    public static final java.util.HashMap entity;
 
-   static {
-       entity = new java.util.HashMap(8);
-       entity.put("amp",  XML.AMP);
-       entity.put("apos", XML.APOS);
-       entity.put("gt",   XML.GT);
-       entity.put("lt",   XML.LT);
-       entity.put("quot", XML.QUOT);
-   }
+    static {
+        entity = new java.util.HashMap(8);
+        entity.put("amp",  XML.AMP);
+        entity.put("apos", XML.APOS);
+        entity.put("gt",   XML.GT);
+        entity.put("lt",   XML.LT);
+        entity.put("quot", XML.QUOT);
+    }
 
     /**
      * Construct an XMLTokener from a string.
@@ -72,7 +72,7 @@ public class XMLTokener extends JSONTokener {
             sb.append(c);
             i = sb.length() - 3;
             if (i >= 0 && sb.charAt(i) == ']' &&
-                          sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>') {
+                sb.charAt(i + 1) == ']' && sb.charAt(i + 2) == '>') {
                 sb.setLength(i);
                 return sb.toString();
             }
@@ -175,15 +175,15 @@ public class XMLTokener extends JSONTokener {
         case '"':
         case '\'':
             q = c;
-            for (;;) {
-                c = next();
-                if (c == 0) {
-                    throw syntaxError("Unterminated string");
-                }
-                if (c == q) {
-                    return Boolean.TRUE;
-                }
+        for (;;) {
+            c = next();
+            if (c == 0) {
+                throw syntaxError("Unterminated string");
             }
+            if (c == q) {
+                return Boolean.TRUE;
+            }
+        }
         default:
             for (;;) {
                 c = next();
@@ -201,7 +201,7 @@ public class XMLTokener extends JSONTokener {
                 case '"':
                 case '\'':
                     back();
-                    return Boolean.TRUE;
+                return Boolean.TRUE;
                 }
             }
         }
@@ -239,29 +239,29 @@ public class XMLTokener extends JSONTokener {
         case '?':
             return XML.QUEST;
 
-// Quoted string
+            // Quoted string
 
         case '"':
         case '\'':
             q = c;
-            sb = new StringBuffer();
-            for (;;) {
-                c = next();
-                if (c == 0) {
-                    throw syntaxError("Unterminated string");
-                }
-                if (c == q) {
-                    return sb.toString();
-                }
-                if (c == '&') {
-                    sb.append(nextEntity(c));
-                } else {
-                    sb.append(c);
-                }
+        sb = new StringBuffer();
+        for (;;) {
+            c = next();
+            if (c == 0) {
+                throw syntaxError("Unterminated string");
             }
+            if (c == q) {
+                return sb.toString();
+            }
+            if (c == '&') {
+                sb.append(nextEntity(c));
+            } else {
+                sb.append(c);
+            }
+        }
         default:
 
-// Name
+            // Name
 
             sb = new StringBuffer();
             for (;;) {
@@ -272,7 +272,7 @@ public class XMLTokener extends JSONTokener {
                 }
                 switch (c) {
                 case 0:
-                	return sb.toString();
+                    return sb.toString();
                 case '>':
                 case '/':
                 case '=':
@@ -281,7 +281,7 @@ public class XMLTokener extends JSONTokener {
                 case '[':
                 case ']':
                     back();
-                    return sb.toString();
+                return sb.toString();
                 case '<':
                 case '"':
                 case '\'':
@@ -299,12 +299,12 @@ public class XMLTokener extends JSONTokener {
      * @throws JSONException
      */
     public boolean skipPast(String to) throws JSONException {
-    	boolean b;
-    	char c;
-    	int i;
-    	int j;
-    	int offset = 0;
-    	int n = to.length();
+        boolean b;
+        char c;
+        int i;
+        int j;
+        int offset = 0;
+        int n = to.length();
         char[] circle = new char[n];
         
         /*
@@ -312,54 +312,54 @@ public class XMLTokener extends JSONTokener {
          * to string. If we reach an early end, bail.
          */
         
-    	for (i = 0; i < n; i += 1) {
-    		c = next();
-    		if (c == 0) {
-    			return false;
-    		}
-    		circle[i] = c;
-    	}
-    	/*
-    	 * We will loop, possibly for all of the remaining characters.
-    	 */
-    	for (;;) {
-    		j = offset;
-    		b = true;
-    		/*
-    		 * Compare the circle buffer with the to string. 
-    		 */
-    		for (i = 0; i < n; i += 1) {
-    			if (circle[j] != to.charAt(i)) {
-    				b = false;
-    				break;
-    			}
-    			j += 1;
-    			if (j >= n) {
-    				j -= n;
-    			}
-    		}
-    		/*
-    		 * If we exit the loop with b intact, then victory is ours.
-    		 */
-    		if (b) {
-    			return true;
-    		}
-    		/*
-    		 * Get the next character. If there isn't one, then defeat is ours.
-    		 */
-    		c = next();
-    		if (c == 0) {
-    			return false;
-    		}
-    		/*
-    		 * Shove the character in the circle buffer and advance the 
-    		 * circle offset. The offset is mod n.
-    		 */
-    		circle[offset] = c;
-    		offset += 1;
-    		if (offset >= n) {
-    			offset -= n;
-    		}
-    	}
+        for (i = 0; i < n; i += 1) {
+            c = next();
+            if (c == 0) {
+                return false;
+            }
+            circle[i] = c;
+        }
+        /*
+         * We will loop, possibly for all of the remaining characters.
+         */
+        for (;;) {
+            j = offset;
+            b = true;
+            /*
+             * Compare the circle buffer with the to string. 
+             */
+            for (i = 0; i < n; i += 1) {
+                if (circle[j] != to.charAt(i)) {
+                    b = false;
+                    break;
+                }
+                j += 1;
+                if (j >= n) {
+                    j -= n;
+                }
+            }
+            /*
+             * If we exit the loop with b intact, then victory is ours.
+             */
+            if (b) {
+                return true;
+            }
+            /*
+             * Get the next character. If there isn't one, then defeat is ours.
+             */
+            c = next();
+            if (c == 0) {
+                return false;
+            }
+            /*
+             * Shove the character in the circle buffer and advance the 
+             * circle offset. The offset is mod n.
+             */
+            circle[offset] = c;
+            offset += 1;
+            if (offset >= n) {
+                offset -= n;
+            }
+        }
     }
 }

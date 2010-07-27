@@ -1,27 +1,27 @@
-package org.gaixie.json;
+package org.gaixie.jibu.json;
 
 /*
-Copyright (c) 2002 JSON.org
+  Copyright (c) 2002 JSON.org
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-The Software shall be used for Good, not Evil.
+  The Software shall be used for Good, not Evil.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import java.io.IOException;
@@ -131,14 +131,14 @@ public class JSONArray {
                 if (x.nextClean() == ']') {
                     return;
                 }
-                x.back();
-                break;
+            x.back();
+            break;
             case ']':
             case ')':
                 if (q != c) {
                     throw x.syntaxError("Expected a '" + new Character(q) + "'");
                 }
-                return;
+            return;
             default:
                 throw x.syntaxError("Expected a ',' or ']'");
             }
@@ -176,20 +176,20 @@ public class JSONArray {
      */
 
     public JSONArray(Collection collection, boolean includeSuperClass) {
-		this.myArrayList = new ArrayList();
-		if (collection != null) {
-			Iterator iter = collection.iterator();;
-			while (iter.hasNext()) {
-			    Object o = iter.next();
-			    if (o instanceof Map) {
-			    	this.myArrayList.add(new JSONObject((Map)o, includeSuperClass));
-			    } else if (!JSONObject.isStandardProperty(o.getClass())) {
-			    	this.myArrayList.add(new JSONObject(o, includeSuperClass));
-			    } else {
+        this.myArrayList = new ArrayList();
+        if (collection != null) {
+            Iterator iter = collection.iterator();;
+            while (iter.hasNext()) {
+                Object o = iter.next();
+                if (o instanceof Map) {
+                    this.myArrayList.add(new JSONObject((Map)o, includeSuperClass));
+                } else if (!JSONObject.isStandardProperty(o.getClass())) {
+                    this.myArrayList.add(new JSONObject(o, includeSuperClass));
+                } else {
                     this.myArrayList.add(o);  
-				}
-			}
-		}
+                }
+            }
+        }
     }
 
     
@@ -262,12 +262,12 @@ public class JSONArray {
     public boolean getBoolean(int index) throws JSONException {
         Object o = get(index);
         if (o.equals(Boolean.FALSE) ||
-                (o instanceof String &&
-                ((String)o).equalsIgnoreCase("false"))) {
+            (o instanceof String &&
+             ((String)o).equalsIgnoreCase("false"))) {
             return false;
         } else if (o.equals(Boolean.TRUE) ||
-                (o instanceof String &&
-                ((String)o).equalsIgnoreCase("true"))) {
+                   (o instanceof String &&
+                    ((String)o).equalsIgnoreCase("true"))) {
             return true;
         }
         throw new JSONException("JSONArray[" + index + "] is not a Boolean.");
@@ -290,7 +290,7 @@ public class JSONArray {
                 Double.valueOf((String)o).doubleValue();
         } catch (Exception e) {
             throw new JSONException("JSONArray[" + index +
-                "] is not a number.");
+                                    "] is not a number.");
         }
     }
 
@@ -307,7 +307,7 @@ public class JSONArray {
     public int getInt(int index) throws JSONException {
         Object o = get(index);
         return o instanceof Number ?
-                ((Number)o).intValue() : (int)getDouble(index);
+            ((Number)o).intValue() : (int)getDouble(index);
     }
 
 
@@ -324,7 +324,7 @@ public class JSONArray {
             return (JSONArray)o;
         }
         throw new JSONException("JSONArray[" + index +
-                "] is not a JSONArray.");
+                                "] is not a JSONArray.");
     }
 
 
@@ -341,7 +341,7 @@ public class JSONArray {
             return (JSONObject)o;
         }
         throw new JSONException("JSONArray[" + index +
-            "] is not a JSONObject.");
+                                "] is not a JSONObject.");
     }
 
 
@@ -356,7 +356,7 @@ public class JSONArray {
     public long getLong(int index) throws JSONException {
         Object o = get(index);
         return o instanceof Number ?
-                ((Number)o).longValue() : (long)getDouble(index);
+            ((Number)o).longValue() : (long)getDouble(index);
     }
 
 
@@ -815,7 +815,7 @@ public class JSONArray {
      * or null if there was no value.
      */
     public Object remove(int index) {
-    	Object o = opt(index);
+        Object o = opt(index);
         this.myArrayList.remove(index);
         return o;
     }
@@ -897,7 +897,7 @@ public class JSONArray {
         StringBuffer sb = new StringBuffer("[");
         if (len == 1) {
             sb.append(JSONObject.valueToString(this.myArrayList.get(0),
-                    indentFactor, indent));
+                                               indentFactor, indent));
         } else {
             int newindent = indent + indentFactor;
             sb.append('\n');
@@ -909,7 +909,7 @@ public class JSONArray {
                     sb.append(' ');
                 }
                 sb.append(JSONObject.valueToString(this.myArrayList.get(i),
-                        indentFactor, newindent));
+                                                   indentFactor, newindent));
             }
             sb.append('\n');
             for (i = 0; i < indent; i += 1) {
@@ -954,7 +954,7 @@ public class JSONArray {
             writer.write(']');
             return writer;
         } catch (IOException e) {
-           throw new JSONException(e);
+            throw new JSONException(e);
         }
     }
 }

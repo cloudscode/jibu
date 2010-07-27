@@ -1,27 +1,27 @@
-package org.gaixie.json;
+package org.gaixie.jibu.json;
 
 /*
-Copyright (c) 2002 JSON.org
+  Copyright (c) 2002 JSON.org
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-The Software shall be used for Good, not Evil.
+  The Software shall be used for Good, not Evil.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class JSONObject {
      * whilst Java's null is equivalent to the value that JavaScript calls
      * undefined.
      */
-     private static final class Null {
+    private static final class Null {
 
         /**
          * There is only intended to be a single instance of the NULL object,
@@ -215,8 +215,8 @@ public class JSONObject {
                 if (x.nextClean() == '}') {
                     return;
                 }
-                x.back();
-                break;
+            x.back();
+            break;
             case '}':
                 return;
             default:
@@ -255,7 +255,7 @@ public class JSONObject {
                     this.map.put(e.getKey(), e.getValue());
                 } else {
                     this.map.put(e.getKey(), new JSONObject(e.getValue(),
-                            includeSuperClass));
+                                                            includeSuperClass));
                 }
             }
         }
@@ -318,7 +318,7 @@ public class JSONObject {
         }
 
         Method[] methods = (includeSuperClass) ?
-                klass.getMethods() : klass.getDeclaredMethods();
+            klass.getMethods() : klass.getDeclaredMethods();
         for (int i = 0; i < methods.length; i += 1) {
             try {
                 Method method = methods[i];
@@ -331,8 +331,8 @@ public class JSONObject {
                         key = name.substring(2);
                     }
                     if (key.length() > 0 &&
-                            Character.isUpperCase(key.charAt(0)) &&
-                            method.getParameterTypes().length == 0) {
+                        Character.isUpperCase(key.charAt(0)) &&
+                        method.getParameterTypes().length == 0) {
                         if (key.length() == 1) {
                             key = key.toLowerCase();
                         } else if (!Character.isUpperCase(key.charAt(1))) {
@@ -353,7 +353,7 @@ public class JSONObject {
                             map.put(key, result);
                         } else {
                             if (result.getClass().getPackage().getName().startsWith("java") ||
-                                    result.getClass().getClassLoader() == null) {
+                                result.getClass().getClassLoader() == null) {
                                 map.put(key, result.toString());
                             } else { // User defined Objects
                                 map.put(key, new JSONObject(result, includeSuperClass));
@@ -434,13 +434,13 @@ public class JSONObject {
      *  or if the key is null.
      */
     public JSONObject accumulate(String key, Object value)
-            throws JSONException {
+        throws JSONException {
         testValidity(value);
         Object o = opt(key);
         if (o == null) {
             put(key, value instanceof JSONArray ?
-                    new JSONArray().put(value) :
-                    value);
+                new JSONArray().put(value) :
+                value);
         } else if (o instanceof JSONArray) {
             ((JSONArray)o).put(value);
         } else {
@@ -462,7 +462,7 @@ public class JSONObject {
      *  associated with the key is not a JSONArray.
      */
     public JSONObject append(String key, Object value)
-            throws JSONException {
+        throws JSONException {
         testValidity(value);
         Object o = opt(key);
         if (o == null) {
@@ -471,7 +471,7 @@ public class JSONObject {
             put(key, ((JSONArray)o).put(value));
         } else {
             throw new JSONException("JSONObject[" + key +
-                    "] is not a JSONArray.");
+                                    "] is not a JSONArray.");
         }
         return this;
     }
@@ -488,7 +488,7 @@ public class JSONObject {
             return "null";
         }
 
-// Shave off trailing zeros and decimal point, if possible.
+        // Shave off trailing zeros and decimal point, if possible.
 
         String s = Double.toString(d);
         if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
@@ -514,7 +514,7 @@ public class JSONObject {
         Object o = opt(key);
         if (o == null) {
             throw new JSONException("JSONObject[" + quote(key) +
-                    "] not found.");
+                                    "] not found.");
         }
         return o;
     }
@@ -531,16 +531,16 @@ public class JSONObject {
     public boolean getBoolean(String key) throws JSONException {
         Object o = get(key);
         if (o.equals(Boolean.FALSE) ||
-                (o instanceof String &&
-                ((String)o).equalsIgnoreCase("false"))) {
+            (o instanceof String &&
+             ((String)o).equalsIgnoreCase("false"))) {
             return false;
         } else if (o.equals(Boolean.TRUE) ||
-                (o instanceof String &&
-                ((String)o).equalsIgnoreCase("true"))) {
+                   (o instanceof String &&
+                    ((String)o).equalsIgnoreCase("true"))) {
             return true;
         }
         throw new JSONException("JSONObject[" + quote(key) +
-                "] is not a Boolean.");
+                                "] is not a Boolean.");
     }
 
 
@@ -559,7 +559,7 @@ public class JSONObject {
                 Double.valueOf((String)o).doubleValue();
         } catch (Exception e) {
             throw new JSONException("JSONObject[" + quote(key) +
-                "] is not a number.");
+                                    "] is not a number.");
         }
     }
 
@@ -576,7 +576,7 @@ public class JSONObject {
     public int getInt(String key) throws JSONException {
         Object o = get(key);
         return o instanceof Number ?
-                ((Number)o).intValue() : (int)getDouble(key);
+            ((Number)o).intValue() : (int)getDouble(key);
     }
 
 
@@ -594,7 +594,7 @@ public class JSONObject {
             return (JSONArray)o;
         }
         throw new JSONException("JSONObject[" + quote(key) +
-                "] is not a JSONArray.");
+                                "] is not a JSONArray.");
     }
 
 
@@ -612,7 +612,7 @@ public class JSONObject {
             return (JSONObject)o;
         }
         throw new JSONException("JSONObject[" + quote(key) +
-                "] is not a JSONObject.");
+                                "] is not a JSONObject.");
     }
 
 
@@ -628,7 +628,7 @@ public class JSONObject {
     public long getLong(String key) throws JSONException {
         Object o = get(key);
         return o instanceof Number ?
-                ((Number)o).longValue() : (long)getDouble(key);
+            ((Number)o).longValue() : (long)getDouble(key);
     }
 
 
@@ -752,13 +752,13 @@ public class JSONObject {
      * @throws JSONException If n is a non-finite number.
      */
     static public String numberToString(Number n)
-            throws JSONException {
+        throws JSONException {
         if (n == null) {
             throw new JSONException("Null pointer");
         }
         testValidity(n);
 
-// Shave off trailing zeros and decimal point, if possible.
+        // Shave off trailing zeros and decimal point, if possible.
 
         String s = n.toString();
         if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
@@ -1145,8 +1145,8 @@ public class JSONObject {
             case '\\':
             case '"':
                 sb.append('\\');
-                sb.append(c);
-                break;
+            sb.append(c);
+            break;
             case '/':
                 if (b == '<') {
                     sb.append('\\');
@@ -1170,7 +1170,7 @@ public class JSONObject {
                 break;
             default:
                 if (c < ' ' || (c >= '\u0080' && c < '\u00a0') ||
-                               (c >= '\u2000' && c < '\u2100')) {
+                    (c >= '\u2000' && c < '\u2100')) {
                     t = "000" + Integer.toHexString(c);
                     sb.append("\\u" + t.substring(t.length() - 4));
                 } else {
@@ -1199,7 +1199,7 @@ public class JSONObject {
      * @return An iterator of the keys.
      */
     public Iterator sortedKeys() {
-      return new TreeSet(this.map.keySet()).iterator();
+        return new TreeSet(this.map.keySet()).iterator();
     }
 
     /**
@@ -1234,10 +1234,10 @@ public class JSONObject {
         if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
             if (b == '0') {
                 if (s.length() > 2 &&
-                        (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
+                    (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
                     try {
                         return new Integer(Integer.parseInt(s.substring(2),
-                                16));
+                                                            16));
                     } catch (Exception e) {
                         /* Ignore the error */
                     }
@@ -1278,12 +1278,12 @@ public class JSONObject {
             if (o instanceof Double) {
                 if (((Double)o).isInfinite() || ((Double)o).isNaN()) {
                     throw new JSONException(
-                        "JSON does not allow non-finite numbers.");
+                                            "JSON does not allow non-finite numbers.");
                 }
             } else if (o instanceof Float) {
                 if (((Float)o).isInfinite() || ((Float)o).isNaN()) {
                     throw new JSONException(
-                        "JSON does not allow non-finite numbers.");
+                                            "JSON does not allow non-finite numbers.");
                 }
             }
         }
@@ -1388,7 +1388,7 @@ public class JSONObject {
             sb.append(quote(o.toString()));
             sb.append(": ");
             sb.append(valueToString(this.map.get(o), indentFactor,
-                    indent));
+                                    indent));
         } else {
             while (keys.hasNext()) {
                 o = keys.next();
@@ -1403,7 +1403,7 @@ public class JSONObject {
                 sb.append(quote(o.toString()));
                 sb.append(": ");
                 sb.append(valueToString(this.map.get(o), indentFactor,
-                        newindent));
+                                        newindent));
             }
             if (sb.length() > 1) {
                 sb.append('\n');
@@ -1458,7 +1458,7 @@ public class JSONObject {
             return numberToString((Number) value);
         }
         if (value instanceof Boolean || value instanceof JSONObject ||
-                value instanceof JSONArray) {
+            value instanceof JSONArray) {
             return value.toString();
         }
         if (value instanceof Map) {
@@ -1488,8 +1488,8 @@ public class JSONObject {
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      * @throws JSONException If the object contains an invalid number.
      */
-     static String valueToString(Object value, int indentFactor, int indent)
-            throws JSONException {
+    static String valueToString(Object value, int indentFactor, int indent)
+        throws JSONException {
         if (value == null || value.equals(null)) {
             return "null";
         }
@@ -1528,16 +1528,16 @@ public class JSONObject {
     }
 
 
-     /**
-      * Write the contents of the JSONObject as JSON text to a writer.
-      * For compactness, no whitespace is added.
-      * <p>
-      * Warning: This method assumes that the data structure is acyclical.
-      *
-      * @return The writer.
-      * @throws JSONException
-      */
-     public Writer write(Writer writer) throws JSONException {
+    /**
+     * Write the contents of the JSONObject as JSON text to a writer.
+     * For compactness, no whitespace is added.
+     * <p>
+     * Warning: This method assumes that the data structure is acyclical.
+     *
+     * @return The writer.
+     * @throws JSONException
+     */
+    public Writer write(Writer writer) throws JSONException {
         try {
             boolean  b = false;
             Iterator keys = keys();
@@ -1565,5 +1565,5 @@ public class JSONObject {
         } catch (IOException e) {
             throw new JSONException(e);
         }
-     }
+    }
 }

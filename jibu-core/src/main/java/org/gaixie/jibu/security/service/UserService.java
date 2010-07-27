@@ -43,17 +43,17 @@ public class UserService {
      */
     public User get(String username) {
         Connection conn = null;
-	User user = null;
+        User user = null;
         try {
             conn = ConnectionUtils.getConnection();
-	    UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
+            UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
             user = userDAO.get(username);
         } catch(SQLException e) {
-	    logger.error(e.getMessage());
+            logger.error(e.getMessage());
         } finally {
             DbUtils.closeQuietly(conn);
         }
-	return user;
+        return user;
     }
 
     /**
@@ -71,7 +71,7 @@ public class UserService {
                 user.setPassword(cryptpassword);
             }
             conn = ConnectionUtils.getConnection();
-	    UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
+            UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
             userDAO.save(user);
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {

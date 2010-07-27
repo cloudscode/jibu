@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.gaixie.json.JSONException;
-import org.gaixie.json.JSONObject;
+import org.gaixie.jibu.json.JSONException;
+import org.gaixie.jibu.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +55,6 @@ public class LoginServlet extends HttpServlet {
         String password=req.getParameter("password");
         ServletOutputStream output=resp.getOutputStream();
 
-        logger.debug("username="+username);
-
         try {
             // check if we have a session
             HttpSession ses = req.getSession(true);
@@ -74,4 +72,3 @@ public class LoginServlet extends HttpServlet {
         }
     }
 }
-

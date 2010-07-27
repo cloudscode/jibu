@@ -49,7 +49,7 @@ public class LoginService {
         String cryptpassword = MD5.encodeString(password,null);
         try {
             conn = ConnectionUtils.getConnection();
-	    UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
+            UserDAO userDAO = SecurityDAOFactory.getInstance().getUserDAO(conn);
             User user = userDAO.login(username,cryptpassword);
             // 001B-0001 说明：001 为模块编号即jibu-core，B 表示一个B类错误，会在界面上有多语言提示
             // 0001为错误的编号
@@ -58,7 +58,7 @@ public class LoginService {
             logger.error(e.getMessage());
         } finally {
             DbUtils.closeQuietly(conn);
-	    // userDAO = null; ?
+            // userDAO = null; ?
         }
     }
 }

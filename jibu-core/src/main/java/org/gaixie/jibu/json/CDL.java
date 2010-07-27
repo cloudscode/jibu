@@ -1,27 +1,27 @@
-package org.gaixie.json;
+package org.gaixie.jibu.json;
 
 /*
-Copyright (c) 2002 JSON.org
+  Copyright (c) 2002 JSON.org
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
-The Software shall be used for Good, not Evil.
+  The Software shall be used for Good, not Evil.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 /**
@@ -64,19 +64,19 @@ public class CDL {
             return null;
         case '"':
         case '\'':
-        	q = c;
-        	sb = new StringBuffer();
-        	for (;;) {
-        		c = x.next();
-        		if (c == q) {
-        			break;
-        		}
-                if (c == 0 || c == '\n' || c == '\r') {
-                    throw x.syntaxError("Missing close quote '" + q + "'.");
-                }
-                sb.append(c);
-        	}
-            return sb.toString();
+            q = c;
+        sb = new StringBuffer();
+        for (;;) {
+            c = x.next();
+            if (c == q) {
+                break;
+            }
+            if (c == 0 || c == '\n' || c == '\r') {
+                throw x.syntaxError("Missing close quote '" + q + "'.");
+            }
+            sb.append(c);
+        }
+        return sb.toString();
         case ',':
             x.back();
             return "";
@@ -98,7 +98,7 @@ public class CDL {
             String value = getValue(x);
             char c = x.next();
             if (value == null || 
-            		(ja.length() == 0 && value.length() == 0 && c != ',')) {
+                (ja.length() == 0 && value.length() == 0 && c != ',')) {
                 return null;
             }
             ja.put(value);
@@ -111,7 +111,7 @@ public class CDL {
                         return ja;
                     }
                     throw x.syntaxError("Bad character '" + c + "' (" +
-                            (int)c + ").");
+                                        (int)c + ").");
                 }
                 c = x.next();
             }
@@ -129,7 +129,7 @@ public class CDL {
      * @throws JSONException
      */
     public static JSONObject rowToJSONObject(JSONArray names, JSONTokener x)
-            throws JSONException {
+        throws JSONException {
         JSONArray ja = rowToJSONArray(x);
         return ja != null ? ja.toJSONObject(names) :  null;
     }
@@ -165,7 +165,7 @@ public class CDL {
      * @throws JSONException
      */
     public static JSONArray toJSONArray(JSONArray names, String string)
-            throws JSONException {
+        throws JSONException {
         return toJSONArray(names, new JSONTokener(string));
     }
 
@@ -178,7 +178,7 @@ public class CDL {
      * @throws JSONException
      */
     public static JSONArray toJSONArray(JSONArray names, JSONTokener x)
-            throws JSONException {
+        throws JSONException {
         if (names == null || names.length() == 0) {
             return null;
         }
@@ -214,15 +214,15 @@ public class CDL {
             if (o != null) {
                 String s = o.toString();
                 if (s.length() > 0 && (s.indexOf(',') >= 0 || s.indexOf('\n') >= 0 || 
-                		s.indexOf('\r') >= 0 || s.indexOf(0) >= 0 || 
-                		s.charAt(0) == '"')) {
+                                       s.indexOf('\r') >= 0 || s.indexOf(0) >= 0 || 
+                                       s.charAt(0) == '"')) {
                     sb.append('"');
-                	int length = s.length();
-                	for (int j = 0; j < length; j += 1) {
-                		char c = s.charAt(j);
-                		if (c >= ' ' && c != '"') {
-                			sb.append(c);
-                		}
+                    int length = s.length();
+                    for (int j = 0; j < length; j += 1) {
+                        char c = s.charAt(j);
+                        if (c >= ' ' && c != '"') {
+                            sb.append(c);
+                        }
                     }
                     sb.append('"');
                 } else {
@@ -263,7 +263,7 @@ public class CDL {
      * @throws JSONException
      */
     public static String toString(JSONArray names, JSONArray ja)
-            throws JSONException {
+        throws JSONException {
         if (names == null || names.length() == 0) {
             return null;
         }
