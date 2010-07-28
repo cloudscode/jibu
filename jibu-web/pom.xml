@@ -31,7 +31,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>extjs-wrapped</module>
     <module>jibu-core-extjs</module>
   </modules>
 </project>

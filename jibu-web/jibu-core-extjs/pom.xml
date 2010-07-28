@@ -62,7 +62,7 @@
           <warSourceExcludes>js/*.js</warSourceExcludes>
           <overlays>
             <overlay>
-              <groupId>org.gaixie</groupId>
+              <groupId>org.gaixie.extjs-wrapped</groupId>
               <artifactId>extjs-wrapped</artifactId>
               <type>zip</type>
             </overlay>
@@ -154,7 +154,7 @@
       <artifactId>jibu-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.gaixie</groupId>
+      <groupId>org.gaixie.extjs-wrapped</groupId>
       <artifactId>extjs-wrapped</artifactId>
       <type>zip</type>
     </dependency>
