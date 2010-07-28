@@ -33,6 +33,17 @@
   <properties>
     <build.webappDirectory>${project.build.directory}/${project.build.finalName}</build.webappDirectory>
   </properties>
+
+  <!--
+     目前gaixie 项目的主要repository，如：extjs-wrapped
+    -->
+  <repositories>
+    <repository>
+      <id>googlecode.gaixie.m2-release</id>
+      <name>Gaixie Repository for Maven</name>
+      <url>http://gaixie.googlecode.com/svn/m2-release/</url>
+    </repository>
+  </repositories>
   <!--
      这个插件库主要是用来取得最新版本的yuicompressor-maven-plugin
     -->
@@ -156,7 +167,8 @@
     <dependency>
       <groupId>org.gaixie.extjs-wrapped</groupId>
       <artifactId>extjs-wrapped</artifactId>
-      <type>zip</type>
+      <version>3.2.1</version>
+     <type>zip</type>
     </dependency>
   </dependencies>
 </project>
