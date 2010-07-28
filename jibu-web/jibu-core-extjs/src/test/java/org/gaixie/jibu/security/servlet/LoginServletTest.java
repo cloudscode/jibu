@@ -16,6 +16,8 @@
  */
 package org.gaixie.jibu.security.servlet;
 
+import com.google.inject.Injector;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;      
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.easymock.EasyMock; 
+import org.gaixie.jibu.security.service.LoginService;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.junit.Before;  
 import org.junit.Test;  
@@ -36,6 +39,7 @@ public class LoginServletTest {
     private HttpServletRequest mockRequest;  
     private HttpServletResponse mockResponse;  
     private ByteArrayOutputStream output;
+    private LoginService loginService; 
 
     @Before public void setUp() {  
         loginServlet = new LoginServlet();  
@@ -43,10 +47,11 @@ public class LoginServletTest {
         //创建request和response的Mock  
         mockRequest = (HttpServletRequest)EasyMock.createMock(HttpServletRequest.class);  
         mockResponse = (HttpServletResponse) EasyMock.createMock(HttpServletResponse.class);  
+        loginService = EasyMock.createMock(LoginService.class);  
 
     }  
 
-    @Test public void testLoginSuccess() throws IOException {  
+    @Test public void testLoginSuccess() throws Exception {  
         //录制request和response的动作  
         EasyMock.expect(mockRequest.getParameter("username")).andReturn("admin");  
         EasyMock.expect(mockRequest.getParameter("password")).andReturn("123456");
@@ -59,19 +64,22 @@ public class LoginServletTest {
   
         //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output)); 
         EasyMock.expect(mockResponse.getOutputStream()).andReturn(sos);
-
+        loginService.login(null,"admin","123456");
+        EasyMock.expectLastCall().atLeastOnce();
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);  
         ses.putValue("username", "admin");
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);  
         //回放  
         EasyMock.replay(mockRequest); 
         EasyMock.replay(mockResponse);
+        EasyMock.replay(loginService);
         EasyMock.replay(ses); 
 
-        loginServlet.doPost(mockRequest, mockResponse);
+        loginServlet.login(loginService,mockRequest, mockResponse);
         System.out.println(output.toString());
         EasyMock.verify(mockRequest);  
         EasyMock.verify(mockResponse);
+        EasyMock.verify(loginService);
         EasyMock.verify(ses);
     }
 }

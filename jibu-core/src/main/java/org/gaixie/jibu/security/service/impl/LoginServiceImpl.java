@@ -14,18 +14,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.security.service;
+package org.gaixie.jibu.security.service.impl;
+
+import com.google.inject.Inject;
 
 import java.sql.Connection;
 
+import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.annotation.Transaction;
+import org.gaixie.jibu.security.MD5;
+import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.utils.ConnectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 系统登录相关服务
+ * 系统登录服务接口实现
  */
-public interface LoginService {
+public class LoginServiceImpl implements LoginService {
+    Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
+    private final UserDAO userDAO;
 
+    @Inject public LoginServiceImpl(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+    
     /**
      * 通过用户名及密码进行登录验证
      *
@@ -35,5 +51,12 @@ public interface LoginService {
      *
      * @exception JibuException 用户名或密码错误时抛出
      */
-    public void login(Connection conn, String username, String password) throws JibuException;
+    @Transaction
+        public void login(Connection conn, String username, String password) throws JibuException {
+        String cryptpassword = MD5.encodeString(password,null);
+        User user = userDAO.login(conn,username,cryptpassword);
+        // 001B-0001 说明：001 为模块编号即jibu-core，B 表示一个B类错误，会在界面上有多语言提示
+        // 0001为错误的编号
+        if (null == user) throw new JibuException("001B-0001");
+    }
 }

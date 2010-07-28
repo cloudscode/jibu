@@ -16,24 +16,26 @@
  */
 package org.gaixie.jibu.security.service;
 
-import java.sql.Connection;
+import com.google.inject.AbstractModule;
+import com.google.inject.matcher.Matchers;
 
-import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.annotation.Transaction;
+import org.gaixie.jibu.interceptor.TransactionInterceptor;
+import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.security.service.UserService;
+import org.gaixie.jibu.security.service.impl.LoginServiceImpl;
+import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
 /**
- * 系统登录相关服务
+ * 
  */
-public interface LoginService {
+public class SecurityServiceModule extends AbstractModule {
 
-    /**
-     * 通过用户名及密码进行登录验证
-     *
-     * @param conn 一个有效的数据库链接。
-     * @param username 登录用户名
-     * @param password 没有进行hash的登录密码
-     *
-     * @exception JibuException 用户名或密码错误时抛出
-     */
-    public void login(Connection conn, String username, String password) throws JibuException;
+    @Override protected void configure() {
+        bind(LoginService.class).to(LoginServiceImpl.class);
+        bind(UserService.class).to(UserServiceImpl.class);
+        bindInterceptor(Matchers.inSubpackage("org.gaixie.jibu.security.service"),
+                        Matchers.annotatedWith(Transaction.class), 
+                        new TransactionInterceptor());
+    }
 }

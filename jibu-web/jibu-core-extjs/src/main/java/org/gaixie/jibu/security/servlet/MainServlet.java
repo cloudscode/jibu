@@ -16,6 +16,8 @@
  */
 package org.gaixie.jibu.security.servlet;
 
+import com.google.inject.Singleton;
+
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
@@ -32,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * 用于登录成功后生成主窗口页面，一次性加载应用所有的javascript文件及CSS文件。
  * 同时也处理主窗口的一些ajax请求,如菜单树。
  */
-public class MainServlet extends HttpServlet {
+@ Singleton public class MainServlet extends HttpServlet {
 
     final static Logger logger = LoggerFactory.getLogger(MainServlet.class);
 
@@ -48,7 +50,6 @@ public class MainServlet extends HttpServlet {
         resp.setContentType("text/html");
         ServletOutputStream output=resp.getOutputStream();
         String title = getServletConfig().getInitParameter("main.title");
-        logger.debug("主窗口Title: "+title);
         StringBuilder sb = new StringBuilder();
         sb.append(DOCTYPE + "\n" +
                   "<html>\n" +

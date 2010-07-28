@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.slf4j.Logger;
@@ -32,33 +33,41 @@ import org.slf4j.LoggerFactory;
  */
 public class UserDAODerby implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAODerby.class);
-    private Connection conn = null;
 
-    public UserDAODerby(Connection conn) {
-	this.conn = conn;
+    public User get( Connection conn, String username) throws JibuException {
+        ResultSetHandler<User> h = new BeanHandler(User.class);
+        QueryRunner run = new QueryRunner();
+        User user = null;
+        try {
+            user =  run.query(conn
+                              , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? "
+                              , h
+                              , username);
+        } catch(SQLException e) {
+            throw new JibuException("001B-0002");
+        }
+        return user;
     }
 
-    public User get(String username) throws SQLException {
-            ResultSetHandler<User> h = new BeanHandler(User.class);
-            QueryRunner run = new QueryRunner();
-            return run.query(conn
-                             , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? "
-                             , h
-                             , username);
+    public User login(Connection conn,String username, String password) throws JibuException {
+        ResultSetHandler<User> h = new BeanHandler(User.class);
+        QueryRunner run = new QueryRunner();
+        User user = null;
+        try {
+            user =  run.query(conn
+                              , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? and password=?"
+                              , h
+                              , username
+                              , password);
+        } catch(SQLException e) {
+            throw new JibuException("001B-0002");
+        }
+        return user;
     }
 
-    public User login(String username, String password) throws SQLException {
-            ResultSetHandler<User> h = new BeanHandler(User.class);
-            QueryRunner run = new QueryRunner();
-            return run.query(conn
-                             , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? and password=?"
-                             , h
-                             , username
-                             , password);
-    }
-
-    public void save(User user) throws SQLException {
-            QueryRunner run = new QueryRunner();
+    public void save(Connection conn, User user) throws JibuException {
+        QueryRunner run = new QueryRunner();
+        try {
             run.update(conn
                        , "INSERT INTO Userbase (fullname,username,password,emailaddress,enabled) values (?,?,?,?,?)"
                        , user.getFullname()
@@ -66,5 +75,9 @@ public class UserDAODerby implements UserDAO {
                        , user.getPassword()
                        , user.getEmailaddress()
                        , user.isEnabled()); 
+        } catch(SQLException e) {
+            throw new JibuException("001B-0002");
+        }
+
     }
 }

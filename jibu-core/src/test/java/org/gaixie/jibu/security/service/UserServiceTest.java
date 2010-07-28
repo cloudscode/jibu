@@ -16,34 +16,41 @@
  */
 package org.gaixie.jibu.security.service;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.security.dao.SecurityDAOModule;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
 
 public class UserServiceTest {
     private UserService userService;
+    private Injector injector;
 
     @Before public void setup() {
-        userService = new UserService();
+        injector = Guice.createInjector(new SecurityServiceModule(),
+                                                 new SecurityDAOModule("Derby"));
+        userService = injector.getInstance(UserService.class);
     }
 
 
-    @Test public void testGet() {
-        User user = userService.get("admin");
+    @Test public void testGet() throws JibuException {
+        User user = userService.get(null,"admin");
         Assert.assertNotNull(user);
-        user = userService.get("notExistUser");
+        user = userService.get(null,"notExistUser");
         Assert.assertNull(user);        
     }
 
     @Test public void testAdd() throws JibuException {
         User user = new User("tommy wang","testUserServiceAdd","123456","bitorb@gmail.com",true);
-        userService.add(user);
+        userService.add(null,user);
         try {
-            userService.add(user);
+            userService.add(null,user);
         } catch (JibuException e) {
             Assert.assertTrue("001B-0002".equals(e.getMessage()));
         }

@@ -16,6 +16,10 @@
  */
 package org.gaixie.jibu.security.servlet;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,18 +33,24 @@ import javax.servlet.http.HttpSession;
 
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
+import org.gaixie.jibu.security.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
-public class LoginServlet extends HttpServlet {
+@Singleton public class LoginServlet extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    @Inject private Injector injector;
+
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
-        login(req,resp);
+        LoginService loginService = injector.getInstance(LoginService.class);
+        if ("login".equals(req.getParameter("ci"))) {
+            login(loginService,req,resp);
+        }
     }
 
     public void doPost(HttpServletRequest req,  HttpServletResponse resp)
@@ -48,7 +58,9 @@ public class LoginServlet extends HttpServlet {
         doGet(req, resp);
     }
 
-    private void login(HttpServletRequest req, HttpServletResponse resp) 
+    public void login(LoginService loginService, 
+                      HttpServletRequest req, 
+                      HttpServletResponse resp) 
         throws IOException {
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
@@ -56,6 +68,7 @@ public class LoginServlet extends HttpServlet {
         ServletOutputStream output=resp.getOutputStream();
 
         try {
+            loginService.login(null,username, password);
             // check if we have a session
             HttpSession ses = req.getSession(true);
             ses.putValue("username", username);

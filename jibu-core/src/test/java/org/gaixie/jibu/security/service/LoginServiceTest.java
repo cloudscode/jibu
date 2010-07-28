@@ -16,28 +16,44 @@
  */
 package org.gaixie.jibu.security.service;
 
+import java.sql.Connection;
+
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.security.service.impl.LoginServiceImpl;
 
 public class LoginServiceTest {
     private LoginService loginService;
+    private UserDAO userDAO;
+    private Connection conn;
 
     @Before public void setup() {
-        loginService = new LoginService();
+        userDAO = EasyMock.createMock(UserDAO.class);
+        conn = EasyMock.createMock(Connection.class);
+        loginService = new LoginServiceImpl(userDAO);
     }
 
 
-    @Test public void testLogin() throws JibuException {
-        loginService.login("admin", "123456");
+    @Test public void testLogin() throws Exception {
+        String username = "admin";
+        String password = "123456";
+        String cryptpassword = MD5.encodeString(password,null);
+        EasyMock.expect(userDAO.login(conn,username,cryptpassword))
+            .andReturn(null);
+
+        EasyMock.replay(userDAO);
         try {
-            loginService.login("admin", "000000");
+            loginService.login(conn,"admin", "123456");
         } catch (JibuException e) {
             Assert.assertTrue("001B-0001".equals(e.getMessage()));
         }
+        EasyMock.verify(userDAO);
     }
 }

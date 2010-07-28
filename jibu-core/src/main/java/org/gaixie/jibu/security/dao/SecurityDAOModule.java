@@ -14,35 +14,38 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.security.dao.impl;
+package org.gaixie.jibu.security.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.google.inject.AbstractModule;
 
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanHandler;
-import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.dao.UserDAO;
-import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.dao.impl.UserDAODerby;
+import org.gaixie.jibu.security.dao.impl.UserDAOPgSQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UserDAO接口的PostgreSQL实现
+ * 
  */
-public class UserDAOPgSQL implements UserDAO {
-    private static final Logger logger = LoggerFactory.getLogger(UserDAOPgSQL.class);
+public class SecurityDAOModule extends AbstractModule {
+    private static final Logger logger = LoggerFactory.getLogger(SecurityDAOModule.class);
+    private final String databaseType;
 
-    public User get(Connection conn, String username) throws JibuException {
-        return null;
+    public SecurityDAOModule() {
+        this("Derby");
     }
 
-    public User login(Connection conn,String username, String password) throws JibuException {
-        return null;
+    public SecurityDAOModule(String databaseType) {
+        this.databaseType = databaseType;
     }
 
-    public void save(Connection conn, User user) throws JibuException {
 
+    @Override protected void configure() {
+        if ("Derby".equalsIgnoreCase(databaseType)){
+            bind(UserDAO.class).to(UserDAODerby.class);
+        }
+        if ("PostgreSQL".equalsIgnoreCase(databaseType)){
+            bind(UserDAO.class).to(UserDAOPgSQL.class);
+        }
     }
 }

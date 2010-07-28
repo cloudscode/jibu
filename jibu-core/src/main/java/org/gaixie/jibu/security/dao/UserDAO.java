@@ -16,8 +16,9 @@
  */
 package org.gaixie.jibu.security.dao;
 
-import java.sql.SQLException;
+import java.sql.Connection;
 
+import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.User;
 
 /**
@@ -28,30 +29,34 @@ public interface UserDAO {
     /**
      * 通过用户名得到一个用户对象
      *
+     * @param conn 一个有效的数据库链接。
      * @param username 用户的登录名。
      * 
      * @throws SQLException bean封装时有错误时抛出。
      * @return 用户对象
      */
-    public User get(String username) throws SQLException;
+    public User get(Connection conn, String username) throws JibuException;
 
     /**
      * 通过用户名及密码得到一个用户对象
      *
+     * @param conn 一个有效的数据库链接。
      * @param username 用户的登录名。
      * @param password hash后的用户登录密码。
      *
      * @throws SQLException bean封装时有错误时抛出。
      * @return 用户对象
      */
-    public User login(String username, String password) throws SQLException;
+    public User login(Connection conn, String username, String password) throws JibuException;
+
 
     /**
      * 增加一个新用户
      *
+     * @param conn 一个有效的数据库链接。
      * @param user 用户对象。
+     *
      * @throws SQLException 如果用户名重复，会抛出此异常。
      */
-    public void save(User user) throws SQLException;
-
+    public void save(Connection conn, User user) throws JibuException;
 }

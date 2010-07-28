@@ -20,45 +20,22 @@
 	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	 version="2.5"> 
 
-  <description> Servlet and JSP Examples. </description>
-  <display-name>Servlet and JSP Examples</display-name>
+  <description> Jibu web application </description>
+  <display-name>Jibu</display-name>
 
-  <!-- ===================== CORE DEFINITIONS ======================= -->
-  <!-- 拦截所有后缀为.y的url，判断是否登录 --> 
+  <!-- ===================== FILTER DEFINITIONS ======================= -->
   <filter>
-    <filter-name>LoginFilter</filter-name>
-    <filter-class>org.gaixie.jibu.security.filter.LoginFilter</filter-class>
+    <filter-name>GuiceFilter</filter-name>
+    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
   </filter>
+
   <filter-mapping>
-    <filter-name>LoginFilter</filter-name>
-    <url-pattern>*.y</url-pattern>
+    <filter-name>GuiceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>org.gaixie.jibu.security.servlet.LoginServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>MainServlet</servlet-name>
-    <servlet-class>org.gaixie.jibu.security.servlet.MainServlet</servlet-class>
-    <!-- 用于显示主窗口的title --> 
-    <init-param> 
-      <param-name>main.title</param-name> 
-      <param-value>jibu web application</param-value> 
-    </init-param> 
-    <!-- 以逗号分隔的js文件名，会被一次加载 --> 
-    <init-param> 
-      <param-name>js.names</param-name> 
-      <param-value>jibu-core-all.js</param-value> 
-    </init-param> 
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/LoginServlet.x</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>MainServlet</servlet-name>
-    <url-pattern>/MainServlet.y</url-pattern>
-  </servlet-mapping>
+  <!-- ==================== LISTENER DEFINITIONS ====================== -->
+  <listener>
+    <listener-class>org.gaixie.jibu.security.GuiceServletConfig</listener-class>
+  </listener>
 </web-app>

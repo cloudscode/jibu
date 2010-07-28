@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gaixie.jibu.security.filter;
+package org.gaixie.jibu.security.servlet;
+
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -27,7 +29,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class LoginFilter implements Filter {
+@Singleton public class LoginFilter implements Filter {
 
     /**
      * The filter configuration object we are associated with.  If this value
@@ -50,6 +52,7 @@ public class LoginFilter implements Filter {
                 allowedRequest = true;
             }
         }
+
         if (!allowedRequest) {
             ((HttpServletResponse) res).sendRedirect("/");
             return;
