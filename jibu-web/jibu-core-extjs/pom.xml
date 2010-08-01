@@ -20,14 +20,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.gaixie.jibu</groupId>
-    <artifactId>jibu-web</artifactId>
+    <groupId>org.gaixie.jibu.web</groupId>
+    <artifactId>web</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.gaixie.jibu.web</groupId>
   <artifactId>jibu-core-extjs</artifactId>
-  <name>Jibu Web :: Core (Extjs)</name>
+  <name>Jibu Web :: Core (UI based Extjs)</name>
   <packaging>war</packaging>
 
   <properties>
@@ -35,6 +35,7 @@
   </properties>
 
   <build>
+
     <resources>
       <resource>
         <directory>../../jibu-core/src/main/resources</directory>
@@ -49,6 +50,7 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <packagingExcludes>WEB-INF/lib/*.jar,ext/**</packagingExcludes>
           <warSourceExcludes>js/*.js</warSourceExcludes>
           <overlays>
             <overlay>
@@ -95,7 +97,7 @@
           <aggregations>
             <aggregation>
               <removeIncluded>true</removeIncluded>
-              <output>${project.build.directory}/${project.build.finalName}/js/jibu-core-all.js</output>
+              <output>${build.webappDirectory}/js/jibu-core-all.js</output>
               <!-- files to include, path relative to output's directory or absolute path-->
               <includes>
                 <include>**/*.js</include>
@@ -134,10 +136,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.gaixie.jibu</groupId>

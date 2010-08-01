@@ -8,7 +8,12 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;  
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.utils.ConnectionUtils;
-  
+
+/**
+ * 对所有有Transaction注解的方法进行拦截，并将第一个参数注入有效的Connection,
+ * 方法执行完成后，进行commit或者是rollback，并关闭connection。
+ * 
+ */
 public class TransactionInterceptor implements MethodInterceptor {  
 
     @Override  

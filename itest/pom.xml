@@ -25,12 +25,13 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.gaixie.jibu.web</groupId>
-  <artifactId>web</artifactId>
-  <name>Jibu Web</name>
+  <groupId>org.gaixie.jibu.itest</groupId>
+  <artifactId>itest</artifactId>
+  <name>ITest</name>
   <packaging>pom</packaging>
 
   <modules>
-    <module>jibu-core-extjs</module>
+    <module>core-itest-suite</module>
+    <module>war-itest-suite</module>
   </modules>
 </project>

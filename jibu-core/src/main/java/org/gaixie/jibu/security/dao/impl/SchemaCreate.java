@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu;
+package org.gaixie.jibu.security.dao;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,58 +22,54 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.dbunit.DatabaseTestCase;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.gaixie.jibu.utils.ConnectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/*
- * 在所有测试用力执行以前，先执行此用例，目的是初始化数据库，建表，插入初始数据。
- * 数据库配置通过ConnectionUtils类加载dbcp.properties
- * dbunit 在对hsqldb数据库会有一个警告，目前对derby支持的最好。
+/**
+ * 执行数据库脚本，初始化Schema，因为安全原因，目前只支持Derby数据库。
+ *
  */
-public class DbUnitTest extends DatabaseTestCase {
-    private FlatXmlDataSet loadedDataSet;
-
+public class SchemaCreate {
+    private static final Logger logger = LoggerFactory.getLogger(SchemaCreate.class);
     // Provide a connection to the database
-    protected IDatabaseConnection getConnection() throws Exception {
-        // 必须设置dbcp的autocommit为true，否则 getDataSet() 方法不能够插入初始化数据。
-        ConnectionUtils.setDefaultAutoCommit(true);
-        Connection conn = ConnectionUtils.getConnection();
-        createDatabase(conn);
-        return new DatabaseConnection(conn);
-    }
+    public  void create() {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            DatabaseMetaData dbm = conn.getMetaData();
 
-    protected IDataSet getDataSet() throws Exception {
-        loadedDataSet = new FlatXmlDataSetBuilder().build(this.getClass().getResourceAsStream("/dataset.xml"));
-        return loadedDataSet;
-    }
+            ResultSet rs = dbm.getTables(null, null, "USERBASE", null);
+            if (rs.next()) throw new SQLException("Schema has been created!");
 
-    // Check that the data has been loaded.
-    public void testCheckDataLoaded() throws Exception{
-        assertNotNull(loadedDataSet);
-        int rowCount = loadedDataSet.getTable("USERBASE").getRowCount();
-        assertEquals(1, rowCount);
-    }
+            String dpn = dbm.getDatabaseProductName();
+            if (!"Apache Derby".equals(dpn)) throw new SQLException("Database is not Apache Derby!");
 
-    private void createDatabase(Connection conn) throws SQLException, IOException {
-        StringBuilder command = new StringBuilder();
-        InputStream is = this.getClass().getResourceAsStream("/dbscripts/derby/createdb.sql");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        QueryRunner run = new QueryRunner();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            command = handleLine(command, line, run, conn);
+            StringBuilder command = new StringBuilder();
+            InputStream is = this.getClass().getResourceAsStream("/dbscripts/derby/createdb.sql");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            QueryRunner run = new QueryRunner();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                command = handleLine(command, line, run, conn);
+            }
+            reader.close();
+            checkForMissingLineTerminator(command);
+            DbUtils.commitAndClose(conn);
+        } catch (SQLException se) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            logger.warn("Schema create failed: "+ se.getMessage());
+        } catch (IOException ie) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            logger.warn("Schema create failed: "+ ie.getMessage());
         }
-        reader.close();
-        checkForMissingLineTerminator(command);
     }
 
     private StringBuilder handleLine(StringBuilder command 

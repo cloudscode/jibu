@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserDAO userDAO;
 
-    @Inject UserServiceImpl(UserDAO userDAO) {
+    @Inject public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 

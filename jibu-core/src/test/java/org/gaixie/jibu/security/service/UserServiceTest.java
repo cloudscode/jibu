@@ -16,44 +16,52 @@
  */
 package org.gaixie.jibu.security.service;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.sql.Connection;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.security.dao.SecurityDAOModule;
+import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
+import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
 public class UserServiceTest {
     private UserService userService;
-    private Injector injector;
+    private UserDAO userDAO;
+    private Connection conn;
 
     @Before public void setup() {
-        injector = Guice.createInjector(new SecurityServiceModule(),
-                                                 new SecurityDAOModule("Derby"));
-        userService = injector.getInstance(UserService.class);
+        userDAO = EasyMock.createMock(UserDAO.class);
+        conn = EasyMock.createMock(Connection.class);
+        userService = new UserServiceImpl(userDAO);
     }
 
 
-    @Test public void testGet() throws JibuException {
-        User user = userService.get(null,"admin");
-        Assert.assertNotNull(user);
-        user = userService.get(null,"notExistUser");
-        Assert.assertNull(user);        
+    @Test public void testGet() throws Exception {
+        User user = new User();
+        EasyMock.expect(userDAO.get(conn,"admin"))
+            .andReturn(user);
+        EasyMock.replay(userDAO);
+        userService.get(conn,"admin");
+        EasyMock.verify(userDAO);
     }
 
-    @Test public void testAdd() throws JibuException {
+    @Test public void testAdd() throws Exception {
         User user = new User("tommy wang","testUserServiceAdd","123456","bitorb@gmail.com",true);
-        userService.add(null,user);
-        try {
-            userService.add(null,user);
-        } catch (JibuException e) {
-            Assert.assertTrue("001B-0002".equals(e.getMessage()));
+        if (user.getPassword()!=null) {
+            String cryptpassword = MD5.encodeString(user.getPassword(),null);
+            user.setPassword(cryptpassword);
         }
+        userDAO.save(conn,user);
+        EasyMock.expectLastCall().times(1);
+        EasyMock.replay(userDAO);
+        user.setPassword("123456");
+        userService.add(conn,user);
+        EasyMock.verify(userDAO);
     }
 
 }
