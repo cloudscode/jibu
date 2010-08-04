@@ -42,6 +42,15 @@ public class User {
     /**
      * Simple constructor
      */
+    public User(String fullname,String username,String password) {
+        this.fullname = fullname;
+        this.username = username;     
+        this.password = password;  
+    }
+    
+    /**
+     * Full constructor
+     */
     public User(String fullname,String username,String password,String emailaddress,boolean enabled) {
         this.fullname = fullname;
         this.username = username;     
@@ -49,7 +58,6 @@ public class User {
         this.emailaddress = emailaddress;  
         this.enabled = enabled;  
     }
-    
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Accessor Methods ~~~~~~~~~~~~~~~~~~~~~~~~~~//    
     public Integer getId() {
@@ -98,5 +106,16 @@ public class User {
     
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        final User user = (User) o;
+        return getUsername().equals(user.getUsername());
+    }
+
+    public int hashCode() {
+        return getUsername().hashCode();
     }
 }

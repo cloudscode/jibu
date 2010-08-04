@@ -18,13 +18,17 @@ package org.gaixie.jibu.security.dao.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.utils.BeanConverter;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,5 +83,21 @@ public class UserDAODerby implements UserDAO {
             throw new JibuException("001B-0002");
         }
 
+    }
+
+    public List<User> find( Connection conn, User user) throws JibuException {
+        ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
+        QueryRunner run = new QueryRunner();
+        List<User> users = null;
+        String sql = "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase \n"; 
+
+        String s = BeanConverter.beanToDerbySQL(user);
+        sql = sql + BeanConverter.getWhereSQL(s);
+        try {
+            users =  run.query(conn, sql, h);
+        } catch(SQLException e) {
+            throw new JibuException("001B-0002");
+        }
+        return users;
     }
 }

@@ -31,19 +31,20 @@ public class BeanConverterTest {
     @Test 
         public void testMapToBean() throws Exception {
         Map<Object,Object> map = new HashMap<Object,Object>();
-        map.put("id","1");
-        map.put("name","王大");
-        map.put("age","34");
-        map.put("married",true);
-        map.put("hasChildren","false");
-        map.put("salary","10000.89");
-        map.put("birthday","2010-10-10 23:10:00");
+        map.put("Person.id","1");
+        map.put("Person.name","王大");
+        map.put("Person.age","34");
+        map.put("Person.married","true");
+        map.put("Person.hasChildren","false");
+        map.put("Person.salary","10000.89");
+        map.put("Person.birthday","2010-10-10 23:10:00");
         Person p = BeanConverter.mapToBean(Person.class,map);
+        BeanConverter.beanToDerbySQL(p);
         Assert.assertNotNull(p);
         Assert.assertTrue("王大".equals(p.getName()));
         Assert.assertTrue(34 == p.getAge());
         Assert.assertTrue(true == p.isMarried());
-        Assert.assertTrue(false == p.isHasChildren());
+        Assert.assertTrue(false == p.getHasChildren());
         Assert.assertTrue(1 == p.getId());
         Assert.assertTrue(10000.89f == p.getSalary());
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

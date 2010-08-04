@@ -17,6 +17,7 @@
 package org.gaixie.jibu.security.dao;
 
 import java.sql.Connection;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.After;
@@ -46,13 +47,34 @@ public class UserDAOTest extends DAOTestSupport {
     }
 
     @Test public void testSave() throws Exception {
-        User user = new User("tommy","testsave","123456","bito@xxx.com",true);
+        User user = new User("Tommy Wang","tommy","123456");
         userDAO.save(conn,user);
         try {
             userDAO.save(conn,user);
         } catch (JibuException e) {
             Assert.assertTrue("001B-0002".equals(e.getMessage()));
         }
+        user = userDAO.get(conn,"tommy");
+        Assert.assertTrue(user.isEnabled());
+        Assert.assertNotNull(user.getId());
+    }
+
+    @Test public void testFind() throws Exception {
+        User user = new User("Tommy Wang","tommy","123456","1@x.xxx",true);
+        userDAO.save(conn,user);
+        user = new User("Tommy Wang","tommy1","123456","2@x.xxx",true);
+        userDAO.save(conn,user);
+
+        user = new User();
+        user.setFullname("Tommy Wang");
+        // where fullname = 'Tommy Wang' and enabled = true
+        List<User> users = userDAO.find(conn,user);
+        Assert.assertTrue(2 == users.size());
+        user.setFullname(null);
+        // where enabled = true;
+        users = userDAO.find(conn,user);
+        // admin + tommy + tomm1
+        Assert.assertTrue(3 == users.size());
     }
 
     @After public void tearDown() {

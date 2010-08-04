@@ -16,26 +16,30 @@
  */
 package org.gaixie.jibu.security.servlet;
 
-import com.google.inject.servlet.ServletModule;
-
+import java.beans.IntrospectionException;
+import java.text.ParseException;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
-import org.gaixie.jibu.security.servlet.LoginFilter;
-import org.gaixie.jibu.security.servlet.LoginServlet;
-import org.gaixie.jibu.security.servlet.MainServlet;
-import org.gaixie.jibu.security.servlet.UserServlet;
+import javax.servlet.http.HttpServletRequest;
 
-public class SecurityServletModule extends ServletModule {
-    @Override protected void configureServlets() {
-        filter("*.y","*.z").through(LoginFilter.class);
-        serve("/LoginServlet.x").with(LoginServlet.class);
+import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.utils.BeanConverter;
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("main.title", "Jibu Web Application");
-        // 以逗号分隔的js文件名，会被一次加载 
-        params.put("js.names", "jibu-core-all.js");
-        serve("/MainServlet.y").with(MainServlet.class,params);
-        serve("/UserServlet.y").with(UserServlet.class,params);
+public class ServletUtils {
+    public static <T> T httpToBean(Class<T> cls, HttpServletRequest req) 
+        throws JibuException {
+        HashMap map = new HashMap();
+        Enumeration names = req.getParameterNames();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
+            String value = req.getParameter(name);
+            if (!value.trim().isEmpty()) {
+                map.put(name, req.getParameter(name));
+            }
+        }
+        T bean = BeanConverter.mapToBean(cls, map);
+        return bean;
     }
 }

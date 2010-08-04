@@ -52,7 +52,7 @@ public class Person {
     public boolean isMarried() { return married; }
 
     public void setHasChildren(Boolean hasChildren) { this.hasChildren = hasChildren; }
-    public Boolean isHasChildren() { return hasChildren; }
+    public Boolean getHasChildren() { return hasChildren; }
 
     public float getSalary() { return salary; }
     public void setSalary(float salary) { this.salary = salary; }

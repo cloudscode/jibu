@@ -17,6 +17,7 @@
 package org.gaixie.jibu.security.dao;
 
 import java.sql.Connection;
+import java.util.List;
 
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.User;
@@ -56,7 +57,19 @@ public interface UserDAO {
      * @param conn 一个有效的数据库链接。
      * @param user 用户对象。
      *
-     * @throws SQLException 如果用户名重复，会抛出此异常。
+     * @throws JibuException 如果用户名重复，会抛出此异常。
      */
     public void save(Connection conn, User user) throws JibuException;
+
+
+    /**
+     * 根据用户属性查询符合条件的用户集合
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param user 用户对象，属性值会作为查询匹配的条件。
+     *
+     * @throws JibuException 数据库执行发生异常
+     */
+    public List<User> find(Connection conn, User user) throws JibuException;
+
 }

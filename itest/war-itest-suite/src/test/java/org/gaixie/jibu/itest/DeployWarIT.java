@@ -16,15 +16,18 @@
  */
 package org.gaixie.jibu.itest;
 
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.GetMethodWebRequest;
 
 import org.junit.Test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.gaixie.jibu.itest.JettyService;
+import org.gaixie.jibu.json.JSONArray;
+import org.gaixie.jibu.json.JSONObject;
 
 public class DeployWarIT {
     private static JettyService server;
@@ -52,9 +55,31 @@ public class DeployWarIT {
         req.setParameter("ci","login");
         req.setParameter("username","admin");
         req.setParameter("password","123456");
-
         WebResponse wr = wc.getResponse(req);
-        System.out.println(wr.getText());
+
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.y" );
+        req.setParameter("ci","add");
+        req.setParameter("User.username","tommy");
+        req.setParameter("User.password","123456");
+        req.setParameter("User.fullname","Tommy Wang");
+        req.setParameter("User.emailaddress","x@x.x");
+        req.setParameter("User.enabled","");
+        wr = wc.getResponse(req);
+
+        String email = null;
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.y" );
+        req.setParameter("ci","find");
+        req.setParameter("User.username","");
+        req.setParameter("User.password","");
+        req.setParameter("User.fullname","");
+        req.setParameter("User.emailaddress",email);
+        req.setParameter("User.enabled","true");
+        wr = wc.getResponse(req);
+        JSONObject obj = new JSONObject(wr.getText());
+        JSONArray array = obj.getJSONArray("data");
+        JSONObject jo = array.getJSONObject(1);
+        //System.out.println(jo.getInt("id"));
+
     }
 
     @AfterClass

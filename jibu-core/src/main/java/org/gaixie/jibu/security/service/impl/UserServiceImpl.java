@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
@@ -50,13 +51,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    /**
-     * 增加一个新用户，密码不能为空，且是没有hash过的
-     *
-     * @param user 用户对象
-     *
-     * @exception JibuException 如果用户名已存在，抛出此异常
-     */
     @Transaction
     public void add(Connection conn, User user) throws JibuException {
         if (user.getPassword()!=null) {
@@ -64,5 +58,14 @@ public class UserServiceImpl implements UserService {
             user.setPassword(cryptpassword);
         }
         userDAO.save(conn,user);
+    }
+
+    @Transaction
+    public List<User> find(Connection conn, User user) throws JibuException {
+        if (user.getPassword()!=null) {
+            String cryptpassword = MD5.encodeString(user.getPassword(),null);
+            user.setPassword(cryptpassword);
+        }
+        return userDAO.find(conn,user);
     }
 }

@@ -18,6 +18,7 @@ package org.gaixie.jibu.security.dao.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
@@ -44,5 +45,9 @@ public class UserDAOPgSQL implements UserDAO {
 
     public void save(Connection conn, User user) throws JibuException {
 
+    }
+
+    public List<User> find( Connection conn, User user) throws JibuException {
+        return null;
     }
 }

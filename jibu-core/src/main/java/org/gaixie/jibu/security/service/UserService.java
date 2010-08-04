@@ -17,6 +17,7 @@
 package org.gaixie.jibu.security.service;
 
 import java.sql.Connection;
+import java.util.List;
 
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.User;
@@ -44,4 +45,15 @@ public interface UserService {
      * @exception JibuException 如果用户名已存在，抛出此异常
      */
     public void add(Connection conn, User user) throws JibuException;
+
+    /**
+     * 查询所有匹配给定用户属性的用户集合
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param user 用来传递查询条件的用户对象。
+     *
+     * @exception JibuException 如果用户名已存在，抛出此异常
+     */
+    public List<User> find(Connection conn, User user) throws JibuException;
+
 }
