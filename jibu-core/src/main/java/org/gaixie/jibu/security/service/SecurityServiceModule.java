@@ -17,25 +17,25 @@
 package org.gaixie.jibu.security.service;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
 
-import org.gaixie.jibu.annotation.Transaction;
-import org.gaixie.jibu.interceptor.TransactionInterceptor;
+import org.gaixie.jibu.security.service.AuthorityService;
 import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.security.service.RoleService;
 import org.gaixie.jibu.security.service.UserService;
+import org.gaixie.jibu.security.service.impl.AuthorityServiceImpl;
 import org.gaixie.jibu.security.service.impl.LoginServiceImpl;
+import org.gaixie.jibu.security.service.impl.RoleServiceImpl;
 import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
 /**
- * 
+ * Security子系统Service层bind 
  */
 public class SecurityServiceModule extends AbstractModule {
 
     @Override protected void configure() {
         bind(LoginService.class).to(LoginServiceImpl.class);
         bind(UserService.class).to(UserServiceImpl.class);
-        bindInterceptor(Matchers.inSubpackage("org.gaixie.jibu.security.service"),
-                        Matchers.annotatedWith(Transaction.class), 
-                        new TransactionInterceptor());
+        bind(RoleService.class).to(RoleServiceImpl.class);
+        bind(AuthorityService.class).to(AuthorityServiceImpl.class);
     }
 }

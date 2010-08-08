@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
         ServletOutputStream output=resp.getOutputStream();
         try {
             User user = ServletUtils.httpToBean(User.class,req); 
-            userService.add(null,user);
+            userService.add(user);
             jsonMap.put("success", true);
             jsonMap.put("data", user.getUsername());
         } catch (Exception e) {
@@ -92,7 +92,7 @@ import org.slf4j.LoggerFactory;
         ServletOutputStream output=resp.getOutputStream();
         try {
             User user = ServletUtils.httpToBean(User.class,req); 
-            List<User> users = userService.find(null,user);
+            List<User> users = userService.find(user);
 
             JSONArray array = new JSONArray();
             for (User u : users) {

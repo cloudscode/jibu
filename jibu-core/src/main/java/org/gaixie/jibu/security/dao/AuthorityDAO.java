@@ -20,56 +20,66 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.model.Authority;
 
 /**
- * User DAO Interface
+ * Authority DAO Interface
  */
-public interface UserDAO {
+public interface AuthorityDAO {
 
     /**
-     * 通过用户名得到一个用户对象
+     * 通过权限Id得到一个权限对象
      *
      * @param conn 一个有效的数据库链接。
-     * @param username 用户的登录名。
+     * @param id 权限id。
      * 
-     * @throws SQLException 
-     * @return 用户对象
-     */
-    public User get(Connection conn, String username) throws SQLException;
-
-    /**
-     * 通过用户名及密码得到一个用户对象
-     *
-     * @param conn 一个有效的数据库链接。
-     * @param username 用户的登录名。
-     * @param password hash后的用户登录密码。
-     *
-     * @throws SQLException 
-     * @return 用户对象
-     */
-    public User login(Connection conn, String username, String password) throws SQLException;
-
-
-    /**
-     * 增加一个新用户
-     *
-     * @param conn 一个有效的数据库链接。
-     * @param user 用户对象。
-     *
      * @throws SQLException
+     * @return 权限对象
      */
-    public void save(Connection conn, User user) throws SQLException;
-
+    public Authority get(Connection conn, int id) throws SQLException;
 
     /**
-     * 根据用户属性查询符合条件的用户集合
+     * 通过权限value和mask得到一个权限
      *
      * @param conn 一个有效的数据库链接。
-     * @param user 用户对象，属性值会作为查询匹配的条件。
+     * @param value value。
+     * @param mask 权限掩码。
+     * 
+     * @throws SQLException
+     * @return 权限对象
+     */
+    public Authority get(Connection conn, String value, int mask) throws SQLException;
+
+    /**
+     * 增加一个权限
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param auth 权限对象。
      *
      * @throws SQLException 
      */
-    public List<User> find(Connection conn, User user) throws SQLException;
+    public void save(Connection conn, Authority auth) throws SQLException;
 
+
+    /**
+     * 根据权限类型查询相关权限
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param type 权限类型。
+     *
+     * @throws SQLException 
+     * @return 权限对象集合
+     */
+    public List<Authority> findByType(Connection conn,String type) throws SQLException;
+
+    /**
+     * 根据权限类型查询相关权限
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param value Authority.value。
+     *
+     * @throws SQLException 
+     * @return Authority List
+     */
+    public List<Authority> findByValue(Connection conn,String value) throws SQLException;
 }

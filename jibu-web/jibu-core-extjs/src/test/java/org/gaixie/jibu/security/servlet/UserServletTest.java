@@ -70,7 +70,7 @@ public class UserServletTest {
   
         //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output)); 
         EasyMock.expect(mockResponse.getOutputStream()).andReturn(sos);
-        userService.add(null,user);
+        userService.add(user);
         EasyMock.expectLastCall().atLeastOnce();
         //回放  
         EasyMock.replay(mockResponse);

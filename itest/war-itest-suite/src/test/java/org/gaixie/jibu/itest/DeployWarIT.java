@@ -57,8 +57,9 @@ public class DeployWarIT {
         req.setParameter("password","123456");
         WebResponse wr = wc.getResponse(req);
 
-        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.y" );
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
         req.setParameter("ci","add");
+        req.setParameter("crud","2");
         req.setParameter("User.username","tommy");
         req.setParameter("User.password","123456");
         req.setParameter("User.fullname","Tommy Wang");
@@ -67,8 +68,9 @@ public class DeployWarIT {
         wr = wc.getResponse(req);
 
         String email = null;
-        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.y" );
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
         req.setParameter("ci","find");
+        req.setParameter("crud","1");
         req.setParameter("User.username","");
         req.setParameter("User.password","");
         req.setParameter("User.fullname","");

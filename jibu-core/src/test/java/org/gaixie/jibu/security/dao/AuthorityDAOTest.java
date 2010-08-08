@@ -26,50 +26,31 @@ import org.junit.Test;
 import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.CoreTestSupport;
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.security.dao.UserDAO;
-import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.dao.AuthorityDAO;
+import org.gaixie.jibu.security.model.Authority;
 import org.gaixie.jibu.utils.ConnectionUtils;
 
-public class UserDAOTest extends CoreTestSupport {
+public class AuthorityDAOTest extends CoreTestSupport {
     private Connection conn;
-    private UserDAO userDAO;
+    private AuthorityDAO authDAO;
 
     @Before public void setup() throws Exception {
-        userDAO = getInjector().getInstance(UserDAO.class); 
+        authDAO = getInjector().getInstance(AuthorityDAO.class); 
         conn = ConnectionUtils.getConnection();
     }
 
 
-    @Test public void testGet() throws Exception {
-        User user = userDAO.get(conn,"admin");
-        Assert.assertNotNull(user);
-        user = userDAO.get(conn,"notExistUser");
-        Assert.assertNull(user); 
-    }
-
-    @Test public void testSave() throws Exception {
-        User user = new User("Tommy Wang","tommy","123456");
-        userDAO.save(conn,user);
-        user = userDAO.get(conn,"tommy");
-        Assert.assertNotNull(user);
-    }
-
-    @Test public void testFind() throws Exception {
-        User user = new User("Tommy Wang","tommy","123456","1@x.xxx",true);
-        userDAO.save(conn,user);
-        user = new User("Tommy Wang","tommy1","123456","2@x.xxx",true);
-        userDAO.save(conn,user);
-
-        user = new User();
-        user.setFullname("Tommy Wang");
-        // where fullname = 'Tommy Wang' and enabled = true
-        List<User> users = userDAO.find(conn,user);
-        Assert.assertTrue(2 == users.size());
-        user.setFullname(null);
-        // where enabled = true;
-        users = userDAO.find(conn,user);
-        // admin + tommy + tomm1
-        Assert.assertTrue(3 == users.size());
+    @Test public void testAuthDAO() throws Exception {
+        List<Authority> auths = authDAO.findByType(conn,"action");
+        Authority auth = new Authority("jibu.security.test1","action","Test1Servlet.z",1);
+        authDAO.save(conn,auth);
+        auth = new Authority("jibu.security.test2","action","Test2Servlet.z",1);
+        authDAO.save(conn,auth);
+        int count = auths.size();
+        auths = authDAO.findByType(conn,"action");
+        Assert.assertTrue(count + 2 == auths.size());
+        auths = authDAO.findByValue(conn,"Test1Servlet.z");
+        Assert.assertTrue(1 == auths.size());
     }
 
     @After public void tearDown() {

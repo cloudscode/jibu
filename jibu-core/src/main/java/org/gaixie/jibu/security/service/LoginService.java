@@ -16,10 +16,7 @@
  */
 package org.gaixie.jibu.security.service;
 
-import java.sql.Connection;
-
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.security.model.User;
 
 /**
  * 系统登录相关服务
@@ -29,11 +26,10 @@ public interface LoginService {
     /**
      * 通过用户名及密码进行登录验证
      *
-     * @param conn 一个有效的数据库链接。
      * @param username 登录用户名
      * @param password 没有进行hash的登录密码
      *
      * @exception JibuException 用户名或密码错误时抛出
      */
-    public void login(Connection conn, String username, String password) throws JibuException;
+    public void login(String username, String password) throws JibuException;
 }

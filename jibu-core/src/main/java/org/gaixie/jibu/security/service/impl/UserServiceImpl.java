@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.annotation.Transaction;
 import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
@@ -44,28 +43,53 @@ public class UserServiceImpl implements UserService {
         this.userDAO = userDAO;
     }
 
-    @Transaction
-    public User get(Connection conn,String username) throws JibuException {
+    public User get(String username) {
+        Connection conn = null;
         User user = null;
-        user = userDAO.get(conn,username);
+        try {
+            conn = ConnectionUtils.getConnection();
+            user = userDAO.get(conn,username);
+        } catch(SQLException e) {
+            logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
         return user;
+
     }
 
-    @Transaction
-    public void add(Connection conn, User user) throws JibuException {
+
+    public void add(User user) throws JibuException {
+        Connection conn = null;
         if (user.getPassword()!=null) {
             String cryptpassword = MD5.encodeString(user.getPassword(),null);
             user.setPassword(cryptpassword);
         }
-        userDAO.save(conn,user);
+        try {
+            conn = ConnectionUtils.getConnection();
+            userDAO.save(conn,user);
+            DbUtils.commitAndClose(conn);
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            throw new JibuException("UserService.001");
+        }
     }
 
-    @Transaction
-    public List<User> find(Connection conn, User user) throws JibuException {
+    public List<User> find(User user) {
+        Connection conn = null;
+        List<User> users= null;
         if (user.getPassword()!=null) {
             String cryptpassword = MD5.encodeString(user.getPassword(),null);
             user.setPassword(cryptpassword);
         }
-        return userDAO.find(conn,user);
+        try {
+            conn = ConnectionUtils.getConnection();
+            users = userDAO.find(conn,user);
+        } catch(SQLException e) {
+            logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+        return users;
     }
 }

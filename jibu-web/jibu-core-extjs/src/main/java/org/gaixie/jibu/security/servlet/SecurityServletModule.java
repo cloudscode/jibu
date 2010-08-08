@@ -21,6 +21,7 @@ import com.google.inject.servlet.ServletModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gaixie.jibu.security.servlet.ActionFilter;
 import org.gaixie.jibu.security.servlet.LoginFilter;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.gaixie.jibu.security.servlet.MainServlet;
@@ -29,6 +30,7 @@ import org.gaixie.jibu.security.servlet.UserServlet;
 public class SecurityServletModule extends ServletModule {
     @Override protected void configureServlets() {
         filter("*.y","*.z").through(LoginFilter.class);
+        filter("*.z").through(ActionFilter.class);
         serve("/LoginServlet.x").with(LoginServlet.class);
 
         Map<String, String> params = new HashMap<String, String>();
@@ -36,6 +38,6 @@ public class SecurityServletModule extends ServletModule {
         // 以逗号分隔的js文件名，会被一次加载 
         params.put("js.names", "jibu-core-all.js");
         serve("/MainServlet.y").with(MainServlet.class,params);
-        serve("/UserServlet.y").with(UserServlet.class,params);
+        serve("/UserServlet.z").with(UserServlet.class,params);
     }
 }

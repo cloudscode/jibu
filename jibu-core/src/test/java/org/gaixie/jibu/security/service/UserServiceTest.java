@@ -16,52 +16,39 @@
  */
 package org.gaixie.jibu.security.service;
 
-import java.sql.Connection;
-
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.gaixie.jibu.CoreTestSupport;
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.security.MD5;
-import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
-import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
-public class UserServiceTest {
+public class UserServiceTest extends CoreTestSupport {
     private UserService userService;
-    private UserDAO userDAO;
-    private Connection conn;
 
     @Before public void setup() {
-        userDAO = EasyMock.createMock(UserDAO.class);
-        conn = EasyMock.createMock(Connection.class);
-        userService = new UserServiceImpl(userDAO);
+        userService = getInjector().getInstance(UserService.class); 
     }
 
 
     @Test public void testGet() throws Exception {
-        User user = new User();
-        EasyMock.expect(userDAO.get(conn,"admin"))
-            .andReturn(user);
-        EasyMock.replay(userDAO);
-        userService.get(conn,"admin");
-        EasyMock.verify(userDAO);
+        User user = userService.get("admin");
+        Assert.assertNotNull(user);
+        user = userService.get("notExistUser");
+        Assert.assertNull(user); 
     }
 
     @Test public void testAdd() throws Exception {
         User user = new User("tommy wang","testUserServiceAdd","123456","bitorb@gmail.com",true);
-        if (user.getPassword()!=null) {
-            String cryptpassword = MD5.encodeString(user.getPassword(),null);
-            user.setPassword(cryptpassword);
+        userService.add(user);
+        try {
+            userService.add(user);
+        } catch (JibuException e) {
+            Assert.assertTrue("UserService.001".equals(e.getMessage()));
         }
-        userDAO.save(conn,user);
-        EasyMock.expectLastCall().times(1);
-        EasyMock.replay(userDAO);
-        user.setPassword("123456");
-        userService.add(conn,user);
-        EasyMock.verify(userDAO);
-    }
 
+        user = userService.get("testUserServiceAdd");
+        Assert.assertNotNull(user);
+    }
 }

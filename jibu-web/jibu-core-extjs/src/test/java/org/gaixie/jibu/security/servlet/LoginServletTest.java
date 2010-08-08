@@ -64,7 +64,7 @@ public class LoginServletTest {
   
         //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output)); 
         EasyMock.expect(mockResponse.getOutputStream()).andReturn(sos);
-        loginService.login(null,"admin","123456");
+        loginService.login("admin","123456");
         EasyMock.expectLastCall().atLeastOnce();
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);  
         ses.putValue("username", "admin");

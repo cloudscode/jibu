@@ -16,7 +16,6 @@
  */
 package org.gaixie.jibu.security.service;
 
-import java.sql.Connection;
 import java.util.List;
 
 import org.gaixie.jibu.JibuException;
@@ -30,30 +29,25 @@ public interface UserService {
     /**
      * 通过用户名得到用户对象
      *
-     * @param conn 一个有效的数据库链接。
      * @param username 登录用户名
      * @return 用户对象
      */
-    public User get(Connection conn, String username) throws JibuException;
+    public User get(String username) ;
 
     /**
      * 增加一个新用户，密码不能为空，且是没有hash过的
      *
-     * @param conn 一个有效的数据库链接。
      * @param user 用户对象
-     *
      * @exception JibuException 如果用户名已存在，抛出此异常
      */
-    public void add(Connection conn, User user) throws JibuException;
+    public void add(User user) throws JibuException;
 
     /**
      * 查询所有匹配给定用户属性的用户集合
      *
-     * @param conn 一个有效的数据库链接。
      * @param user 用来传递查询条件的用户对象。
-     *
-     * @exception JibuException 如果用户名已存在，抛出此异常
+     * @return 用户对象集合
      */
-    public List<User> find(Connection conn, User user) throws JibuException;
+    public List<User> find(User user);
 
 }

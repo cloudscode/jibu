@@ -16,6 +16,8 @@
  */
 package org.gaixie.jibu.security.servlet;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.gaixie.jibu.security.service.AuthorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,8 @@ import org.slf4j.LoggerFactory;
 @ Singleton public class MainServlet extends HttpServlet {
 
     final static Logger logger = LoggerFactory.getLogger(MainServlet.class);
+
+    @Inject private Injector injector;
 
     public String DOCTYPE =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
@@ -50,6 +55,7 @@ import org.slf4j.LoggerFactory;
         resp.setContentType("text/html");
         ServletOutputStream output=resp.getOutputStream();
         String title = getServletConfig().getInitParameter("main.title");
+        AuthorityService authService = injector.getInstance(AuthorityService.class);
         StringBuilder sb = new StringBuilder();
         sb.append(DOCTYPE + "\n" +
                   "<html>\n" +

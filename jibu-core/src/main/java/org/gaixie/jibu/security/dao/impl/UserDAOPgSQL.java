@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
-import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
 import org.slf4j.Logger;
@@ -35,19 +34,19 @@ import org.slf4j.LoggerFactory;
 public class UserDAOPgSQL implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAOPgSQL.class);
 
-    public User get(Connection conn, String username) throws JibuException {
+    public User get(Connection conn, String username) throws SQLException {
         return null;
     }
 
-    public User login(Connection conn,String username, String password) throws JibuException {
+    public User login(Connection conn,String username, String password) throws SQLException {
         return null;
     }
 
-    public void save(Connection conn, User user) throws JibuException {
+    public void save(Connection conn, User user) throws SQLException {
 
     }
 
-    public List<User> find( Connection conn, User user) throws JibuException {
+    public List<User> find( Connection conn, User user) throws SQLException {
         return null;
     }
 }

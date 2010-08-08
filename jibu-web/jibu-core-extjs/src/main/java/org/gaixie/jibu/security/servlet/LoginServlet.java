@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
         ServletOutputStream output=resp.getOutputStream();
 
         try {
-            loginService.login(null,username, password);
+            loginService.login(username, password);
             // check if we have a session
             HttpSession ses = req.getSession(true);
             ses.putValue("username", username);

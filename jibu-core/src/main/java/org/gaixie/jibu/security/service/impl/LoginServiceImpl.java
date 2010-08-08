@@ -19,10 +19,10 @@ package org.gaixie.jibu.security.service.impl;
 import com.google.inject.Inject;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
-import org.gaixie.jibu.annotation.Transaction;
 import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
@@ -42,21 +42,18 @@ public class LoginServiceImpl implements LoginService {
         this.userDAO = userDAO;
     }
     
-    /**
-     * 通过用户名及密码进行登录验证
-     *
-     * @param conn 一个有效的数据库链接。
-     * @param username 登录用户名
-     * @param password 没有进行hash的登录密码
-     *
-     * @exception JibuException 用户名或密码错误时抛出
-     */
-    @Transaction
-        public void login(Connection conn, String username, String password) throws JibuException {
+    public void login(String username, String password) throws JibuException {
+        Connection conn = null;
         String cryptpassword = MD5.encodeString(password,null);
-        User user = userDAO.login(conn,username,cryptpassword);
-        // 001B-0001 说明：001 为模块编号即jibu-core，B 表示一个B类错误，会在界面上有多语言提示
-        // 0001为错误的编号
-        if (null == user) throw new JibuException("001B-0001");
+        try {
+            conn = ConnectionUtils.getConnection();
+            User user = userDAO.login(conn,username,cryptpassword);
+            if (null == user) throw new JibuException("LoginService.001");
+        } catch(SQLException e) {
+            logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+            // userDAO = null; ?
+        }
     }
 }

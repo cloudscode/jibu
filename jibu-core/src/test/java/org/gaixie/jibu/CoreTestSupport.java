@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.security.dao;
+package org.gaixie.jibu;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -22,31 +22,35 @@ import com.google.inject.Injector;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.gaixie.jibu.security.dao.SecurityDAOModule;
+import org.gaixie.jibu.security.service.SecurityServiceModule;
+
+
 /**
- * 需要Guice注入的DAO测试类的父类，使DAO测试类取得injector，通过同步化保证injector只被创建一
+ * 需要Guice注入的测试类的父类，使测试类取得injector，通过同步化保证injector只被创建一
  * 次，同时通过读取jibu.properties文件的databaseType，使DAO的测试类可以无须修改就
  * 测试多种类型的数据库。
  */
-public class DAOTestSupport {
+public class CoreTestSupport {
     private static String PROPERTIES_FILE = "jibu.properties";
     private String databaseType = "Derby";
     private static Injector injector;
 
-    synchronized Injector getInjector() {
+    public synchronized Injector getInjector() {
         if(injector != null){
             return injector;
         }
         Properties prop = new Properties();
         try {
-            prop.load(DAOTestSupport.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
+            prop.load(CoreTestSupport.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
             if(prop.containsKey("databaseType"))
                 databaseType = prop.getProperty("databaseType");
 
-            injector = Guice.createInjector(new SecurityDAOModule(databaseType));
+            injector = Guice.createInjector(new SecurityServiceModule(),
+                                            new SecurityDAOModule(databaseType));
         } catch (IOException ioe) {
             System.out.println("Failed to load file: "+PROPERTIES_FILE);
         }
         return injector;
     }
 }
-

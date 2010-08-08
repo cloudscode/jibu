@@ -34,13 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 执行数据库脚本，初始化Schema，因为安全原因，目前只支持Derby数据库。
+ * 执行数据库脚本，初始化Schema，注意所有脚本按照文件名顺序执行，因为安全原因，目前只支持Derby数据库。
  *
  */
 public class SchemaCreate {
     private static final Logger logger = LoggerFactory.getLogger(SchemaCreate.class);
     // Provide a connection to the database
-    public  void create() {
+    public  void create(String type) {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
@@ -51,17 +51,16 @@ public class SchemaCreate {
 
             String dpn = dbm.getDatabaseProductName();
             if (!"Apache Derby".equals(dpn)) throw new SQLException("Database is not Apache Derby!");
-
-            StringBuilder command = new StringBuilder();
-            InputStream is = this.getClass().getResourceAsStream("/dbscripts/derby/createdb.sql");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             QueryRunner run = new QueryRunner();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                command = handleLine(command, line, run, conn);
+
+            InputStream in = this.getClass().getResourceAsStream("/dbscripts/"+type+"/.");
+            BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
+            String ln;
+            while ((ln = rdr.readLine()) != null) {
+                handleFile(run,conn,"/dbscripts/"+type+"/"+ln);
             }
-            reader.close();
-            checkForMissingLineTerminator(command);
+            rdr.close();
+
             DbUtils.commitAndClose(conn);
         } catch (SQLException se) {
             DbUtils.rollbackAndCloseQuietly(conn);
@@ -70,6 +69,20 @@ public class SchemaCreate {
             DbUtils.rollbackAndCloseQuietly(conn);
             logger.warn("Schema create failed: "+ ie.getMessage());
         }
+    }
+
+    private void handleFile(QueryRunner run
+                            ,Connection conn
+                            ,String filename) throws SQLException, IOException {
+        StringBuilder command = new StringBuilder();
+        InputStream is = this.getClass().getResourceAsStream(filename);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            command = handleLine(command, line, run, conn);
+        }
+        reader.close();
+        checkForMissingLineTerminator(command);
     }
 
     private StringBuilder handleLine(StringBuilder command 
