@@ -149,8 +149,10 @@ public class AuthorityServiceImpl implements AuthorityService {
             }
 
 	    Map<Integer,List<String>> map = findMapByValue(auth.getValue());
-	    // 如果authRoles为空，表示此auth没有权限控制，任何用户都可以访问
-	    if (null == map) {
+	    // 如果map为空，表示此auth不存在，并发修改产生？
+            // map.size()==0 ，表示auth还没绑定任何Role，所有用户都有权限
+            if (null == map) continue;
+	    if (map.size()==0) {
 		authNames.add(auth.getName());
 		continue;
 	    }
@@ -184,8 +186,9 @@ public class AuthorityServiceImpl implements AuthorityService {
         map = new HashMap<Integer,List<String>>();
         try {
             conn = ConnectionUtils.getConnection();
-            // 先根据value取得一组authority(mask不同)
+            // 先根据value取得一组authority(mask不同)，如果auth不存在，直接返回
             List<Authority> auths = authDAO.findByValue(conn,value);
+            if (auths.size()==0) return null;
             // 不同的mask有一组roles
             for (Authority auth : auths) {
                 List<String> roles = roleDAO.findByAuthid(conn,auth.getId());
@@ -214,8 +217,12 @@ public class AuthorityServiceImpl implements AuthorityService {
         if (userRoles.contains("ROLE_ADMIN")) return true;
 
         Map<Integer,List<String>> map  = findMapByValue(action);
-        // 如果map为空，表示此auth没有做权限设置，安全考虑，所有用户禁止访问(除ROLE_ADMIN角色)
-        if ( null == map) return false;
+        // 如果map为null，表示auth根本不存在，返回false
+        // 如果map非空，但size==0，表示auth没有绑定任何角色，所有用户可以访问
+        // 要想暂时禁止所有用户访问，就只将此auth绑定到一个没有任何用户的角色上
+        if ( null == map ) return false;
+        if ( map.size()==0 ) return true;
+
         Iterator iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();

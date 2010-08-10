@@ -51,6 +51,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
         authService.add(new Authority("ast-v-auth1","action","/ast-v-auth1.z",5));
         authService.add(new Authority("ast-v-auth1","action","/ast-v-auth1.z",2));
         authService.add(new Authority("ast-v-auth2","action","/ast-v-auth2.z",1));
+        authService.add(new Authority("ast-v-auth3","action","/ast-v-auth3.z",1));
         userService.add(new User("ast-v-user1","ast-v-user1","123456"));
 
         /*
@@ -113,9 +114,12 @@ public class AuthorityServiceTest extends CoreTestSupport {
         bl = authService.verify("/ast-v-auth1.z",8,"ast-v-user1");
         Assert.assertTrue(!bl);
         // ast-v-user1 没有ast-v-auth3.z的所有权限，没有继承关系
-        bl = authService.verify("/ast-v-auth3.z",1,"ast-v-user1");
+        bl = authService.verify("/ast-v-auth2.z",1,"ast-v-user1");
         Assert.assertTrue(!bl);
-        // 访问一个没有做权限设置的auth，默认验证失败
+        // 访问一个存在，但没有做权限设置的auth，默认验证成功
+        bl = authService.verify("/ast-v-auth3.z",1,"ast-v-user1");
+        Assert.assertTrue(bl);
+        // 访问一个不存在的auth，验证失败
         bl = authService.verify("/ast-v-auth4.z",1,"ast-v-user1");
         Assert.assertTrue(!bl);
 
@@ -134,11 +138,13 @@ public class AuthorityServiceTest extends CoreTestSupport {
     @Test public void testFindNamesByUsername() throws Exception {
         // 判断user 应该拥有一个权限/ast-v-auth1.z
         List<String> names = authService.findNamesByUsername("ast-v-user1");
-        Assert.assertTrue(1==names.size());
+        Assert.assertTrue(2==names.size());
         Assert.assertTrue(names.contains("ast-v-auth1"));
+        Assert.assertTrue(names.contains("ast-v-auth3"));
         // ROLE_ADMIN拥有所有权限，distinct后得到/ast-v-auth1.z 和/ast-v-auth2.z
         names = authService.findNamesByUsername("admin");
-        Assert.assertTrue(2==names.size());
+        Assert.assertTrue(names.size()>=3);
+        Assert.assertTrue(names.contains("ast-v-auth2"));
     }
 
     // 重负荷测试，不用每次执行
