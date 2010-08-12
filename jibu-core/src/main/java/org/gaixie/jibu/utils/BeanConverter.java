@@ -31,21 +31,24 @@ import java.lang.reflect.InvocationTargetException;
 import org.gaixie.jibu.JibuException;
 
 /**
- * 使用静态方法将不同的对象与javabean进行转化。
+ * 提供静态方法将不同的对象与 Javabean 进行转化。
  *
  */
 public class BeanConverter {
+
     /**
-     * <p>通过Map 对Javabean 进行实例化并赋值，Map 对象的格式必须为 key/value 。
-     * 如果map中的key与javabean中的属性名称一致，并且值可以被转化，则进行赋值。
-     * 这里map中的key必须 类名.属性名 的格式，如 User.id</p>
+     * 通过 Map 对Javabean 进行实例化并赋值。
+     * <p>
+     * Map 对象的格式必须为 key/value 。如果 map 中的 key 与 javabean
+     * 中的属性名称一致，并且值可以被转化，则进行赋值。<br>
+     * 这里 map 中的 key 必须 类名.属性名 的格式，如 User.id<p>
      *
-     * <p>Map中的value不能为数组类型，也就是说不能用request.getParameterValues()
-     * 来获取value</p>
+     * Map 中的 value 不能为数组类型，也就是说不能用
+     * request.getParameterValues() 来获取 value。<p>
      *
-     * @param cls 被处理bean的Class
-     * @param map 由bean属性名做key的Map
-     * @return 实例化，并赋值完成的Bean
+     * @param cls 被处理 bean 的 Class
+     * @param map 由 bean 属性名做 key 的 Map
+     * @return 实例化，并赋值完成的 Bean
      *
      * @exception JibuException 转化失败时抛出
      */
@@ -99,11 +102,12 @@ public class BeanConverter {
     }
 
     /**
-     * <p>通过Bean实例转化为Derby的SQL查询条件语句，只转化非空属性。
-     * 支持的属性类型有 int, Integer, float, Float, boolean, Boolean ,Date </p>
+     * 通过 Bean 实例转化为 Derby 的 SQL 查询条件语句，只转化非空属性。
+     * <p>
+     * 支持的属性类型有 int, Integer, float, Float, boolean, Boolean ,Date 
      *
-     * @param o Bean实例
-     * @return Derby的SQl 语句
+     * @param o Bean 实例
+     * @return Derby 的 SQl 语句
      *
      * @exception JibuException 转化失败时抛出
      */
@@ -139,7 +143,16 @@ public class BeanConverter {
         }
         return sb.toString();
     }
- 
+
+    /**
+     * 整理 Where 语句，补充 Where 关键字，剔除多余的 And 关键字。
+     * <p>
+     *
+     * @param sql 要处理的 Where 语句
+     * @return 有效的 Where 语句
+     *
+     * @exception JibuException 转化失败时抛出
+     */
     public static String getWhereSQL (String sql) {
         if (null == sql ) return null;
 
@@ -156,7 +169,10 @@ public class BeanConverter {
         return s;
     }
 
-    public static String getClassName(Class cls) {
+    /*
+     * 取 Class Name，剔除 Package。
+     */
+    private static String getClassName(Class cls) {
         String name = cls.getName();
         int firstChar;
         firstChar = name.lastIndexOf ('.') + 1;
@@ -165,5 +181,4 @@ public class BeanConverter {
         }
         return name;
     }
-
 }

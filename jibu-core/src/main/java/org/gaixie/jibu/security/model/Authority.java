@@ -18,21 +18,29 @@ package org.gaixie.jibu.security.model;
 
 import java.io.Serializable;
 
+/**
+ * 权限资源模型类。实现 Serializable 接口，使其可以序列化到 Cache 中。
+ * <p>
+ */
 public class Authority implements Serializable {
     
     private Integer id;
     private String name;
-    private String type;
     private String value;
     private int mask;
 
+    /**
+     * No-arg constructor.
+     */
     public Authority() {
         
     }
 
-    public Authority(String name,String type,String value,int mask) {
+    /**
+     * Simple constructor
+     */
+    public Authority(String name,String value,int mask) {
         this.name = name;
-        this.type = type;
         this.value = value;
         this.mask = mask;
      }
@@ -44,9 +52,6 @@ public class Authority implements Serializable {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
 
     public String getValue() { return value; }
     public void setValue(String value) { this.value = value; }

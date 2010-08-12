@@ -36,12 +36,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of Role service
+ * Role 服务接口的默认实现。
+ * <p>
  */
 public class RoleServiceImpl implements RoleService {
     Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
     private final RoleDAO roleDAO;
 
+    /**
+     * 使用 Guice 进行 DAO 的依赖注入。
+     * <p>
+     */
     @Inject public RoleServiceImpl(RoleDAO roleDAO) {
         this.roleDAO = roleDAO;
     }
@@ -101,14 +106,17 @@ public class RoleServiceImpl implements RoleService {
 	return roles;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 从 cache 中删除此 auth 对应的 roles。下次条用时装载。
+     */
     public void bind(Role role, Authority auth) throws JibuException {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
 	    roleDAO.bind(conn, role, auth);
             DbUtils.commitAndClose(conn);
-	    // 从cache中删除此auth对应的roles
-	    // 下次调用findByAuthority的时候装载
 	    Cache cache = CacheUtils.getAuthCache();
 	    cache.remove(auth.getValue());
         } catch(SQLException e) {
@@ -134,14 +142,17 @@ public class RoleServiceImpl implements RoleService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 从 cache 中删除此 User 对应的 roles。下次条用时装载。
+     */
     public void bind(Role role, User user) throws JibuException {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
 	    roleDAO.bind(conn,role,user);
             DbUtils.commitAndClose(conn);
-	    // 从cache中删除此user对应的roles
-	    // 下次调用findByUser的时候装载
 	    Cache cache = CacheUtils.getUserCache();
 	    cache.remove(user.getUsername());
         } catch(SQLException e) {

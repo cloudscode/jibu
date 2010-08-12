@@ -32,7 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 系统登录服务接口实现
+ * 系统登录服务接口的默认实现。
+ * <p>
  */
 public class LoginServiceImpl implements LoginService {
     Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);

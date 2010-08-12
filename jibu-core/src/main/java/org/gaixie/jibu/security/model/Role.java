@@ -16,6 +16,10 @@
  */
 package org.gaixie.jibu.security.model;
 
+/**
+ * 继承型角色模型类。
+ * <p>
+ */
 public class Role {
     
     private Integer id;
@@ -24,6 +28,9 @@ public class Role {
     private int lft;
     private int rgt;
 
+    /**
+     * No-arg constructor.
+     */
     public Role() {
     }
 

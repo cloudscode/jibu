@@ -41,13 +41,13 @@ public class AuthorityDAOTest extends CoreTestSupport {
 
 
     @Test public void testAuthDAO() throws Exception {
-        List<Authority> auths = authDAO.findByType(conn,"action");
-        Authority auth = new Authority("jibu.security.test1","action","Test1Servlet.z",1);
+        List<Authority> auths = authDAO.getAll(conn);
+        Authority auth = new Authority("jibu.security.test1","Test1Servlet.z",1);
         authDAO.save(conn,auth);
-        auth = new Authority("jibu.security.test2","action","Test2Servlet.z",1);
+        auth = new Authority("jibu.security.test2","Test2Servlet.z",1);
         authDAO.save(conn,auth);
         int count = auths.size();
-        auths = authDAO.findByType(conn,"action");
+        auths = authDAO.getAll(conn);
         Assert.assertTrue(count + 2 == auths.size());
         auths = authDAO.findByValue(conn,"Test1Servlet.z");
         Assert.assertTrue(1 == auths.size());

@@ -27,6 +27,11 @@ import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.gaixie.jibu.security.servlet.MainServlet;
 import org.gaixie.jibu.security.servlet.UserServlet;
 
+/**
+ * Security Servlet 的 Bind 类。
+ * <p> 
+ * Servlet mapping ，以及 Filter的拦截策略都在这里定义。
+ */
 public class SecurityServletModule extends ServletModule {
     @Override protected void configureServlets() {
         filter("*.y","*.z").through(LoginFilter.class);

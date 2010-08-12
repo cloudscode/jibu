@@ -33,7 +33,8 @@ import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 
 /**
- *  Role DAO接口的Derby实现
+ * Role 数据访问接口的 Derby 实现。
+ * <p>
  */
 public class RoleDAODerby implements RoleDAO {
     private QueryRunner run = null;
@@ -74,6 +75,11 @@ public class RoleDAODerby implements RoleDAO {
 		   , parent.getLft()+2); 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
     public List<Role> getAll(Connection conn) throws SQLException {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn
@@ -91,6 +97,11 @@ public class RoleDAODerby implements RoleDAO {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
     public List<Role> findByAuthority(Connection conn, Authority auth) throws SQLException {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn
@@ -108,6 +119,11 @@ public class RoleDAODerby implements RoleDAO {
 		   , role.getId()); 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
     public List<Role> findByUser(Connection conn, User user) throws SQLException {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn

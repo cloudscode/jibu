@@ -61,7 +61,7 @@ public class RoleDAOTest extends CoreTestSupport {
     }
 
     @Test public void testBindAuth() throws Exception {
-        Authority auth = new Authority("rdt-ba","action","rdt-ba.z",1);
+        Authority auth = new Authority("rdt-ba","rdt-ba.z",1);
         authDAO.save(conn,auth);
         auth = authDAO.get(conn,"rdt-ba.z",1);
         Assert.assertNotNull(auth);

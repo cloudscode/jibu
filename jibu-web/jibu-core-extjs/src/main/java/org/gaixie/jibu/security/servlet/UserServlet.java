@@ -40,7 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * 响应 User 相关操作的请求。
+ * <p>
  */
 @Singleton public class UserServlet extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(UserServlet.class);

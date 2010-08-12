@@ -23,50 +23,54 @@ import java.util.List;
 import org.gaixie.jibu.security.model.User;
 
 /**
- * User DAO Interface
+ * User 数据访问对象接口。
+ * <p>
+ *
  */
 public interface UserDAO {
 
     /**
-     * 通过用户名得到一个用户对象
+     * 通过 username 得到一个 User。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param username 用户的登录名。
+     * @param username User username。
      * 
      * @throws SQLException 
-     * @return 用户对象
+     * @return User
      */
     public User get(Connection conn, String username) throws SQLException;
 
     /**
-     * 通过用户名及密码得到一个用户对象
+     * 通过 username 及 password 得到一个 User。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param username 用户的登录名。
-     * @param password hash后的用户登录密码。
+     * @param username User username。
+     * @param password hash 后的 password。
      *
      * @throws SQLException 
-     * @return 用户对象
+     * @return User
      */
     public User login(Connection conn, String username, String password) throws SQLException;
 
-
     /**
-     * 增加一个新用户
+     * 增加一个新 User。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param user 用户对象。
+     * @param user User。
      *
      * @throws SQLException
      */
     public void save(Connection conn, User user) throws SQLException;
 
-
     /**
-     * 根据用户属性查询符合条件的用户集合
+     * 根据 User 属性查询符合条件的 User List。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param user 用户对象，属性值会作为查询匹配的条件。
+     * @param user User，属性值会作为查询匹配的条件。
      *
      * @throws SQLException 
      */

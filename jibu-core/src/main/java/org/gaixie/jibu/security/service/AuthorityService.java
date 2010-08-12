@@ -22,12 +22,13 @@ import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.Authority;
 
 /**
- * Authrity的查询，增加，修改，删除等服务
+ * Authrity 服务接口。
+ * <p>
  */
 public interface AuthorityService {
 
     /**
-     * 通过Authority Id得到Authority
+     * 通过Authority Id 得到 Authority。
      *
      * @param id Authority Id
      * @return Authority
@@ -35,53 +36,52 @@ public interface AuthorityService {
     public Authority get(int id);
 
     /**
-     * 通过Authority.value与Authority.mask得到Authority
+     * 通过 Authority value 与 mask 得到 Authority。
      *
-     * @param value Authority.value
-     * @param mask Authority.mask
+     * @param value Authority value
+     * @param mask Authority mask
      * @return Authority
      */
     public Authority get(String value, int mask);
 
     /**
-     * 增加一个新Authority
+     * 增加一个新的 Authority。
      *
      * @param auth Authority
-     * @exception JibuException 如果Authority已存在，抛出此异常
+     * @exception JibuException 如果Authority已存在抛出
      */
     public void add(Authority auth) throws JibuException;
 
     /**
-     * 根据Authority type查询Authority
+     * 得到所有 Authority。
      *
-     * @param type Authority type
      * @return Authority List
      */
-    public List<Authority> findByType(String type);
+    public List<Authority> getAll();
 
     /**
-     * 根据username查询拥有的Role.name
+     * 根据 username 查询拥有的 Role name。
      *
-     * @param username User.username
-     * @return Role.name List
+     * @param username User username
+     * @return Role name List
      */
     public List<String> findRoleNamesByUsername(String username);
 
     /**
-     * 根据username得到所拥有的类型为ACTION的authority.name
+     * 根据 username 得到有权限的Authority name。
      *
-     * @param username User.username
-     * @return Authority.name List
+     * @param username User username
+     * @return Authority name List
      */
     public List<String> findNamesByUsername(String username);
 
     /**
-     * 验证用户对给定操作是否有权限
+     * 验证 User 对给定 Action 是否有权限。
      *
-     * @param action 用户操作，对应于authority 的value属性
-     * @param crud 用户操作的类型，有create, retrive,update,delete, 
-     * 用于与authority 的mask属性进行比较。
-     * @param username 用户名
+     * @param action 用户操作，对应于 Authority 的 value 属性
+     * @param crud 用户操作的类型，有create, retrive, update, delete 
+     * 用于与Authority 的 mask 属性进行比较。
+     * @param username User username
      * @return ture 有权限，false 无权限
      */
     public boolean verify(String action, int crud, String username);

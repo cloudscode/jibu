@@ -29,6 +29,12 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * LoginFilter 对所有请求进行拦截并验证是否登录。
+ * <p>
+ * 对于特定的 URL 请求进行拦截，判断 HttpSession 中是否有 username。
+ * 如果没有，直接以 JSON 格式返回提示信息。
+ */
 @Singleton public class LoginFilter implements Filter {
 
     /**

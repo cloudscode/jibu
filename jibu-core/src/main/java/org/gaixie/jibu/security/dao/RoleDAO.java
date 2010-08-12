@@ -25,26 +25,29 @@ import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 
 /**
- * Role DAO Interface
+ * Role 数据访问对象接口。
+ * <p>
  */
 public interface RoleDAO {
 
     /**
-     * 通过id得到一个角色
+     * 通过 Role id 得到一个 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param id 角色id。
+     * @param id Role id。
      * 
      * @throws SQLException
-     * @return 角色
+     * @return Role
      */
     public Role get(Connection conn, int id) throws SQLException;
 
     /**
-     * 通过Role.name得到一个角色
+     * 通过 Role name 得到一个 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param name Role.name。
+     * @param name Role name。
      * 
      * @throws SQLException
      * @return Role
@@ -52,11 +55,12 @@ public interface RoleDAO {
     public Role get(Connection conn, String name) throws SQLException;
 
     /**
-     * 为给定角色增加一个子角色
+     * 为给定 Role 增加一个孩子 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param role 新增的角色。
-     * @param parent 给定的父角色。
+     * @param role 新增的 Role。
+     * @param parent 给定的父 Role。
      *
      * @throws SQLException 
      */
@@ -64,39 +68,42 @@ public interface RoleDAO {
 
 
     /**
-     * 得到全部角色
+     * 得到全部 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
      *
      * @throws SQLException 
-     * @return 角色集合
+     * @return Role List
      */
     public List<Role> getAll(Connection conn) throws SQLException ;
 
     /**
-     * 将角色和权限资源进行绑定
+     * 将 Role 和 Authority 进行绑定。
      *
      * @param conn 一个有效的数据库链接。
-     * @param role 角色
-     * @param auth 权限资源
+     * @param role Role。
+     * @param auth Authority。
      *
      * @throws SQLException 
      */
     public void bind(Connection conn, Role role, Authority auth) throws SQLException;
 
     /**
-     * 通过给定权限资源，得到所有已经与其绑定的角色
+     * 通过给定 Authority，得到所有已经与其绑定的 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param auth 权限资源
+     * @param auth Authority。
      *
      * @throws SQLException 
-     * @return 角色集合
+     * @return Role List
      */
     public List<Role> findByAuthority(Connection conn, Authority auth) throws SQLException;
 
     /**
-     * 将角色和用户进行绑定
+     * 将 Role 和 User 进行绑定。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
      * @param role 角色
@@ -107,35 +114,38 @@ public interface RoleDAO {
     public void bind(Connection conn, Role role, User user) throws SQLException;
 
     /**
-     * 通过给定用户，得到所有已经与其绑定的角色
+     * 通过给定 User，得到所有已经与其绑定的 Role。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param user 用户
+     * @param user User。
      *
      * @throws SQLException 
-     * @return 角色集合
+     * @return Role List
      */
     public List<Role> findByUser(Connection conn, User user) throws SQLException;
 
     /**
-     * 通过authority id 取得匹配的Role name
+     * 通过authority id 取得匹配的Role name。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param id 权限资源id
+     * @param id Authority id。
      *
      * @throws SQLException 
-     * @return 角色名集合
+     * @return Role name List
      */
     public List<String> findByAuthid(Connection conn, int id) throws SQLException;
 
     /**
-     * 通过username 取得匹配的Role name
+     * 通过 username 取得匹配的 Role name。
+     * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param name username
+     * @param name User username。
      *
      * @throws SQLException 
-     * @return 角色名集合
+     * @return Role name List
      */
     public List<String> findByUsername(Connection conn, String name) throws SQLException;
 }

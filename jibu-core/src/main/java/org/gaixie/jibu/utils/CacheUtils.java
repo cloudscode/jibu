@@ -18,28 +18,47 @@ package org.gaixie.jibu.utils;
 
 import org.gaixie.jibu.cache.Cache;
 import org.gaixie.jibu.cache.DefaultCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Cache 工具类，以懒加载方式得到需要的 Cache。
+ * <p>
+ *
+ */
 public final class CacheUtils {
-    private static final Logger logger = LoggerFactory.getLogger(CacheUtils.class);
-    private static Cache authCache=null;
-    private static Cache userCache=null;
 
-    public static synchronized Cache getAuthCache() {
-        if(authCache != null) {
-            return authCache;
-        }
-        authCache = new DefaultCache("cache.authCache", 256 * 1024l, -1l);
-        return authCache;
+    static class AuthCacheHolder {
+        static Cache instance = new DefaultCache("cache.authCache",
+                                                 256 * 1024l,
+                                                 -1l);
     }
 
-    public static synchronized Cache getUserCache() {
-        if(userCache != null) {
-            return userCache;
-        } 
-        userCache = new DefaultCache("cache.userCache", 128 * 1024l, 1000 * 60 * 30l);
-        return userCache;
+    static class UserCacheHolder {
+        static Cache instance = new DefaultCache("cache.userCache", 
+                                                 128 * 1024l, 
+                                                 1000 * 60 * 30l);
+    }
+
+    /**
+     * 得到一个保存有 Authority 信息的 Cache。
+     * <p>
+     * Auth Cache 最大为 256k, 不过期。
+     *
+     * @return 实例化的 Cache
+     */
+    public static Cache getAuthCache() {
+        return AuthCacheHolder.instance;
+    }
+
+    /**
+     * 得到一个保存有 User 信息的 Cache。
+     * <p>
+     * User Cache 最大为 128k, 有效期为 30 分钟，即一个用户信息，
+     * 在此Cache中存在的最长时间为 30 分钟。
+     *
+     * @return 实例化 Cache
+     */
+    public static Cache getUserCache() {
+        return UserCacheHolder.instance;
     }
 
 }

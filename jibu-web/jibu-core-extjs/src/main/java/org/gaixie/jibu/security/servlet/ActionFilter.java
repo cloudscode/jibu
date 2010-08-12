@@ -34,6 +34,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.gaixie.jibu.security.service.AuthorityService;
 
+/**
+ * ActionFilter 对所有受控的 Action 进行拦截并验证权限。
+ * <p>
+ * 对于特定的 URL 请求进行拦截，取到当前操作的类型，判断用户权限是否可以执行此操作。
+ * 如果没有权限，直接以 JSON 格式返回提示信息。
+ */
 @Singleton public class ActionFilter implements Filter {
 
     @Inject private Injector injector;

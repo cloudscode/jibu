@@ -28,7 +28,8 @@ import org.gaixie.jibu.security.service.impl.RoleServiceImpl;
 import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
 /**
- * Security子系统Service层bind 
+ * Security 服务层的 Bind 类。
+ * <p> 
  */
 public class SecurityServiceModule extends AbstractModule {
 

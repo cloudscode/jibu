@@ -34,12 +34,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 执行数据库脚本，初始化Schema，注意所有脚本按照文件名顺序执行，因为安全原因，目前只支持Derby数据库。
+ * 执行数据库脚本，初始化 Schema。
+ * <p>
  *
  */
 public class SchemaCreate {
     private static final Logger logger = LoggerFactory.getLogger(SchemaCreate.class);
-    // Provide a connection to the database
+
+    /**
+     * 遍历 dbscripts 目录，并根据 type，按文件名顺序读取并执行相应目录的 sql 脚本文件。
+     * <p>
+     * @param type 数据库类型，应该从 jibu.properties 文件中取值。
+     */
     public  void create(String type) {
         Connection conn = null;
         try {

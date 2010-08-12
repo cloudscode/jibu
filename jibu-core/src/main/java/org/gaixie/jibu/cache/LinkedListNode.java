@@ -31,7 +31,7 @@ package org.gaixie.jibu.cache;
  * most applications, it is more suitable to use the linked list that is part
  * of the Java Collections package.
  *
- * @see org.gaixie.commons.cache.LinkedList
+ * @see org.gaixie.jibu.cache.LinkedList
  */
 public class LinkedListNode {
 

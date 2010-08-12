@@ -35,7 +35,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 用于登录成功后生成主窗口页面，一次性加载应用所有的javascript文件及CSS文件。
- * 同时也处理主窗口的一些ajax请求,如菜单树。
+ * <p>
+ * MainServlet 也响应主窗口的一些ajax请求，如菜单树加载。
  */
 @ Singleton public class MainServlet extends HttpServlet {
 

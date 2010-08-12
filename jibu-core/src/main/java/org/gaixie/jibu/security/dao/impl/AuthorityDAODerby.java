@@ -28,54 +28,63 @@ import org.gaixie.jibu.security.dao.AuthorityDAO;
 import org.gaixie.jibu.security.model.Authority;
 
 /**
- * AuthorityDAO接口的Derby实现
+ * Authority 数据访问接口的 Derby 实现。
+ * <p>
  */
 public class AuthorityDAODerby implements AuthorityDAO {
+    private QueryRunner run = null;
+
+    public AuthorityDAODerby() {
+	this.run = new QueryRunner();
+    }
+
     public Authority get( Connection conn, int id) throws SQLException {
         ResultSetHandler<Authority> h = new BeanHandler(Authority.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
-                         , "SELECT id,name,type,value,mask FROM authorities WHERE id=? "
+                         , "SELECT id,name,value,mask FROM authorities WHERE id=? "
                          , h
                          , id);
     }
 
     public Authority get( Connection conn, String value, int mask) throws SQLException {
         ResultSetHandler<Authority> h = new BeanHandler(Authority.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
-                         , "SELECT id,name,type,value,mask FROM authorities WHERE value=? and mask =?"
+                         , "SELECT id,name,value,mask FROM authorities WHERE value=? and mask =?"
                          , h
                          , value
                          , mask);
     }
 
     public void save(Connection conn, Authority auth) throws SQLException {
-        QueryRunner run = new QueryRunner();
         run.update(conn
-                   , "INSERT INTO authorities (name,type,value,mask) values (?,?,?,?)"
+                   , "INSERT INTO authorities (name,value,mask) values (?,?,?)"
                    , auth.getName()
-                   , auth.getType()
                    , auth.getValue()
                    , auth.getMask()); 
     }
 
-    public List<Authority> findByType( Connection conn, String type) throws SQLException {
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
+    public List<Authority> getAll( Connection conn) throws SQLException {
         ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
-                         , "SELECT distinct name,value,type FROM authorities WHERE type =? order by name "
-                         , h
-                         , type);
+                         , "SELECT distinct name,value FROM authorities order by name "
+                         , h);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
     public List<Authority> findByValue( Connection conn, String value) throws SQLException {
         ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
-                         , "SELECT id,name,value,type,mask FROM authorities WHERE value =? "
+                         , "SELECT id,name,value,mask FROM authorities WHERE value =? "
                          , h
                          , value);
     }
-
 }

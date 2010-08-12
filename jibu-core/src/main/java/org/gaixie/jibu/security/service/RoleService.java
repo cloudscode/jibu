@@ -24,73 +24,82 @@ import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 
 /**
- * 角色的查询，增加，修改，删除等服务
+ * Role 服务接口。
+ * <p>
  */
 public interface RoleService {
 
     /**
-     * 通过角色名得到角色
+     * 通过 Role id 得到 Role。
+     * <p>
      *
-     * @param id Role.id
+     * @param id Role id。
      * @return Role
      */
     public Role get(int id) ;
 
     /**
-     * 通过角色名得到角色
+     * 通过 Role name 得到 Role 。
+     * <p>
      *
-     * @param name Role.name
+     * @param name Role name。
      * @return Role
      */
     public Role get(String name) ;
 
     /**
-     * 为给定角色增加一个新的子角色
+     * 为给定 Role 增加一个新的子 Role 。
+     * <p>
      *
-     * @param role 新角色
-     * @param parent 父角色
-     * @exception JibuException 如果角色名已存在，抛出此异常
+     * @param role 新 Role。
+     * @param parent 父 Role。
+     * @exception JibuException 如果角色名已存在，抛出。
      */
     public void addChild(Role role, Role parent) throws JibuException;
 
     /**
-     * 得到一个完整的角色集合
+     * 得到一个完整的 Role List。
+     * <p>
      *
-     * @return 角色集合
+     * @return Role List
      */
     public List<Role> getAll();
 
     /**
-     * 将给定角色与权限资源进行绑定
+     * 将给定 Role 与 Authorit 进行绑定。
+     * <p>
      *
-     * @param role 角色
-     * @param auth 权限资源
-     * @exception JibuException 如果操作出现并发修改抛出
+     * @param role Role。
+     * @param auth Authority。
+     * @exception JibuException 如果操作出现并发修改抛出。
      */
     public void bind(Role role, Authority auth) throws JibuException;
 
     /**
-     * 给定权限资源，查询与之绑定的角色
+     * 给定 Authority，查询与之绑定的 Role。
+     * <p>
      *
-     * @param auth 权限资源
-     * @return 角色集合
+     * @param auth Authority。
+     * @return Role List
      */
     public List<Role> findByAuthority(Authority auth);
 
     /**
-     * 将给定角色与用户进行绑定
+     * 将给定 Role 与 User 进行绑定。
+     * <p>
      *
-     * @param role 角色
-     * @param user 用户
-     * @exception JibuException 如果操作出现并发修改抛出
+     * @param role Role。
+     * @param user User。
+     * @exception JibuException 如果操作出现并发修改抛出。
      */
     public void bind(Role role, User user) throws JibuException;
 
     /**
-     * 给定角色，查询与之绑定的角色
+     * 给定 User，查询与之绑定的 Role。
+     * <p>
      *
-     * @param user 角色
-     * @return 角色集合
+     * @param user User。
+     * @return Role List
      */
     public List<Role> findByUser(User user);
 }

@@ -38,7 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * 响应登录请求的 Servlet，不被任何 Filter拦截。
+ * <p> 
  */
 @Singleton public class LoginServlet extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(LoginServlet.class);

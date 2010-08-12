@@ -26,7 +26,7 @@ package org.gaixie.jibu.cache;
  * taken to minimize the computation time so that cache operations are
  * speedy.
  *
- * @see org.gaixie.commons.cache.Cache
+ * @see org.gaixie.jibu.cache.Cache
  */
 public interface Cacheable extends java.io.Serializable {
 

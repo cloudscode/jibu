@@ -29,8 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SecurityDAO 的DI模块，根据 jibu.properties中的databaseType进行初始化。
- * 默认为 Derby， 如果使用Derby数据库，会在DI时，自动创建Schema。 
+ * Security 数据访问层的 Bind 类，根据 jibu.properties 中的 databaseType
+ * 将 数据访问接口与实现进行绑定。
+ * <p>
+ * 默认为 Derby， 如果使用 Derby 数据库，会在 DI 时，自动创建 Schema。
+ * @see SchemaCreate#create(String) 
  */
 public class SecurityDAOModule extends AbstractModule {
     private static final Logger logger = LoggerFactory.getLogger(SecurityDAOModule.class);
@@ -43,7 +46,6 @@ public class SecurityDAOModule extends AbstractModule {
     public SecurityDAOModule(String databaseType) {
         this.databaseType = databaseType;
     }
-
 
     @Override protected void configure() {
         if ("Derby".equalsIgnoreCase(databaseType)){

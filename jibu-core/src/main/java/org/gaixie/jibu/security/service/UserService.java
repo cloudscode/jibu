@@ -22,31 +22,35 @@ import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.User;
 
 /**
- * 用户的查询，增加，修改，删除等服务
+ * User 服务接口。
+ * <p>
  */
 public interface UserService {
 
     /**
-     * 通过用户名得到用户对象
+     * 通过 username 得到 User。
+     * <p>
      *
-     * @param username 登录用户名
-     * @return 用户对象
+     * @param username User username。
+     * @return User
      */
     public User get(String username) ;
 
     /**
-     * 增加一个新用户，密码不能为空，且是没有hash过的
+     * 增加一个新 User，password 不能为空，且是没有 hash 过的。
+     * <p>
      *
-     * @param user 用户对象
-     * @exception JibuException 如果用户名已存在，抛出此异常
+     * @param user User
+     * @exception JibuException 如果用户名已存在，抛出。
      */
     public void add(User user) throws JibuException;
 
     /**
-     * 查询所有匹配给定用户属性的用户集合
+     * 查询所有匹配给定 User 属性的 User List。
+     * <p>
      *
-     * @param user 用来传递查询条件的用户对象。
-     * @return 用户对象集合
+     * @param user 用来传递查询条件的 User。
+     * @return User List
      */
     public List<User> find(User user);
 

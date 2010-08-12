@@ -29,17 +29,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * DAO 接口的DBCP连接池实现
+ * 数据库链接工具类。饿汉模式加载 DataSource。
+ * <p>
  */
 public class ConnectionUtils {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionUtils.class);
     private static String PROPERTIES_FILE = "dbcp.properties";
     private static DataSource dataSource = null;
 
-    private static synchronized DataSource getDataSource() {
-        if(dataSource != null){
-            return dataSource;
-        }
+    static {
         Properties prop = new Properties();
         try {
             prop.load(ConnectionUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
@@ -49,22 +47,33 @@ public class ConnectionUtils {
         } catch (Exception e) {
             logger.error("Create DataSource failed.", e);
         }
-        return dataSource;
     }
 
+    /**
+     * 将连接池当前状态输出到日志文件。
+     * <p>
+     */
     public static void printPoolStats() {
-        BasicDataSource bds = (BasicDataSource) getDataSource();
+        BasicDataSource bds = (BasicDataSource) dataSource;
         logger.debug("NumActive = " + bds.getNumActive()+" ; NumIdle = " + bds.getNumIdle());
     }
 
+    /**
+     * 从连接池拿一个数据库连接。
+     * <p>
+     * @return 数据库连接
+     */
     public static Connection getConnection() throws SQLException {
-        Connection conn = null;
-        conn = getDataSource().getConnection();
-        return conn;
+        return  dataSource.getConnection();
     }
 
+    /**
+     * 设置连接池的自动提交状态，默认读取 jibu.properties 配置文件。
+     * <p>
+     * @param defaultAutoCommit 是否自动提交。
+     */
     public static void setDefaultAutoCommit(boolean defaultAutoCommit) {
-        BasicDataSource bds = (BasicDataSource) getDataSource();
+        BasicDataSource bds = (BasicDataSource) dataSource;
         bds.setDefaultAutoCommit(defaultAutoCommit);
     }
 }

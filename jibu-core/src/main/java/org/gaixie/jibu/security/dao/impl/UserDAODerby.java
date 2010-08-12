@@ -32,14 +32,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UserDAO接口的Derby实现
+ * User 数据访问接口的 Derby 实现。
+ * <p>
  */
 public class UserDAODerby implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAODerby.class);
+    private QueryRunner run = null;
+
+    public UserDAODerby() {
+	this.run = new QueryRunner();
+    }
 
     public User get( Connection conn, String username) throws SQLException {
         ResultSetHandler<User> h = new BeanHandler(User.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
                          , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? "
                          , h
@@ -48,7 +53,6 @@ public class UserDAODerby implements UserDAO {
 
     public User login(Connection conn,String username, String password) throws SQLException {
         ResultSetHandler<User> h = new BeanHandler(User.class);
-        QueryRunner run = new QueryRunner();
         return run.query(conn
                          , "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase WHERE username=? and password=?"
                          , h
@@ -57,7 +61,6 @@ public class UserDAODerby implements UserDAO {
     }
 
     public void save(Connection conn, User user) throws SQLException {
-        QueryRunner run = new QueryRunner();
         run.update(conn
                    , "INSERT INTO Userbase (fullname,username,password,emailaddress,enabled) values (?,?,?,?,?)"
                    , user.getFullname()
@@ -67,9 +70,13 @@ public class UserDAODerby implements UserDAO {
                    , user.isEnabled()); 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
     public List<User> find( Connection conn, User user) throws SQLException {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
-        QueryRunner run = new QueryRunner();
         String sql = "SELECT id,username,password,fullname,emailaddress,enabled FROM Userbase \n"; 
         try {
             String s = BeanConverter.beanToDerbySQL(user);

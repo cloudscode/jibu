@@ -23,6 +23,10 @@ import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+/**
+ * 启动一个内置的 Jetty，并自动 delpoy 应用，用于集成测试。
+ * <p>
+ */
 public final class JettyService implements Runnable {
     private final WebAppContext webapp;
 
@@ -31,16 +35,29 @@ public final class JettyService implements Runnable {
     private Thread thread;
     private Server server;
 
+    /**
+     * <p>
+     * @param warpath 要 deploy 应用的 path，如 ./jibu.war。
+     *
+     */
     public JettyService(String warpath) {
         this.warpath = warpath;
         this.webapp = new WebAppContext();
     }
     
+    /**
+     * 启动 Jetty。
+     * <p>
+     */
     public void start() throws Exception {
         this.thread = new Thread(this, "Jetty HTTP Service");
         this.thread.start();
     }
 
+    /**
+     * 停止 Jetty。
+     * <p>
+     */
     public void stop() throws Exception {
         this.running = false;
         this.thread.interrupt();
@@ -74,6 +91,11 @@ public final class JettyService implements Runnable {
         }
     }
 
+    /**
+     * Jetty 是否已经启动。
+     * <p>
+     * @return true 已启动，false 未启动。
+     */
     public boolean isStarted(){
         if (null != this.server)
             return this.server.isStarted();

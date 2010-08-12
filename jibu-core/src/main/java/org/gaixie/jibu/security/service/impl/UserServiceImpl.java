@@ -33,12 +33,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 用户的查询，增加，修改，删除等服务
+ * User 服务接口的默认实现。
  */
 public class UserServiceImpl implements UserService {
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserDAO userDAO;
 
+    /**
+     * 使用 Guice 进行 DAO 的依赖注入。
+     * <p>
+     */
     @Inject public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }

@@ -29,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * UserDAO接口的PostgreSQL实现
+ * User 数据访问接口的 PostgreSQL 实现。
+ * <p>
  */
 public class UserDAOPgSQL implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAOPgSQL.class);

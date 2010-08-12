@@ -16,6 +16,10 @@
  */
 package org.gaixie.jibu.security.model;
 
+/**
+ * 用户模型类。
+ * <p>
+ */
 public class User {
     
     private Integer id;
@@ -26,14 +30,14 @@ public class User {
     private boolean enabled=true;
     
     /**
-     * No-arg constructor for JavaBean tools.
+     * No-arg constructor.
      */
     public User() {
         
     }
 
     /**
-     * Simple constructor
+     * Simple constructor.
      */
     public User(String fullname,String username,String password) {
         this.fullname = fullname;
@@ -42,7 +46,7 @@ public class User {
     }
     
     /**
-     * Full constructor
+     * Simple constructor.
      */
     public User(String fullname,String username,String password,String emailaddress,boolean enabled) {
         this.fullname = fullname;

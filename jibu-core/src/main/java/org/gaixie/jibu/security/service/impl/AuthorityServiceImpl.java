@@ -43,13 +43,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of Authority service
+ * Authority 服务接口的默认实现。
+ * <p>
  */
 public class AuthorityServiceImpl implements AuthorityService {
     Logger logger = LoggerFactory.getLogger(AuthorityServiceImpl.class);
     private final AuthorityDAO authDAO;
     private final RoleDAO roleDAO;
 
+    /**
+     * 使用 Guice 进行 DAO 的依赖注入。
+     * <p>
+     */
     @Inject public AuthorityServiceImpl(AuthorityDAO authDAO,
                                         RoleDAO roleDAO) {
         this.authDAO = authDAO;
@@ -84,6 +89,12 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return auth;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 此操作会清空 Cache 中 authorities 对应的 value，下次请求时装载。
+     * @see #getAll()
+     */
     public void add(Authority auth) throws JibuException {
         Connection conn = null;
         try {
@@ -91,7 +102,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 	    authDAO.save(conn,auth);
             DbUtils.commitAndClose(conn);
 	    Cache cache = CacheUtils.getAuthCache();
-	    cache.remove("authorities."+auth.getType());
+	    cache.remove("authorities");
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
             // RoleServiceImpl.001 = The authority existed.
@@ -99,18 +110,23 @@ public class AuthorityServiceImpl implements AuthorityService {
         } 
     }
 
-    public List<Authority> findByType(String type) {
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 如果 Cache 中的 authorities 对应的 value 为空，从 DAO 得到最新的
+     * value 并装入 Cache。
+     */
+    public List<Authority> getAll() {
         Connection conn = null;
 	List<Authority> auths = null;
 
 	Cache cache = CacheUtils.getAuthCache();
-        String key = "authorities."+type;
-	auths = (List<Authority>)cache.get(key);
+	auths = (List<Authority>)cache.get("authorities");
 	if (null != auths) return auths;
         try {
             conn = ConnectionUtils.getConnection();
-            auths = authDAO.findByType(conn,type);
-	    cache.put(key,auths);
+            auths = authDAO.getAll(conn);
+	    cache.put("authorities",auths);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
@@ -119,6 +135,12 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return auths;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 如果 Cache 中的 username 对应的 value 为空，从 DAO 得到最新的并装入
+     * Cache。
+     */
     public List<String> findRoleNamesByUsername(String username) {
         Connection conn = null;
 	Cache cache = CacheUtils.getUserCache();
@@ -137,9 +159,16 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return names;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 初次调用会访问数据库，之后就访问 Cache，直到 Cache 更新。<br>
+     * 将所有的 Authority 绑定的角色与 username 拥有的角色进行匹配，
+     * 成功则将 Authority name 装入 List。
+     */
     public List<String> findNamesByUsername(String username) {
 	List<String> authNames = new ArrayList<String>();
-	List<Authority> auths = findByType("action");
+	List<Authority> auths = getAll();
 	List<String> roleNames = findRoleNamesByUsername(username);
 	for (Authority auth : auths) {
             // 写死ROLE_ADMIN角色无须任何判断，加载所有数据
@@ -205,20 +234,35 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return map;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 初次调用会访问数据库，之后就访问 Cache，直到 Cache 更新。<br>
+     * 权限按下面过程进行验证：
+     * <ul>
+     * <li> 首先根据 action 得到一个结构为{@code <mask,List<Role>>>}
+     * 的 HashMap。</li>
+     * <li> 用 crud 依次与 mask 进行比对(位操作)，如果成功取得{@code List<Role>}</li>
+     * <li> 用 username 取得自己拥有的角色，与{@code List<Role>} 匹配，
+     * 成功则返回 true，如果全部匹配失败，返回false。</li>
+     * </ul><br>
+     * 除了正常的权限验证，还有下面一些默认约定：
+     * <ul>
+     * <li>如果 username 没有绑定任何 Role，即没有任何权限，返回 false。</li>
+     * <li>如果 username 有管理员角色 ROLE_ADMIN ，即拥有所有权限，返回 true。</li>
+     * <li>通过 action 没有找到任何匹配的 Authority，表示该操作无效，
+     * 返回 false。</li>
+     * <li>如果匹配的 Authority 没有绑定任何 Role，认为它不受权限控制，
+     * 返回 true。</li>
+     * </ul>
+     *
+     */
     public boolean verify(String action, int crud, String username) {
-        // 首先根据 action得到一个权限map
-        // 循环map，匹配crud与mask
-        // 匹配成功，取的 roles
-        // 再与user的roles进行匹配
         List<String> userRoles = findRoleNamesByUsername(username);
-        // 如果userRoles为空，表示此user没有任何角色，即肯定没有任何访问权限
-        // 如果有ROLE_ADMIN权限，直接返回true
         if ( null == userRoles) return false;
         if (userRoles.contains("ROLE_ADMIN")) return true;
 
         Map<Integer,List<String>> map  = findMapByValue(action);
-        // 如果map为null，表示auth根本不存在，返回false
-        // 如果map非空，但size==0，表示auth没有绑定任何角色，所有用户可以访问
         // 要想暂时禁止所有用户访问，就只将此auth绑定到一个没有任何用户的角色上
         if ( null == map ) return false;
         if ( map.size()==0 ) return true;

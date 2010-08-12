@@ -23,27 +23,27 @@ import java.util.List;
 import org.gaixie.jibu.security.model.Authority;
 
 /**
- * Authority DAO Interface
+ * Authority 数据访问对象接口。
  */
 public interface AuthorityDAO {
 
     /**
-     * 通过权限Id得到一个权限对象
+     * 通过 Authority Id 得到一个 Authority。
      *
      * @param conn 一个有效的数据库链接。
-     * @param id 权限id。
+     * @param id Authority id。
      * 
      * @throws SQLException
-     * @return 权限对象
+     * @return Authority
      */
     public Authority get(Connection conn, int id) throws SQLException;
 
     /**
-     * 通过权限value和mask得到一个权限
+     * 通过 Authority value 和 mask 得到一个 Authority。
      *
      * @param conn 一个有效的数据库链接。
-     * @param value value。
-     * @param mask 权限掩码。
+     * @param value Authority value。
+     * @param mask Authority mask。
      * 
      * @throws SQLException
      * @return 权限对象
@@ -51,10 +51,10 @@ public interface AuthorityDAO {
     public Authority get(Connection conn, String value, int mask) throws SQLException;
 
     /**
-     * 增加一个权限
+     * 增加一个 Authority。
      *
      * @param conn 一个有效的数据库链接。
-     * @param auth 权限对象。
+     * @param auth Authority。
      *
      * @throws SQLException 
      */
@@ -62,21 +62,20 @@ public interface AuthorityDAO {
 
 
     /**
-     * 根据权限类型查询相关权限
+     * 得到所有 Authority。
      *
      * @param conn 一个有效的数据库链接。
-     * @param type 权限类型。
      *
      * @throws SQLException 
-     * @return 权限对象集合
+     * @return Authority List
      */
-    public List<Authority> findByType(Connection conn,String type) throws SQLException;
+    public List<Authority> getAll(Connection conn) throws SQLException;
 
     /**
-     * 根据权限类型查询相关权限
+     * 根据 Authority value 查询 Authority
      *
      * @param conn 一个有效的数据库链接。
-     * @param value Authority.value。
+     * @param value Authority value。
      *
      * @throws SQLException 
      * @return Authority List

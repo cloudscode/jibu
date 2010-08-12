@@ -27,7 +27,23 @@ import javax.servlet.http.HttpServletRequest;
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.utils.BeanConverter;
 
+/**
+ * Servlet 工具类。
+ * <p>
+ */
 public class ServletUtils {
+
+    /**
+     * 将 HttpServletRequest 中的值按照约定自动装入指定的 Javabean。
+     * <p>
+     * 如果 request 中的 name 满足 ClassName.property 的格式，会自动
+     * 取出对应的 value 并装入Bean 相应属性 。如：User.password=123456，
+     * 那么会将 123456 set 到 User 的 password 属性中。 <br>
+
+     * @param cls 要生成的 Bean Class。
+     * @param req 要处理的 Request。
+     * @return 生成的 Javabean
+     */
     public static <T> T httpToBean(Class<T> cls, HttpServletRequest req) 
         throws JibuException {
         HashMap map = new HashMap();

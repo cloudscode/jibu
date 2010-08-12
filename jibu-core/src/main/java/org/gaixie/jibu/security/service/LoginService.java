@@ -19,17 +19,19 @@ package org.gaixie.jibu.security.service;
 import org.gaixie.jibu.JibuException;
 
 /**
- * 系统登录相关服务
+ * 系统登录服务接口。
+ * <p>
  */
 public interface LoginService {
 
     /**
-     * 通过用户名及密码进行登录验证
+     * 通过用户名及密码进行登录验证。
+     * <p>
      *
-     * @param username 登录用户名
-     * @param password 没有进行hash的登录密码
+     * @param username 登录用户名。
+     * @param password 没有进行hash的登录密码。
      *
-     * @exception JibuException 用户名或密码错误时抛出
+     * @exception JibuException 用户名或密码错误时抛出。
      */
     public void login(String username, String password) throws JibuException;
 }

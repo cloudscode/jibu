@@ -48,10 +48,10 @@ public class AuthorityServiceTest extends CoreTestSupport {
         roleService = getInjector().getInstance(RoleService.class); 
         userService = getInjector().getInstance(UserService.class); 
 
-        authService.add(new Authority("ast-v-auth1","action","/ast-v-auth1.z",5));
-        authService.add(new Authority("ast-v-auth1","action","/ast-v-auth1.z",2));
-        authService.add(new Authority("ast-v-auth2","action","/ast-v-auth2.z",1));
-        authService.add(new Authority("ast-v-auth3","action","/ast-v-auth3.z",1));
+        authService.add(new Authority("ast-v-auth1","/ast-v-auth1.z",5));
+        authService.add(new Authority("ast-v-auth1","/ast-v-auth1.z",2));
+        authService.add(new Authority("ast-v-auth2","/ast-v-auth2.z",1));
+        authService.add(new Authority("ast-v-auth3","/ast-v-auth3.z",1));
         userService.add(new User("ast-v-user1","ast-v-user1","123456"));
 
         /*
@@ -96,9 +96,9 @@ public class AuthorityServiceTest extends CoreTestSupport {
 
 
     @Test public void testFindByType() throws Exception {
-        List<Authority> auths = authService.findByType("action");
+        List<Authority> auths = authService.getAll();
 	Cache cache = CacheUtils.getAuthCache();
-        List<Authority> authsc = (List<Authority>)cache.get("authorities.action");
+        List<Authority> authsc = (List<Authority>)cache.get("authorities");
         Assert.assertTrue(authsc.size()>=2);
         Assert.assertTrue(auths.size() == authsc.size());
     }
@@ -161,11 +161,11 @@ public class AuthorityServiceTest extends CoreTestSupport {
         // 增加1000个auth (500个不同的auth.value), 全部绑定到ROLE_BASE
         // 全部占用160k cache
         for (int i=0;i<500;i++) {
-            Authority auth = new Authority("ast-pf-auth"+i,"action","/ast-pf-auth"+i+".z",1);
+            Authority auth = new Authority("ast-pf-auth"+i,"/ast-pf-auth"+i+".z",1);
             authService.add(auth);
             auth = authService.get(auth.getValue(),auth.getMask());
             roleService.bind(parent, auth);
-            auth = new Authority("ast-pf-auth"+i,"action","/ast-pf-auth"+i+".z",4);
+            auth = new Authority("ast-pf-auth"+i,"/ast-pf-auth"+i+".z",4);
             authService.add(auth);
             auth = authService.get(auth.getValue(),auth.getMask());
             roleService.bind(parent, auth);
