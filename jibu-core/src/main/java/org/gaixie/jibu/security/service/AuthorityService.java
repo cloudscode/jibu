@@ -60,14 +60,6 @@ public interface AuthorityService {
     public List<Authority> getAll();
 
     /**
-     * 根据 username 查询拥有的 Role name。
-     *
-     * @param username User username
-     * @return Role name List
-     */
-    public List<String> findRoleNamesByUsername(String username);
-
-    /**
      * 根据 username 得到有权限的Authority name。
      *
      * @param username User username
@@ -85,4 +77,29 @@ public interface AuthorityService {
      * @return ture 有权限，false 无权限
      */
     public boolean verify(String action, int crud, String username);
+
+    /**
+     * 删除 Authority。
+     *
+     * @param auth Authority
+     * @exception JibuException 删除失败时抛出
+     */
+    public void delete(Authority auth) throws JibuException;
+
+
+    /**
+     * 更新 Authority。
+     *
+     * @param auth Authority
+     * @exception JibuException 更新失败时抛出
+     */
+    public void update(Authority auth) throws JibuException;
+
+    /**
+     * 根据 Authority name 模糊查询 Authority。
+     *
+     * @param name Authority name
+     * @return Authority List
+     */
+    public List<Authority> findByName(String name);
 }

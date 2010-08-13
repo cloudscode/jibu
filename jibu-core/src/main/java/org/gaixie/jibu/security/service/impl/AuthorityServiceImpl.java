@@ -105,7 +105,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 	    cache.remove("authorities");
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // RoleServiceImpl.001 = The authority existed.
+            // AuthorityServiceImpl.001 = The authority existed.
             throw new JibuException("AuthorityServiceImpl.001");
         } 
     }
@@ -135,13 +135,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return auths;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * 如果 Cache 中的 username 对应的 value 为空，从 DAO 得到最新的并装入
-     * Cache。
-     */
-    public List<String> findRoleNamesByUsername(String username) {
+    private List<String> findRoleNamesByUsername(String username) {
         Connection conn = null;
 	Cache cache = CacheUtils.getUserCache();
 	List<String> names = (List<String>)cache.get(username);
@@ -282,5 +276,64 @@ public class AuthorityServiceImpl implements AuthorityService {
             }
         }
 	return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 此操作会清空 Cache 中 authorities 对应的 value，下次请求时装载。
+     * @see #getAll()
+     */
+    public void delete(Authority auth) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+	    authDAO.delete(conn,auth);
+            DbUtils.commitAndClose(conn);
+	    Cache cache = CacheUtils.getAuthCache();
+	    cache.remove("authorities");
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            // AuthorityServiceImpl.002 = Delete the authority failed.
+            throw new JibuException("AuthorityServiceImpl.002");
+        } 
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 此操作会清空 Cache 中 authorities 对应的 value 和 
+     * key = auth.getValue() 的数据，下次请求时装载。
+     * @see #getAll()
+     */
+    public void update(Authority auth) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            Authority old = authDAO.get(conn,auth.getId());
+	    authDAO.update(conn,auth);
+            DbUtils.commitAndClose(conn);
+	    Cache cache = CacheUtils.getAuthCache();
+	    cache.remove("authorities");
+            cache.remove(old.getValue());
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            // AuthorityServiceImpl.003 = Update the authority failed.
+            throw new JibuException("AuthorityServiceImpl.003");
+        } 
+    }
+
+    public List<Authority> findByName(String name) {
+        Connection conn = null;
+	List<Authority> auths = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            auths = authDAO.findByName(conn,name);
+        } catch(SQLException e) {
+	    logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+	return auths;
     }
 }

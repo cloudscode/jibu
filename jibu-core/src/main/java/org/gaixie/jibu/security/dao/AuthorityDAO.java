@@ -72,7 +72,7 @@ public interface AuthorityDAO {
     public List<Authority> getAll(Connection conn) throws SQLException;
 
     /**
-     * 根据 Authority value 查询 Authority
+     * 根据 Authority value 查询 Authority。
      *
      * @param conn 一个有效的数据库链接。
      * @param value Authority value。
@@ -81,4 +81,36 @@ public interface AuthorityDAO {
      * @return Authority List
      */
     public List<Authority> findByValue(Connection conn,String value) throws SQLException;
+
+    /**
+     * 删除 Authority 以及相关联的依赖关系。
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param auth 需要删除的 Authority。
+     *
+     * @throws SQLException 
+     */
+    public void delete(Connection conn, Authority auth) throws SQLException;
+
+    /**
+     * 更新除 id 以外的所有 Authority 属性。
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param auth 需要更新的 Authority。
+     *
+     * @throws SQLException 
+     */
+    public void update(Connection conn, Authority auth) throws SQLException;
+
+    /**
+     * 根据 Authority name 模糊查询( like 'name%') Authority 。
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param name Authority name。
+     *
+     * @throws SQLException 
+     * @return Authority List
+     */
+    public List<Authority> findByName(Connection conn,String name) throws SQLException;
+
 }

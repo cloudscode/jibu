@@ -42,15 +42,33 @@ public class AuthorityDAOTest extends CoreTestSupport {
 
     @Test public void testAuthDAO() throws Exception {
         List<Authority> auths = authDAO.getAll(conn);
+        int count = auths.size();
+
         Authority auth = new Authority("jibu.security.test1","Test1Servlet.z",1);
         authDAO.save(conn,auth);
         auth = new Authority("jibu.security.test2","Test2Servlet.z",1);
         authDAO.save(conn,auth);
-        int count = auths.size();
+        auth = new Authority("jibu.adt.ad","/adt-ad-auth1.z",1);
+        authDAO.save(conn,auth);
+
         auths = authDAO.getAll(conn);
-        Assert.assertTrue(count + 2 == auths.size());
+        Assert.assertTrue(count + 3 == auths.size());
+
         auths = authDAO.findByValue(conn,"Test1Servlet.z");
         Assert.assertTrue(1 == auths.size());
+
+        auths = authDAO.findByName(conn,"jibu.security");
+        Assert.assertTrue(2 == auths.size());
+
+        auth = authDAO.get(conn,"Test1Servlet.z",1);
+        auth.setValue("Test3Servlet.z");
+        authDAO.update(conn, auth);
+        auths = authDAO.findByValue(conn,"Test1Servlet.z");
+        Assert.assertTrue(0 == auths.size());
+
+        authDAO.delete(conn, auth);
+        auths = authDAO.getAll(conn);
+        Assert.assertTrue(count + 2 == auths.size());
     }
 
     @After public void tearDown() {

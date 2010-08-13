@@ -87,4 +87,37 @@ public class AuthorityDAODerby implements AuthorityDAO {
                          , h
                          , value);
     }
+
+    public void delete(Connection conn, Authority auth) throws SQLException {
+        run.update(conn
+                   , "DELETE FROM role_authority_map WHERE authority_id =?"
+                   , auth.getId()); 
+
+        run.update(conn
+                   , "DELETE FROM authorities WHERE id =?"
+                   , auth.getId()); 
+    }
+
+    public void update(Connection conn, Authority auth) throws SQLException {
+        run.update(conn
+                   , "UPDATE authorities SET name =?, value =?, mask=? WHERE id =?"
+                   , auth.getName()
+                   , auth.getValue()
+                   , auth.getMask() 
+                   , auth.getId()); 
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 返回值永远不会为 null，无值 size()==0  。
+     */
+    public List<Authority> findByName( Connection conn, String name) 
+        throws SQLException {
+        ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
+        return run.query(conn
+                         , "SELECT id,name,value,mask FROM authorities WHERE name like ? order by name "
+                         , h
+                         , name+"%");
+    }
 }

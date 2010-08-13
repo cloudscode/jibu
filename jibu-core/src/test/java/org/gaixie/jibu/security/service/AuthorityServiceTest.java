@@ -68,7 +68,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
         roleService.addChild(new Role("ast-v-role2","ast-v-role2"),parent);
 
         /* 将权限绑定到不同的角色
-         * ROLE_BASE
+         * ROLE_BASE 
          *     |-----ast-v-role1 <==> (/ast-v-auth1.z , 5)
          *     |          |------ast-v-role2 <==> (/ast-v-auth1.z , 2)
          *     |-----ast-v-role3 <==> (/ast-v-auth2.z , 1)
@@ -95,12 +95,32 @@ public class AuthorityServiceTest extends CoreTestSupport {
     }
 
 
-    @Test public void testFindByType() throws Exception {
+    @Test public void testUpdateAndDelete() throws Exception {
+        authService.add(new Authority("ast-v-auth4","/ast-v-auth4.z",1));
+        Authority auth = authService.get("/ast-v-auth4.z",1);
+        Role role = roleService.get("ROLE_BASE");
+        roleService.bind(role, auth);
+
         List<Authority> auths = authService.getAll();
 	Cache cache = CacheUtils.getAuthCache();
         List<Authority> authsc = (List<Authority>)cache.get("authorities");
-        Assert.assertTrue(authsc.size()>=2);
-        Assert.assertTrue(auths.size() == authsc.size());
+        Assert.assertNotNull(authsc);
+
+        auth.setMask(2);
+        authService.update(auth);
+        Assert.assertNull(authService.get("/ast-v-auth4.z",1));
+        // 更新后 cache失效，等待下次加载
+        authsc = (List<Authority>)cache.get("authorities");
+        Assert.assertNull(authsc);
+        authService.delete(auth);
+        Assert.assertNull(authService.get(auth.getId()));
+    }
+
+    @Test public void testFindByName() throws Exception {
+        List<Authority> auths = authService.findByName("ast-v-auth");
+        Assert.assertTrue(auths.size()==4);
+        auths = authService.findByName("ast-v-auth1");
+        Assert.assertTrue(auths.size()==2);
     }
 
     @Test public void testVerify() throws Exception {
@@ -213,5 +233,4 @@ public class AuthorityServiceTest extends CoreTestSupport {
             System.out.println(e.getMessage());
         }
     }
-
 }
