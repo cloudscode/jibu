@@ -34,7 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.gaixie.jibu.json.JSONArray;
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
+import org.gaixie.jibu.security.Constants;
 import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.service.AuthorityService;
 import org.gaixie.jibu.security.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,19 +53,46 @@ import org.slf4j.LoggerFactory;
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
         UserService userService = injector.getInstance(UserService.class);
+        AuthorityService authService = 
+            injector.getInstance(AuthorityService.class);
+
+        boolean allowed = false;
         if ("add".equals(req.getParameter("ci"))) {
-            add(userService,req,resp);
-        }
-        if ("find".equals(req.getParameter("ci"))) {
-            find(userService,req,resp);
+            allowed = authService.verify(req.getServletPath(),
+                                         Constants.ADD,
+                                         ServletUtils.getUsername(req)); 
+            if (allowed) add(userService,req,resp);
         }
 
+        if ("find".equals(req.getParameter("ci"))) {
+            allowed = authService.verify(req.getServletPath(),
+                                         Constants.VIEW,
+                                         ServletUtils.getUsername(req)); 
+            if (allowed) find(userService,req,resp);
+        }
+
+        if (null ==req.getParameter("ci")) {
+            allowed = true;
+            load(req,resp);
+        }
+        if (!allowed) {
+            ServletOutputStream output=resp.getOutputStream();
+            output.println("{\"message\":\"no permission\",\"success\":false}");
+            output.close();
+        }
     }
 
     public void doPost(HttpServletRequest req,  HttpServletResponse resp)
         throws IOException{
         doGet(req, resp);
     }
+
+    public void load(HttpServletRequest req, 
+                     HttpServletResponse resp) throws IOException {
+        ServletOutputStream output=resp.getOutputStream();
+        output.println(ServletUtils.javascript("/js/core/user.js"));
+        output.close();
+    } 
 
     public void add(UserService userService, 
                     HttpServletRequest req, 

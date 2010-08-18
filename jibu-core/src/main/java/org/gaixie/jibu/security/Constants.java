@@ -14,25 +14,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.security.servlet;
-
-import com.google.inject.servlet.ServletModule;
-
-import org.gaixie.jibu.security.servlet.LoginFilter;
-import org.gaixie.jibu.security.servlet.LoginServlet;
-import org.gaixie.jibu.security.servlet.MainServlet;
-import org.gaixie.jibu.security.servlet.UserServlet;
+package org.gaixie.jibu.security;
 
 /**
- * Security Servlet 的 Bind 类。
- * <p> 
- * Servlet mapping ，以及 Filter的拦截策略都在这里定义。
+ * Constants class used by The Jibu Security 。
  */
-public class SecurityServletModule extends ServletModule {
-    @Override protected void configureServlets() {
-        filter("*.y","*.z").through(LoginFilter.class);
-        serve("/LoginServlet.x").with(LoginServlet.class);
-        serve("/MainServlet.y").with(MainServlet.class);
-        serve("/UserServlet.z").with(UserServlet.class);
-    }
+
+public class Constants {
+
+    public static final int VIEW     = 1;
+    public static final int ADD      = 2;
+    public static final int EDIT     = 4;
+    public static final int DELETE   = 8;
 }
+

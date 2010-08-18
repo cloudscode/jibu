@@ -1,5 +1,6 @@
 Ext.BLANK_IMAGE_URL = "ext/resources/images/default/s.gif";
 Ext.ns('jibu.security.main');
+
 HeaderPanel = function() {
     HeaderPanel.superclass.constructor.call(this, {
             id:'main-header',
@@ -142,6 +143,7 @@ jibu.security.main.MainPanel=Ext.extend(MainPanel, Ext.TabPanel, {
     });
 
 Ext.onReady(function() {
+Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
         var headerPanel = new jibu.security.main.HeaderPanel();
         var navPanel = new jibu.security.main.NavPanel();
         mainPanel = new jibu.security.main.MainPanel();

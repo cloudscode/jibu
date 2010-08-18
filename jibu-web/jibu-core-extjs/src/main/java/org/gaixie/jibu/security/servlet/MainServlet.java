@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 用于登录成功后生成主窗口页面，一次性加载应用所有的javascript文件及CSS文件。
+ * 用于登录成功后生成主窗口页面，加载应用共用的javascript文件及CSS文件。
  * <p>
  * MainServlet 也响应主窗口的一些ajax请求，如菜单树加载。
  */
@@ -47,9 +47,6 @@ import org.slf4j.LoggerFactory;
     final static Logger logger = LoggerFactory.getLogger(MainServlet.class);
 
     @Inject private Injector injector;
-
-    public String DOCTYPE =
-        "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
@@ -72,27 +69,7 @@ import org.slf4j.LoggerFactory;
             HttpSession ses = req.getSession(false);
             Map<String,String> map = 
                 authService.findMapByUsername((String)ses.getValue("username"));
-            /*
-            map.put("security","#");
-            map.put("security.role","#");
-            map.put("security.role.rolelist","a.z");
-            map.put("security.role.roleadd","b.z");
-            map.put("security.settings","c.z");
-            map.put("security.user","#");
-            map.put("security.user.userlist","d.z");
 
-
-            for (int m=0 ;m<10;m++) {
-                map.put("subsystem"+m,"#");
-                for (int n=0;n<5;n++) {
-                    map.put("subsystem"+m+"."+"sub"+n,"#");
-                    for (int l=0 ;l<10;l++){
-                        map.put("subsystem"+m+"."+"sub"+n+".gg","#");
-                        map.put("subsystem"+m+"."+"sub"+n+".gg."+l,"ggg.z");
-                    }
-                }
-            }
-            */
             /* pre:  前一个节点的层数
              * cur:  当前节点的层数
              * dist: 上一个节点和当前节点的层距
@@ -142,22 +119,15 @@ import org.slf4j.LoggerFactory;
     public void mainPage(HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html");
         ServletOutputStream output=resp.getOutputStream();
-        AuthorityService authService = injector.getInstance(AuthorityService.class);
-        StringBuilder sb = new StringBuilder();
-        sb.append(DOCTYPE + "\n" +
-                  "<html>\n" +
-                  "<head><title>Jibu Web Application</title>\n" +
-                  "  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\" />\n" +
-                  "  <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"ext/resources/css/ext-all.css\" />\n" +
-                  "  <script type=\"text/javascript\" src=\"ext/adapter/ext/ext-base.js\"></script>\n" +
-                  "  <script type=\"text/javascript\" src=\"ext/ext-all.js\"></script>\n");
-        sb.append("  <link rel=\"stylesheet\" type=\"text/css\" href=\"js/classic/layout.css\">\n");
-        sb.append("  <script type=\"text/javascript\" src=\"js/classic/layout.js\"></script>\n");
-        sb.append("</head>\n" +
-                  "<body><div id=\"header\"></div></body>\n" +
-                  "</html>\n");
-
-        output.println(sb.toString());
+        output.println(ServletUtils.head("Jibu Web Application")+
+                       ServletUtils.css("ext/resources/css/ext-all.css")+
+                       ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
+                       ServletUtils.javascript("ext/ext-all.js")+
+                       ServletUtils.css("js/classic/layout.css")+
+                       ServletUtils.javascript("js/classic/layout.js")+
+                       ServletUtils.body()+
+                       ServletUtils.div("header","")+
+                       ServletUtils.footer());
         output.close();
     }
 
@@ -165,6 +135,5 @@ import org.slf4j.LoggerFactory;
         throws IOException{
         doGet(req, resp);
     }
-
 }
 
