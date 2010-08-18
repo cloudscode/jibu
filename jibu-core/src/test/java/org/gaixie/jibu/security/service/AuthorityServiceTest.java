@@ -19,6 +19,7 @@ package org.gaixie.jibu.security.service;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -48,10 +49,10 @@ public class AuthorityServiceTest extends CoreTestSupport {
         roleService = getInjector().getInstance(RoleService.class); 
         userService = getInjector().getInstance(UserService.class); 
 
-        authService.add(new Authority("ast-v-auth1","/ast-v-auth1.z",5));
-        authService.add(new Authority("ast-v-auth1","/ast-v-auth1.z",2));
-        authService.add(new Authority("ast-v-auth2","/ast-v-auth2.z",1));
-        authService.add(new Authority("ast-v-auth3","/ast-v-auth3.z",1));
+        authService.add(new Authority("sec.ast-v-auth1","/ast-v-auth1.z",5));
+        authService.add(new Authority("sec.ast-v-auth1","/ast-v-auth1.z",2));
+        authService.add(new Authority("sec.ast-v-auth2","/ast-v-auth2.z",1));
+        authService.add(new Authority("sec.ast-v-auth3","/ast-v-auth3.z",1));
         userService.add(new User("ast-v-user1","ast-v-user1","123456"));
 
         /*
@@ -96,7 +97,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
 
 
     @Test public void testUpdateAndDelete() throws Exception {
-        authService.add(new Authority("ast-v-auth4","/ast-v-auth4.z",1));
+        authService.add(new Authority("sec.test.ast-v-auth4","/ast-v-auth4.z",1));
         Authority auth = authService.get("/ast-v-auth4.z",1);
         Role role = roleService.get("ROLE_BASE");
         roleService.bind(role, auth);
@@ -117,9 +118,9 @@ public class AuthorityServiceTest extends CoreTestSupport {
     }
 
     @Test public void testFindByName() throws Exception {
-        List<Authority> auths = authService.findByName("ast-v-auth");
+        List<Authority> auths = authService.findByName("sec.ast-v-auth");
         Assert.assertTrue(auths.size()==4);
-        auths = authService.findByName("ast-v-auth1");
+        auths = authService.findByName("sec.ast-v-auth1");
         Assert.assertTrue(auths.size()==2);
     }
 
@@ -133,7 +134,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
         // ast-v-user1 没有ast-v-auth1.z的删除(8)权限
         bl = authService.verify("/ast-v-auth1.z",8,"ast-v-user1");
         Assert.assertTrue(!bl);
-        // ast-v-user1 没有ast-v-auth3.z的所有权限，没有继承关系
+        // ast-v-user1 没有ast-v-auth2.z的所有权限，没有继承关系
         bl = authService.verify("/ast-v-auth2.z",1,"ast-v-user1");
         Assert.assertTrue(!bl);
         // 访问一个存在，但没有做权限设置的auth，默认验证成功
@@ -155,16 +156,18 @@ public class AuthorityServiceTest extends CoreTestSupport {
         Assert.assertTrue(bl);
     }
 
-    @Test public void testFindNamesByUsername() throws Exception {
+    @Test public void testFindMapByUsername() throws Exception {
         // 判断user 应该拥有一个权限/ast-v-auth1.z
-        List<String> names = authService.findNamesByUsername("ast-v-user1");
-        Assert.assertTrue(2==names.size());
-        Assert.assertTrue(names.contains("ast-v-auth1"));
-        Assert.assertTrue(names.contains("ast-v-auth3"));
+        // 此外由于 /ast-v-auth3.z 没有做权限与角色的绑定，所以默认user也拥有此权限
+        Map<String,String> map = authService.findMapByUsername("ast-v-user1");
+        Assert.assertTrue(3==map.size());
+        Assert.assertTrue("#".equals(map.get("sec")));
+        Assert.assertTrue("/ast-v-auth1.z".equals(map.get("sec.ast-v-auth1")));
+        Assert.assertNull(map.get("sec.ast-v-auth2"));
         // ROLE_ADMIN拥有所有权限，distinct后得到/ast-v-auth1.z 和/ast-v-auth2.z
-        names = authService.findNamesByUsername("admin");
-        Assert.assertTrue(names.size()>=3);
-        Assert.assertTrue(names.contains("ast-v-auth2"));
+        map = authService.findMapByUsername("admin");
+        Assert.assertTrue(map.size()>=4);
+        Assert.assertNotNull(map.get("sec.ast-v-auth2"));
     }
 
     // 重负荷测试，不用每次执行
@@ -178,14 +181,15 @@ public class AuthorityServiceTest extends CoreTestSupport {
             parent = roleService.get(role.getName());
         }
         parent = roleService.get(1);
-        // 增加1000个auth (500个不同的auth.value), 全部绑定到ROLE_BASE
+        // 增加1000个auth (500个不同的auth.value),算上中间节点，菜单树超过1500个节点。 
+        // 全部绑定到ROLE_BASE
         // 全部占用160k cache
         for (int i=0;i<500;i++) {
-            Authority auth = new Authority("ast-pf-auth"+i,"/ast-pf-auth"+i+".z",1);
+            Authority auth = new Authority("lev1.lev"+i+".lev3.ast-pf-auth"+i,"/ast-pf-auth"+i+".z",1);
             authService.add(auth);
             auth = authService.get(auth.getValue(),auth.getMask());
             roleService.bind(parent, auth);
-            auth = new Authority("ast-pf-auth"+i,"/ast-pf-auth"+i+".z",4);
+            auth = new Authority("lev1.lev"+i+".lev3.ast-pf-auth"+i,"/ast-pf-auth"+i+".z",4);
             authService.add(auth);
             auth = authService.get(auth.getValue(),auth.getMask());
             roleService.bind(parent, auth);
@@ -202,11 +206,11 @@ public class AuthorityServiceTest extends CoreTestSupport {
 
         // 取菜单时间，毫秒级，第一次没有Cache
         long start = System.currentTimeMillis();
-        List<String> names = authService.findNamesByUsername("ast-pf-user100");
-        System.out.println("no cache:" + (System.currentTimeMillis() - start) +" ms, get "+names.size()+" menus.");
+        Map<String,String> map = authService.findMapByUsername("ast-pf-user100");
+        System.out.println("no cache:" + (System.currentTimeMillis() - start) +" ms, get "+map.size()+" menus.");
         start = System.currentTimeMillis();
-        names = authService.findNamesByUsername("ast-pf-user100");
-        System.out.println("in cache:" + (System.currentTimeMillis() - start) +" ms, get "+names.size()+" menus.");
+        map = authService.findMapByUsername("ast-pf-user100");
+        System.out.println("in cache:" + (System.currentTimeMillis() - start) +" ms, get "+map.size()+" menus.");
 
         // 验证时间，纳秒级，一个user在cache大约占用0.4k
         start = System.nanoTime();

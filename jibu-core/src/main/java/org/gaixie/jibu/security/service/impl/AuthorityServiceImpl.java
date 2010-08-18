@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
@@ -153,21 +154,31 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return names;
     }
 
+    private void putTreeMap(Map<String,String> map, Authority auth) {
+        String[] sp = auth.getName().split("\\.");
+        String key = "";
+        for (int i =0; i< sp.length -1; i++) {
+            key = (i==0) ? sp[i] : key +"." + sp[i];
+            map.put(key,"#");
+        }
+        map.put(auth.getName(), auth.getValue());
+    }
+
     /**
      * {@inheritDoc}
      * <p>
      * 初次调用会访问数据库，之后就访问 Cache，直到 Cache 更新。<br>
      * 将所有的 Authority 绑定的角色与 username 拥有的角色进行匹配，
-     * 成功则将 Authority name 装入 List。
+     * 成功则将 装入 Map。
      */
-    public List<String> findNamesByUsername(String username) {
-	List<String> authNames = new ArrayList<String>();
+    public Map<String,String> findMapByUsername(String username) {
+	Map<String,String> treemap = new TreeMap<String,String>();
 	List<Authority> auths = getAll();
 	List<String> roleNames = findRoleNamesByUsername(username);
 	for (Authority auth : auths) {
             // 写死ROLE_ADMIN角色无须任何判断，加载所有数据
             if (roleNames.contains("ROLE_ADMIN")) {
-		authNames.add(auth.getName());
+                putTreeMap(treemap,auth);
 		continue;
             }
 
@@ -176,7 +187,7 @@ public class AuthorityServiceImpl implements AuthorityService {
             // map.size()==0 ，表示auth还没绑定任何Role，所有用户都有权限
             if (null == map) continue;
 	    if (map.size()==0) {
-		authNames.add(auth.getName());
+                putTreeMap(treemap,auth);
 		continue;
 	    }
             boolean matched = false;
@@ -187,7 +198,7 @@ public class AuthorityServiceImpl implements AuthorityService {
                 List<String> val = (List<String>)entry.getValue();
                 for (String role : val) {
                     if (roleNames.contains(role)) {
-                        authNames.add(auth.getName());
+                        putTreeMap(treemap,auth);
                         // 一个auth.value可能因为mask不同，有多组role
                         // 只要匹配任意一组，就可以在菜单上显示，break到最外层循环
                         matched = true;
@@ -197,7 +208,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 
             }
 	}
-	return authNames;
+	return treemap;
     }
 
 

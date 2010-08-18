@@ -17,6 +17,7 @@
 package org.gaixie.jibu.security.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.model.Authority;
@@ -60,12 +61,15 @@ public interface AuthorityService {
     public List<Authority> getAll();
 
     /**
-     * 根据 username 得到有权限的Authority name。
+     * 根据 username 得到一个包含所拥有权限 name和value的Map。
+     * <p>
+     * TreeMap 中 如果是最后的叶子节点，则 key = Authority.name, value = Authority.value。
+     * 如果是中间节点 key = Authority.name子串， value = #。
      *
      * @param username User username
-     * @return Authority name List
+     * @return 当前用户拥有的权限树
      */
-    public List<String> findNamesByUsername(String username);
+    public Map<String,String> findMapByUsername(String username);
 
     /**
      * 验证 User 对给定 Action 是否有权限。

@@ -18,9 +18,6 @@ package org.gaixie.jibu.security.servlet;
 
 import com.google.inject.servlet.ServletModule;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.gaixie.jibu.security.servlet.ActionFilter;
 import org.gaixie.jibu.security.servlet.LoginFilter;
 import org.gaixie.jibu.security.servlet.LoginServlet;
@@ -37,12 +34,7 @@ public class SecurityServletModule extends ServletModule {
         filter("*.y","*.z").through(LoginFilter.class);
         filter("*.z").through(ActionFilter.class);
         serve("/LoginServlet.x").with(LoginServlet.class);
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("main.title", "Jibu Web Application");
-        // 以逗号分隔的js文件名，会被一次加载 
-        params.put("js.names", "jibu-core-all.js");
-        serve("/MainServlet.y").with(MainServlet.class,params);
-        serve("/UserServlet.z").with(UserServlet.class,params);
+        serve("/MainServlet.y").with(MainServlet.class);
+        serve("/UserServlet.z").with(UserServlet.class);
     }
 }
