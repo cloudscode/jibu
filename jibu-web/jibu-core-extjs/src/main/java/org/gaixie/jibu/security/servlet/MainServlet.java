@@ -50,11 +50,14 @@ import org.slf4j.LoggerFactory;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
+        resp.setCharacterEncoding("UTF-8");
         if ("loadMenu".equals(req.getParameter("ci"))) {
             AuthorityService authService = 
                 injector.getInstance(AuthorityService.class);
+            resp.setContentType("application/json");
             loadMenu(authService,req,resp);
         } else {
+            resp.setContentType("text/html");
             mainPage(resp);
         }
     }
@@ -123,6 +126,7 @@ import org.slf4j.LoggerFactory;
                        ServletUtils.css("ext/resources/css/ext-all.css")+
                        ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
                        ServletUtils.javascript("ext/ext-all.js")+
+                       ServletUtils.css("css/jibu-all.css")+
                        ServletUtils.css("js/classic/layout.css")+
                        ServletUtils.javascript("js/classic/layout.js")+
                        ServletUtils.body()+

@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.json.JSONArray;
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
@@ -52,6 +53,10 @@ import org.slf4j.LoggerFactory;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
+        // 默认为 json类型，在初次加载时只是一个 js 片段，用text/xml
+        // 字符集始终用 UTF-8
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
         UserService userService = injector.getInstance(UserService.class);
         AuthorityService authService = 
             injector.getInstance(AuthorityService.class);
@@ -73,6 +78,7 @@ import org.slf4j.LoggerFactory;
 
         if (null ==req.getParameter("ci")) {
             allowed = true;
+            resp.setContentType("text/xml");
             load(req,resp);
         }
         if (!allowed) {
@@ -119,6 +125,7 @@ import org.slf4j.LoggerFactory;
                      HttpServletResponse resp) 
         throws IOException {
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+
         ServletOutputStream output=resp.getOutputStream();
         try {
             User user = ServletUtils.httpToBean(User.class,req); 

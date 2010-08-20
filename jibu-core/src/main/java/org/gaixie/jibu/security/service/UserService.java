@@ -53,5 +53,4 @@ public interface UserService {
      * @return User List
      */
     public List<User> find(User user);
-
 }

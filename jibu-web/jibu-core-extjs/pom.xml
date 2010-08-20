@@ -54,7 +54,8 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <packagingExcludes>WEB-INF/lib/*.jar,ext/**</packagingExcludes>
-          <warSourceExcludes>js/**</warSourceExcludes>
+          <!-- 不要把压缩前的js打入war包 -->
+          <warSourceExcludes>js/**/*.js</warSourceExcludes>
           <overlays>
             <overlay>
               <groupId>org.gaixie.extjs-wrapped</groupId>

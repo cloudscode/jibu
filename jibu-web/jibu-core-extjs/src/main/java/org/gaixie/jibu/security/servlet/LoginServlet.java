@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
         LoginService loginService = injector.getInstance(LoginService.class);
+        resp.setContentType("application/json;charset=UTF-8");
         if ("login".equals(req.getParameter("ci"))) {
             login(loginService,req,resp);
         }
