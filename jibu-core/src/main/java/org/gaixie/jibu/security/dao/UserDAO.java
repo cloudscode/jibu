@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 
 /**
@@ -40,6 +41,7 @@ public interface UserDAO {
      * @return User
      */
     public User get(Connection conn, String username) throws SQLException;
+
 
     /**
      * 通过 username 及 password 得到一个 User。
@@ -73,7 +75,33 @@ public interface UserDAO {
      * @param user User，属性值会作为查询匹配的条件。
      *
      * @throws SQLException 
+     * @return User List
      */
     public List<User> find(Connection conn, User user) throws SQLException;
+
+    /**
+     * 根据 User 属性得到符合条件的记录总数。
+     * <p>
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param user User，属性值会作为查询匹配的条件。
+     *
+     * @throws SQLException
+     * @return 记录总数
+     */
+    public int getTotal(Connection conn, User user) throws SQLException;
+
+    /**
+     * 根据 User 属性查询符合条件，并且满足 Criteria 约束的 User List。
+     * <p>
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param user User，属性值会作为查询匹配的条件。
+     * @param criteria 传递分页，排序等附加的查询条件。
+     *
+     * @throws SQLException 
+     * @return User List
+     */
+    public List<User> find(Connection conn, User user, Criteria criteria) throws SQLException;
 
 }

@@ -27,6 +27,7 @@ import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.CoreTestSupport;
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.dao.UserDAO;
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.utils.ConnectionUtils;
 
@@ -70,6 +71,37 @@ public class UserDAOTest extends CoreTestSupport {
         users = userDAO.find(conn,user);
         // admin + tommy + tomm1
         Assert.assertTrue(3 == users.size());
+    }
+
+    @Test public void testFindByCriteria() throws Exception {
+        User user = new User("Tommy Wang","tommy","123456","1@x.xxx",true);
+        userDAO.save(conn,user);
+        user = new User("Tommy Wang","tommy1","123456","2@x.xxx",true);
+        userDAO.save(conn,user);
+
+        user = new User();
+
+        // 测试 Criteria 条件查询
+        Criteria crt = new Criteria();
+        crt.setStart(0);
+        crt.setLimit(1);
+        crt.setSort("username");
+        crt.setDir("DESC");
+        // 没有 crt  select * from where enabled = true
+        // 有 分页 crt  SELECT * FROM ( 
+        //                            select ROW_NUMBER() OVER() AS R, userbase.* 
+        //                            from userbase) as TR
+        //               where R >0 AND R <=1
+        //               ORDER BY username DESC
+        List<User> users = userDAO.find(conn,user,crt);
+        Assert.assertTrue(1 == users.size());
+        Assert.assertTrue("tommy1".equals(users.get(0).getUsername()));
+        crt.setStart(1);
+        crt.setLimit(2);
+        users = userDAO.find(conn,user,crt);
+        Assert.assertTrue(2 == users.size());
+        Assert.assertTrue("tommy".equals(users.get(0).getUsername()));
+        Assert.assertTrue("admin".equals(users.get(1).getUsername()));
     }
 
     @After public void tearDown() {

@@ -50,14 +50,13 @@ import org.slf4j.LoggerFactory;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) 
         throws IOException {
-        resp.setCharacterEncoding("UTF-8");
         if ("loadMenu".equals(req.getParameter("ci"))) {
             AuthorityService authService = 
                 injector.getInstance(AuthorityService.class);
-            resp.setContentType("application/json");
+            resp.setContentType("application/json;charset=UTF-8");
             loadMenu(authService,req,resp);
         } else {
-            resp.setContentType("text/html");
+            resp.setContentType("text/html;charset=UTF-8");
             mainPage(resp);
         }
     }

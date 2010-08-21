@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.utils.BeanConverter;
+import org.gaixie.jibu.security.model.Criteria;
 
 /**
  * Servlet 工具类。
@@ -124,6 +125,36 @@ public class ServletUtils {
         }
         T bean = BeanConverter.mapToBean(cls, map);
         return bean;
+    }
+
+
+    /**
+     * 将 HttpServletRequest 中用于分页和排序的值按照约定自动装入 Criteria 对象。
+     * <p>
+     * 接收的参数有： limit , start , dir , sort。<br>
+     * 如果 limit 的值大于 0 ，分页有效。如果 sort 非 null，排序有效。
+     * @param req 要处理的 Request。
+     * @return 如果没有有效的 limit 和 sort，返回 null，否则返回 Criteria 实例。
+     */
+    public static Criteria httpToCriteria(HttpServletRequest req) {
+        Criteria criteria = new Criteria();
+
+        if (null != req.getParameter("limit") &&
+            null != req.getParameter("start")) {
+            
+            int limit = Integer.parseInt(req.getParameter("limit"));
+            int start = Integer.parseInt(req.getParameter("start"));
+            criteria.setLimit(limit);
+            criteria.setStart(start);
+        }
+
+        criteria.setDir(req.getParameter("dir"));
+        criteria.setSort(req.getParameter("sort"));
+
+        if (criteria.getLimit() <=0 || criteria.getSort() == null) {
+            return null;
+        }
+        return criteria;
     }
 
     /**

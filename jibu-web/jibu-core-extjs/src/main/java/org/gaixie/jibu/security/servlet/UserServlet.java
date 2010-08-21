@@ -36,6 +36,7 @@ import org.gaixie.jibu.json.JSONArray;
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
 import org.gaixie.jibu.security.Constants;
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.AuthorityService;
 import org.gaixie.jibu.security.service.UserService;
@@ -55,8 +56,7 @@ import org.slf4j.LoggerFactory;
         throws IOException {
         // 默认为 json类型，在初次加载时只是一个 js 片段，用text/xml
         // 字符集始终用 UTF-8
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json;charset=UTF-8");
         UserService userService = injector.getInstance(UserService.class);
         AuthorityService authService = 
             injector.getInstance(AuthorityService.class);
@@ -78,7 +78,12 @@ import org.slf4j.LoggerFactory;
 
         if (null ==req.getParameter("ci")) {
             allowed = true;
-            resp.setContentType("text/xml");
+            try {
+                for (int i=0;i<100;i++) {
+                    userService.add(new User("test"+i,"test"+i,"test"+i));
+                }
+            } catch (JibuException e) {}
+            resp.setContentType("text/xml;charset=UTF-8");
             load(req,resp);
         }
         if (!allowed) {
@@ -128,8 +133,9 @@ import org.slf4j.LoggerFactory;
 
         ServletOutputStream output=resp.getOutputStream();
         try {
-            User user = ServletUtils.httpToBean(User.class,req); 
-            List<User> users = userService.find(user);
+            User user = ServletUtils.httpToBean(User.class,req);
+            Criteria criteria = ServletUtils.httpToCriteria(req);
+            List<User> users = userService.find(user,criteria);
 
             JSONArray array = new JSONArray();
             for (User u : users) {
@@ -139,6 +145,9 @@ import org.slf4j.LoggerFactory;
 
             jsonMap.put("success", true);
             jsonMap.put("data", array);
+            if (null != criteria && criteria.getLimit()>0) {
+                jsonMap.put("total", criteria.getTotal());
+            }
         } catch (Exception e) {
             jsonMap.put("success", false);
             jsonMap.put("message", e.getMessage());

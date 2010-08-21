@@ -24,6 +24,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.gaixie.jibu.security.dao.UserDAO;
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,15 @@ public class UserDAOPgSQL implements UserDAO {
     }
 
     public List<User> find( Connection conn, User user) throws SQLException {
+        return null;
+    }
+
+    public int getTotal(Connection conn, User user) throws SQLException {
+        return 0;
+    }
+
+    public List<User> find(Connection conn, User user, Criteria criteria) 
+        throws SQLException {
         return null;
     }
 }

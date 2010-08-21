@@ -5,7 +5,7 @@ jibu.security.user.SearchGrid = function(config){
     this.store = new Ext.data.JsonStore({
                                             // destroy the store if the grid is destroyed
                                             autoDestroy: true,
-
+                                            remoteSort : true,
                                             url: '/UserServlet.z?ci=find',
                                             root: 'data',
                                             fields: [
@@ -18,12 +18,12 @@ jibu.security.user.SearchGrid = function(config){
                                             sortInfo: {field:'username', direction:'ASC'}
                                         });
     this.sm = new Ext.grid.CheckboxSelectionModel();
-    this.columns = [
-        {header: 'Username', width: 160, sortable: true, dataIndex: 'username'},
-        {header: 'Full Name', width: 160, sortable: true,  dataIndex: 'fullname'},
-        {header: 'Email Address', width: 200, sortable: true,  dataIndex: 'emailaddress'},
-        {header: 'Enabled', width: 75, sortable: true, dataIndex: 'enabled'},
-        this.sm];
+    this.columns = [new Ext.grid.RowNumberer(),
+                    {header: 'Username', width: 160, sortable: true, dataIndex: 'username'},
+                    {header: 'Full Name', width: 160, sortable: true,  dataIndex: 'fullname'},
+                    {header: 'Email Address', width: 200, sortable: true,  dataIndex: 'emailaddress'},
+                    {header: 'Enabled', width: 75, sortable: true, dataIndex: 'enabled'},
+                    this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
@@ -54,33 +54,31 @@ jibu.security.user.SearchGrid = function(config){
                      handler : this.searchUserFun
                  }];
 
-        // paging bar on the bottom
-        this.bbar = new Ext.PagingToolbar({
-            pageSize: 25,
-            store: this.store,
-            displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
-            emptyMsg: "No topics to display",
-            items:[
-                '-', 
-                {
-                    enableToggle:true,
-                    text: 'Add User',
-                    iconCls: 'add-icon',
-                    toggleHandler: function(btn, pressed){
-                    }
-                },{
-                    enableToggle:true,
-                    text: 'Delete User',
-                    iconCls: 'delete-icon',
-                    toggleHandler: function(btn, pressed){
-                    }
-                }]
-        });
+    // paging bar on the bottom
+    this.bbar = new Ext.PagingToolbar({
+                                          pageSize: 25,
+                                          store: this.store,
+                                          displayInfo: true,
+                                          items:[
+                                              '-', 
+                                              {
+                                                  enableToggle:true,
+                                                  text: 'Add User',
+                                                  iconCls: 'add-icon',
+                                                  toggleHandler: function(btn, pressed){
+                                                  }
+                                              },{
+                                                  enableToggle:true,
+                                                  text: 'Delete User',
+                                                  iconCls: 'delete-icon',
+                                                  toggleHandler: function(btn, pressed){
+                                                  }
+                                              }]
+                                      });
 
     jibu.security.user.SearchGrid.superclass.constructor.call(this,{
                                                                   stripeRows: true,
-                                                                  height: 350,
+                                                                  height: 650,
                                                                   width: 800,
                                                                   border: false
                                                               });
@@ -100,10 +98,8 @@ Ext.extend(jibu.security.user.SearchGrid,Ext.grid.GridPanel,{
                                                 console.log(success);
                                             }
                                         });
-//                   console.log(params);
                }
            });
-
 Ext.onReady(function() {
                 var searchGrid = new jibu.security.user.SearchGrid();
                 mainPanel.getActiveTab().add(searchGrid);

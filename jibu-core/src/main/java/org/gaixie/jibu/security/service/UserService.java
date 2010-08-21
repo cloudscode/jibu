@@ -19,6 +19,7 @@ package org.gaixie.jibu.security.service;
 import java.util.List;
 
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 
 /**
@@ -53,4 +54,15 @@ public interface UserService {
      * @return User List
      */
     public List<User> find(User user);
+
+    /**
+     * 查询所有匹配给定 User 属性，并且符合 Criteria 约束的 User List。
+     * <p>
+     * 如果 criteria 为 null，等同于调用 {@code List<User> find(User user)}。<br>
+     * @param user 用来传递查询条件的 User。
+     * @param criteria 用来传递分页，排序等附加查询条件。
+     * @return User List
+     * @see #find(User user)
+     */
+    public List<User> find(User user, Criteria criteria);
 }

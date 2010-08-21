@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.lang.reflect.InvocationTargetException;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.security.model.Criteria;
 
 /**
  * 提供静态方法将不同的对象与 Javabean 进行转化。
@@ -125,16 +126,16 @@ public class BeanConverter {
                 if (null == value || "class".equals(name) ||
                     "serialVersionUID".equals(name)) continue;
                 if (String.class.equals(type)) {
-                    sb.append(name +" = '"+(String)value+"' and \n");
+                    sb.append(name +" = '"+(String)value+"' AND \n");
                 } else if (Date.class.equals(type)) {
                     DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    sb.append(name +" = '"+format.format((Date)value)+"' and \n");
+                    sb.append(name +" = '"+format.format((Date)value)+"' AND \n");
                 } else if (boolean.class.equals(type)||Boolean.class.equals(type)) {
-                    sb.append(name +" = "+(((Boolean)value)? "1":"0") +" and \n");
+                    sb.append(name +" = "+(((Boolean)value)? "1":"0") +" AND \n");
                 } else if (int.class.equals(type)||Integer.class.equals(type)) {
-                    sb.append(name +" = "+(Integer)value+" and \n");
+                    sb.append(name +" = "+(Integer)value+" AND \n");
                 } else if (float.class.equals(type)||Float.class.equals(type)) {
-                    sb.append(name +" = "+(Float)value+" and \n");
+                    sb.append(name +" = "+(Float)value+" AND \n");
                 }
 
             }
@@ -151,22 +152,61 @@ public class BeanConverter {
      * @param sql 要处理的 Where 语句
      * @return 有效的 Where 语句
      *
-     * @exception JibuException 转化失败时抛出
      */
     public static String getWhereSQL (String sql) {
         if (null == sql ) return null;
 
         String s = sql.trim();
         int len = s.length();
-        int last = s.lastIndexOf("and");
+        int last = s.lastIndexOf("AND");
         if (len > 0 && (last == len -3)) {
-            if (s.indexOf("where") == -1) {
-                s = "where " + s.substring(0,len-3);
+            if (s.indexOf("WHERE") == -1) {
+                s = "WHERE " + s.substring(0,len-3);
             } else {
                 s = s.substring(0,len-3);
             }
         }
         return s;
+    }
+
+    /**
+     * 通过 criteria 生成的 Derby 分页 SQL 语句。
+     * <p>
+     * 必须在 WHERE 子句全部处理完以后条用。如果有 ORDER BY，也要在其之前调用。
+     * Derby 10.5 以后版本有效。
+     *
+     * @param sql 要处理语句
+     * @param crt 传递分页信息
+     * @return 有效的 sql语句
+     * @see #getWhereSQL(String sql)
+     */
+    public static String getPagingDerbySQL (String sql,Criteria crt) {
+        if (null == sql ) return null;
+        
+        if (crt.getLimit()>0) {
+            // 参考 ：http://db.apache.org/derby/docs/dev/ref/rrefsqljoffsetfetch.html
+            return  sql  + " OFFSET "+crt.getStart()+" ROWS FETCH NEXT "+crt.getLimit()+" ROWS ONLY ";
+        }
+        return sql;
+    }
+
+    /**
+     * 通过 criteria 生成排序的 sql 语句。数据库类型无关。
+     * <p>
+     * 注意，如果结合分页，要保证在分页语句之前条用。
+     *
+     * @param sql 要处理语句
+     * @param crt 传递排序信息
+     * @return 有效的 sql语句
+     *
+     */
+    public static String getSortSQL (String sql,Criteria crt) {
+        if (null == sql ) return null;
+        
+        if (null != crt.getSort()) {
+            return sql + " ORDER BY " + crt.getSort() + " "+crt.getDir();
+        }
+        return sql;
     }
 
     /*

@@ -26,6 +26,7 @@ import org.apache.commons.dbutils.DbUtils;
 import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
+import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
 import org.gaixie.jibu.utils.ConnectionUtils;
@@ -89,6 +90,28 @@ public class UserServiceImpl implements UserService {
         try {
             conn = ConnectionUtils.getConnection();
             users = userDAO.find(conn,user);
+        } catch(SQLException e) {
+            logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+        return users;
+    }
+
+    public List<User> find(User user, Criteria criteria) {
+        if (null == criteria ) return this.find(user);
+        Connection conn = null;
+        List<User> users= null;
+        if (user.getPassword() != null) {
+            String cryptpassword = MD5.encodeString(user.getPassword(),null);
+            user.setPassword(cryptpassword);
+        }
+        try {
+            conn = ConnectionUtils.getConnection();
+            if (criteria.getLimit() >0) {
+                criteria.setTotal(userDAO.getTotal(conn,user));
+            }
+            users = userDAO.find(conn,user,criteria);
         } catch(SQLException e) {
             logger.error(e.getMessage());
         } finally {
