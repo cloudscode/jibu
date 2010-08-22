@@ -21,7 +21,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
-
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,7 +62,7 @@ import org.slf4j.LoggerFactory;
                        ServletUtils.javascript("ext/ext-all.js")+
                        ServletUtils.css("css/jibu-all.css")+
                        ServletUtils.css("js/classic/layout.css")+
-                       loadMenu(authService,req)+
+                       loadData(authService,req)+
                        ServletUtils.javascript("js/classic/layout.js")+
                        ServletUtils.body()+
                        ServletUtils.div("header","")+
@@ -71,7 +70,7 @@ import org.slf4j.LoggerFactory;
         output.close();
     }
 
-    public String loadMenu(AuthorityService authService, 
+    public String loadData(AuthorityService authService, 
                            HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         Set mod = new HashSet();
@@ -138,7 +137,7 @@ import org.slf4j.LoggerFactory;
         for (int i=0;i<pre-1;i++) {
             sb.append("]}");
         }
-        if (map.size()>0) sb.append("];");
+        if (map.size()>0) sb.append("];\n");
         sb.append("</script>\n");
 
         // 输出拥有权限的子系统 js 文件。

@@ -77,7 +77,6 @@ public class PMServletTest {
         EasyMock.replay(userService);
 
         pmServlet.add(userService,nullRequest, mockResponse);
-        System.out.println(output.toString());
         EasyMock.verify(mockResponse);
         EasyMock.verify(userService);
     }
