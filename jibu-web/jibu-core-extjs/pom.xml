@@ -99,6 +99,15 @@
         <configuration>
           <nosuffix>true</nosuffix>
           <jswarn>false</jswarn>
+          <aggregations>
+            <aggregation>
+              <removeIncluded>true</removeIncluded>
+              <output>${build.webappDirectory}/js/system/administration/administration-all.js</output>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </aggregation>
+          </aggregations>
         </configuration>
       </plugin>
     </plugins>

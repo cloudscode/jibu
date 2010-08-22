@@ -6,7 +6,7 @@ jibu.security.user.SearchGrid = function(config){
                                             // destroy the store if the grid is destroyed
                                             autoDestroy: true,
                                             remoteSort : true,
-                                            url: '/UserServlet.z?ci=find',
+                                            url: '/PMServlet.z?ci=find',
                                             root: 'data',
                                             fields: [
                                                 {name: 'id', type: 'int'},
@@ -100,8 +100,5 @@ Ext.extend(jibu.security.user.SearchGrid,Ext.grid.GridPanel,{
                                         });
                }
            });
-Ext.onReady(function() {
-                var searchGrid = new jibu.security.user.SearchGrid();
-                mainPanel.getActiveTab().add(searchGrid);
-                mainPanel.getActiveTab().doLayout();
-            });
+
+Ext.reg('system.administration.pm', jibu.security.user.SearchGrid);

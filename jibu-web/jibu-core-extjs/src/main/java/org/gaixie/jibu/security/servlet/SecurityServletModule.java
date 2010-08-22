@@ -21,7 +21,7 @@ import com.google.inject.servlet.ServletModule;
 import org.gaixie.jibu.security.servlet.LoginFilter;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.gaixie.jibu.security.servlet.MainServlet;
-import org.gaixie.jibu.security.servlet.UserServlet;
+import org.gaixie.jibu.security.servlet.PMServlet;
 
 /**
  * Security Servlet 的 Bind 类。
@@ -33,6 +33,6 @@ public class SecurityServletModule extends ServletModule {
         filter("*.y","*.z").through(LoginFilter.class);
         serve("/LoginServlet.x").with(LoginServlet.class);
         serve("/MainServlet.y").with(MainServlet.class);
-        serve("/UserServlet.z").with(UserServlet.class);
+        serve("/PMServlet.z").with(PMServlet.class);
     }
 }

@@ -44,11 +44,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 响应 User 相关操作的请求。
+ * 响应权限管理相关操作的请求。
  * <p>
  */
-@Singleton public class UserServlet extends HttpServlet {
-    final static Logger logger = LoggerFactory.getLogger(UserServlet.class);
+@Singleton public class PMServlet extends HttpServlet {
+    final static Logger logger = LoggerFactory.getLogger(PMServlet.class);
 
     @Inject private Injector injector;
 
@@ -76,16 +76,6 @@ import org.slf4j.LoggerFactory;
             if (allowed) find(userService,req,resp);
         }
 
-        if (null ==req.getParameter("ci")) {
-            allowed = true;
-            try {
-                for (int i=0;i<100;i++) {
-                    userService.add(new User("test"+i,"test"+i,"test"+i));
-                }
-            } catch (JibuException e) {}
-            resp.setContentType("text/xml;charset=UTF-8");
-            load(req,resp);
-        }
         if (!allowed) {
             ServletOutputStream output=resp.getOutputStream();
             output.println("{\"message\":\"no permission\",\"success\":false}");
@@ -97,13 +87,6 @@ import org.slf4j.LoggerFactory;
         throws IOException{
         doGet(req, resp);
     }
-
-    public void load(HttpServletRequest req, 
-                     HttpServletResponse resp) throws IOException {
-        ServletOutputStream output=resp.getOutputStream();
-        output.println(ServletUtils.javascript("/js/core/user.js"));
-        output.close();
-    } 
 
     public void add(UserService userService, 
                     HttpServletRequest req, 
@@ -136,6 +119,14 @@ import org.slf4j.LoggerFactory;
             User user = ServletUtils.httpToBean(User.class,req);
             Criteria criteria = ServletUtils.httpToCriteria(req);
             List<User> users = userService.find(user,criteria);
+
+            // 测试数据
+            try {
+                for (int i=0;i<100;i++) {
+                    userService.add(new User("test"+i,"test"+i,"test"+i));
+                }
+            } catch (JibuException e) {}
+
 
             JSONArray array = new JSONArray();
             for (User u : users) {

@@ -31,20 +31,20 @@ import javax.servlet.http.HttpSession;
 import org.easymock.EasyMock; 
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
-import org.gaixie.jibu.security.servlet.UserServlet;
+import org.gaixie.jibu.security.servlet.PMServlet;
 import org.gaixie.jibu.security.servlet.NullHttpServletRequest;
 import org.junit.Before;  
 import org.junit.Test;  
 
-public class UserServletTest {
-    private UserServlet userServlet;  
+public class PMServletTest {
+    private PMServlet pmServlet;  
     private NullHttpServletRequest nullRequest;  
     private HttpServletResponse mockResponse;  
     private ByteArrayOutputStream output;
     private UserService userService; 
 
     @Before public void setUp() {  
-        userServlet = new UserServlet();  
+        pmServlet = new PMServlet();  
         nullRequest = new NullHttpServletRequest();  
 
         //创建request和response的Mock  
@@ -76,7 +76,7 @@ public class UserServletTest {
         EasyMock.replay(mockResponse);
         EasyMock.replay(userService);
 
-        userServlet.add(userService,nullRequest, mockResponse);
+        pmServlet.add(userService,nullRequest, mockResponse);
         System.out.println(output.toString());
         EasyMock.verify(mockResponse);
         EasyMock.verify(userService);
