@@ -51,7 +51,8 @@ public class LoginServletTest {
 
     }
 
-    @Test public void testLoginSuccess() throws Exception {
+    @Test 
+        public void testLoginSuccess() throws Exception {
         //录制request和response的动作
         EasyMock.expect(mockRequest.getParameter("username")).andReturn("admin");
         EasyMock.expect(mockRequest.getParameter("password")).andReturn("123456");
@@ -67,7 +68,7 @@ public class LoginServletTest {
         loginService.login("admin","123456");
         EasyMock.expectLastCall().atLeastOnce();
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);
-        ses.putValue("username", "admin");
+        ses.setAttribute("username", "admin");
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);
         //回放
         EasyMock.replay(mockRequest);

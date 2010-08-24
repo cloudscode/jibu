@@ -22,7 +22,9 @@ import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -67,13 +69,16 @@ import org.slf4j.LoggerFactory;
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
         String password=req.getParameter("password");
+
+        //        Locale locale = req.getLocale();
+        //        System.out.println(locale.toString());
         ServletOutputStream output=resp.getOutputStream();
 
         try {
             loginService.login(username, password);
             // check if we have a session
             HttpSession ses = req.getSession(true);
-            ses.putValue("username", username);
+            ses.setAttribute("username", username);
 
             //resp.sendRedirect("/main.y");
             jsonMap.put("success", true);

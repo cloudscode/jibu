@@ -54,7 +54,7 @@ import javax.servlet.http.HttpSession;
         boolean allowedRequest = false;
 
         if (null!=ses) {
-            if (null != ses.getValue("username")) {
+            if (null != ses.getAttribute("username")) {
                 allowedRequest = true;
             }
         }

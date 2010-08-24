@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.ServletConfig;
@@ -74,9 +75,12 @@ import org.slf4j.LoggerFactory;
                            HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         Set mod = new HashSet();
+        ResourceBundle rb = 
+            ResourceBundle.getBundle("i18n/CoreExtjsResources");
+
         HttpSession ses = req.getSession(false);
         Map<String,String> map = 
-            authService.findMapByUsername((String)ses.getValue("username"));
+            authService.findMapByUsername((String)ses.getAttribute("username"));
 
         /*------------------------------------------------------------------------------------
          * 算法：
@@ -104,7 +108,7 @@ import org.slf4j.LoggerFactory;
             String val = (String)entry.getValue();
 
             // text: key 应该是国际化过的串，用于显示。
-            String node = "{\"url\":\""+key+"\",\"text\":\""+key+"\",\"leaf\":"
+            String node = "{\"url\":\""+key+"\",\"text\":\""+rb.getString(key)+"\",\"leaf\":"
                 +(("#".equals(val)) ? "false" : "true}");
                 
             String[] path = key.split("\\."); 

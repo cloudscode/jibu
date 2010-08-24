@@ -20,6 +20,7 @@ import com.google.inject.Injector;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,8 +49,9 @@ public class MainServletTest {
     @Test public void testLoadData() throws Exception {
         HttpSession mockSes = (HttpSession) EasyMock.createMock(HttpSession.class);
         EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
-        EasyMock.expect((String)mockSes.getValue("username")).andReturn("admin");
-
+        EasyMock.expect((String)mockSes.getAttribute("username")).andReturn("admin");
+        ResourceBundle rb = 
+            ResourceBundle.getBundle("i18n/CoreExtjsResources");
         Map<String,String> map = new TreeMap<String,String>();
         map.put("system","#");
         map.put("system.administration","#");
@@ -65,10 +67,13 @@ public class MainServletTest {
         StringBuilder sb = new StringBuilder();
         sb.append("<script type=\"text/javascript\">\n");
         sb.append("JibuNav={};\n");
-        sb.append("JibuNav.data = [{\"url\":\"system\",\"text\":\"system\",\"leaf\":false,\"children\":[");
-        sb.append("{\"url\":\"system.administration\",\"text\":\"system.administration\",\"leaf\":false,\"children\":[");
-        sb.append("{\"url\":\"system.administration.pm\",\"text\":\"system.administration.pm\",\"leaf\":true}]},");
-        sb.append("{\"url\":\"system.preferences\",\"text\":\"system.preferences\",\"leaf\":true}]}];\n");
+        sb.append("JibuNav.data = [{\"url\":\"system\",\"text\":\""
+                  +rb.getString("system")+"\",\"leaf\":false,\"children\":[");
+        sb.append("{\"url\":\"system.administration\",\"text\":\""
+                  +rb.getString("system.administration")+"\",\"leaf\":false,\"children\":[");
+        sb.append("{\"url\":\"system.administration.pm\",\"text\":\""
+                  +rb.getString("system.administration.pm")+"\",\"leaf\":true}]},");
+        sb.append("{\"url\":\"system.preferences\",\"text\":\""+rb.getString("system.preferences")+"\",\"leaf\":true}]}];\n");
         sb.append("</script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/administration-all.js\"></script>\n");
