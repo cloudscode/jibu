@@ -25,8 +25,9 @@ public class Role {
     private Integer id;
     private String name;
     private String description;
-    private int lft;
-    private int rgt;
+    private Integer lft;
+    private Integer rgt;
+    private Integer depth;
 
     /**
      * No-arg constructor.
@@ -53,11 +54,14 @@ public class Role {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public int getLft() { return lft; }
-    public void setLft(int lft) { this.lft = lft; }
+    public Integer getLft() { return lft; }
+    public void setLft(Integer lft) { this.lft = lft; }
 
-    public int getRgt() { return rgt; }
-    public void setRgt(int rgt) { this.rgt = rgt; }
+    public Integer getRgt() { return rgt; }
+    public void setRgt(Integer rgt) { this.rgt = rgt; }
+
+    public Integer getDepth() { return depth; }
+    public void setDepth(Integer depth) { this.depth = depth; }
 
     // ********************** Common Methods ********************** //
     

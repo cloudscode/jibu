@@ -33,8 +33,8 @@ public final class CacheUtils {
     }
 
     static class UserCacheHolder {
-        static Cache instance = new DefaultCache("cache.userCache", 
-                                                 128 * 1024l, 
+        static Cache instance = new DefaultCache("cache.userCache",
+                                                 128 * 1024l,
                                                  1000 * 60 * 30l);
     }
 

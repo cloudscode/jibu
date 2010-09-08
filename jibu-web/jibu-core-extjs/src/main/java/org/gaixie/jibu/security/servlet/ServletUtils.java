@@ -42,7 +42,7 @@ public class ServletUtils {
      * 开始 html, head 标签。
      * <p>
      * @param title title 标签内容。
-     * @return {@code <html><head><title>title</title><meta ..../>} 
+     * @return {@code <html><head><title>title</title><meta ..../>}
      */
     public static String head(String title) {
         return(DOCTYPE + "\n" +
@@ -55,7 +55,7 @@ public class ServletUtils {
      * 加载 css 文件的标签。
      * <p>
      * @param path 文件路径。
-     * @return {@code <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"path\" />} 
+     * @return {@code <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"path\" />}
      */
     public static String css(String path) {
         return("  <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\""+path+"\" />\n");
@@ -65,7 +65,7 @@ public class ServletUtils {
      * 加载 javascript 文件的标签。
      * <p>
      * @param path 文件路径。
-     * @return {@code <script type=\"text/javascript\" src=\"path\"></script>} 
+     * @return {@code <script type=\"text/javascript\" src=\"path\"></script>}
      */
     public static String javascript(String path) {
         return("  <script type=\"text/javascript\" src=\""+path+"\"></script>\n");
@@ -74,7 +74,7 @@ public class ServletUtils {
     /**
      * 封闭 head，开始 body 标签。
      * <p>
-     * @return {@code </head><body>} 
+     * @return {@code </head><body>}
      */
     public static String body() {
         return("</head>\n"+
@@ -84,7 +84,7 @@ public class ServletUtils {
     /**
      * 封闭 body 和 html 标签。
      * <p>
-     * @return {@code </body></html>} 
+     * @return {@code </body></html>}
      */
     public static String footer() {
         return("</body>\n"+
@@ -112,15 +112,16 @@ public class ServletUtils {
      * @param req 要处理的 Request。
      * @return 生成的 Javabean
      */
-    public static <T> T httpToBean(Class<T> cls, HttpServletRequest req) 
+    public static <T> T httpToBean(Class<T> cls, HttpServletRequest req)
         throws JibuException {
         HashMap map = new HashMap();
         Enumeration names = req.getParameterNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             String value = req.getParameter(name);
-            if (!value.trim().isEmpty()) {
-                map.put(name, req.getParameter(name));
+            int idx = name.lastIndexOf('.');
+            if (!value.trim().isEmpty() && idx > 0) {
+                map.put(name.substring(idx+1), value);
             }
         }
         T bean = BeanConverter.mapToBean(cls, map);
@@ -141,7 +142,7 @@ public class ServletUtils {
 
         if (null != req.getParameter("limit") &&
             null != req.getParameter("start")) {
-            
+
             int limit = Integer.parseInt(req.getParameter("limit"));
             int start = Integer.parseInt(req.getParameter("start"));
             criteria.setLimit(limit);
@@ -167,7 +168,7 @@ public class ServletUtils {
         HttpSession ses = req.getSession(false);
         String username = null;
         if (null!=ses) {
-            username = (String) ses.getValue("username"); 
+            username = (String) ses.getValue("username");
         }
         return username;
     }
@@ -182,7 +183,7 @@ public class ServletUtils {
         HttpSession ses = req.getSession(false);
         String locale = null;
         if (null!=ses) {
-            locale = (String) ses.getValue("locale"); 
+            locale = (String) ses.getValue("locale");
         }
         return locale;
     }

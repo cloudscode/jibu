@@ -27,7 +27,6 @@ public class Authority implements Serializable {
     private Integer id;
     private String name;
     private String value;
-    private int mask;
 
     /**
      * No-arg constructor.
@@ -39,10 +38,9 @@ public class Authority implements Serializable {
     /**
      * Simple constructor
      */
-    public Authority(String name,String value,int mask) {
+    public Authority(String name,String value) {
         this.name = name;
         this.value = value;
-        this.mask = mask;
      }
     
 
@@ -55,7 +53,4 @@ public class Authority implements Serializable {
 
     public String getValue() { return value; }
     public void setValue(String value) { this.value = value; }
-
-    public int getMask() { return mask; }
-    public void setMask(int mask) { this.mask = mask; }
 }

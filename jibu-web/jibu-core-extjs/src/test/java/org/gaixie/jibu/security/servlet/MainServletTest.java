@@ -67,17 +67,16 @@ public class MainServletTest {
         StringBuilder sb = new StringBuilder();
         sb.append("<script type=\"text/javascript\">\n");
         sb.append("JibuNav={};\n");
-        sb.append("JibuNav.data = [{\"url\":\"system\",\"text\":\""
-                  +rb.getString("system")+"\",\"leaf\":false,\"children\":[");
-        sb.append("{\"url\":\"system.administration\",\"text\":\""
-                  +rb.getString("system.administration")+"\",\"leaf\":false,\"children\":[");
-        sb.append("{\"url\":\"system.administration.pm\",\"text\":\""
-                  +rb.getString("system.administration.pm")+"\",\"leaf\":true}]},");
-        sb.append("{\"url\":\"system.preferences\",\"text\":\""+rb.getString("system.preferences")+"\",\"leaf\":true}]}];\n");
+        sb.append("JibuNav.data = [{url:\"system\",text:\""
+                  +rb.getString("system")+"\",leaf:false,children:[");
+        sb.append("{url:\"system.administration\",text:\""
+                  +rb.getString("system.administration")+"\",leaf:false,children:[");
+        sb.append("{url:\"system.administration.pm\",text:\""
+                  +rb.getString("system.administration.pm")+"\",leaf:true}]},");
+        sb.append("{url:\"system.preferences\",text:\""+rb.getString("system.preferences")+"\",leaf:true}]}];\n");
         sb.append("</script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/administration-all.js\"></script>\n");
-
         Assert.assertTrue(data.equals(sb.toString()));
         EasyMock.verify(mockRequest);
         EasyMock.verify(mockSes);

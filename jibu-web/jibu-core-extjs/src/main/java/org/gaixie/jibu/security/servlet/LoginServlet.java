@@ -21,13 +21,13 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,19 +41,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 响应登录请求的 Servlet，不被任何 Filter拦截。
- * <p> 
+ * <p>
  */
 @Singleton public class LoginServlet extends HttpServlet {
     final static Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
     @Inject private Injector injector;
 
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException {
         LoginService loginService = injector.getInstance(LoginService.class);
-        resp.setContentType("application/json;charset=UTF-8");
+
         if ("login".equals(req.getParameter("ci"))) {
+            resp.setContentType("application/json;charset=UTF-8");
             login(loginService,req,resp);
+        }
+        if ("logout".equals(req.getParameter("ci"))) {
+            logout(req,resp);
         }
     }
 
@@ -62,9 +66,9 @@ import org.slf4j.LoggerFactory;
         doGet(req, resp);
     }
 
-    public void login(LoginService loginService, 
-                      HttpServletRequest req, 
-                      HttpServletResponse resp) 
+    protected void login(LoginService loginService,
+                         HttpServletRequest req,
+                         HttpServletResponse resp)
         throws IOException {
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
@@ -72,7 +76,7 @@ import org.slf4j.LoggerFactory;
 
         //        Locale locale = req.getLocale();
         //        System.out.println(locale.toString());
-        ServletOutputStream output=resp.getOutputStream();
+        PrintWriter pw = resp.getWriter();
 
         try {
             loginService.login(username, password);
@@ -87,8 +91,19 @@ import org.slf4j.LoggerFactory;
             jsonMap.put("success", false);
             jsonMap.put("message", "Login Failed! "+e.getMessage());
         } finally {
-            output.println((new JSONObject(jsonMap)).toString());
-            output.close();
+            pw.println((new JSONObject(jsonMap)).toString());
+            pw.close();
         }
+    }
+
+    protected void logout(HttpServletRequest req,
+                          HttpServletResponse resp)
+        throws IOException {
+        // check if we have a session
+        HttpSession ses = req.getSession(false);
+        if (null != ses) {
+            ses.invalidate();
+        }
+        resp.sendRedirect("/");
     }
 }

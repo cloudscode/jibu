@@ -36,9 +36,9 @@ public interface RoleDAO {
      *
      * @param conn 一个有效的数据库链接。
      * @param id Role id。
-     * 
+     *
      * @throws SQLException
-     * @return Role
+     * @return 一个 Role，如果没有对应的数据，返回 null。
      */
     public Role get(Connection conn, int id) throws SQLException;
 
@@ -48,9 +48,9 @@ public interface RoleDAO {
      *
      * @param conn 一个有效的数据库链接。
      * @param name Role name。
-     * 
+     *
      * @throws SQLException
-     * @return Role
+     * @return 一个 Role，如果没有对应的数据，返回 null。
      */
     public Role get(Connection conn, String name) throws SQLException;
 
@@ -59,13 +59,35 @@ public interface RoleDAO {
      * <p>
      *
      * @param conn 一个有效的数据库链接。
-     * @param role 新增的 Role。
+     * @param role 要新增的 Role。
      * @param parent 给定的父 Role。
      *
-     * @throws SQLException 
+     * @throws SQLException
      */
-    public void saveChild(Connection conn, Role role, Role parent) throws SQLException ;
+    public void save(Connection conn, Role role, Role parent) throws SQLException ;
 
+
+    /**
+     * 删除一个 Role。
+     * <p>
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param role 需要删除的 Role。
+     *
+     * @throws SQLException
+     */
+    public void delete(Connection conn, Role role) throws SQLException;
+
+    /**
+     * 更新除 id 以外的所有 Role 属性。
+     * <p>
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param role 需要更新的 Role。
+     *
+     * @throws SQLException
+     */
+    public void update(Connection conn, Role role) throws SQLException;
 
     /**
      * 得到全部 Role。
@@ -73,8 +95,8 @@ public interface RoleDAO {
      *
      * @param conn 一个有效的数据库链接。
      *
-     * @throws SQLException 
-     * @return Role List
+     * @throws SQLException
+     * @return 一个包含 Role 的 List，无值 size()==0，永远不会返回 null。
      */
     public List<Role> getAll(Connection conn) throws SQLException ;
 
@@ -85,7 +107,7 @@ public interface RoleDAO {
      * @param role Role。
      * @param auth Authority。
      *
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void bind(Connection conn, Role role, Authority auth) throws SQLException;
 
@@ -96,10 +118,10 @@ public interface RoleDAO {
      * @param conn 一个有效的数据库链接。
      * @param auth Authority。
      *
-     * @throws SQLException 
-     * @return Role List
+     * @throws SQLException
+     * @return 一个包含 Role 的 List，无值 size()==0，永远不会返回 null。
      */
-    public List<Role> findByAuthority(Connection conn, Authority auth) throws SQLException;
+    public List<Role> find(Connection conn, Authority auth) throws SQLException;
 
     /**
      * 将 Role 和 User 进行绑定。
@@ -109,7 +131,7 @@ public interface RoleDAO {
      * @param role 角色
      * @param user 用户
      *
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void bind(Connection conn, Role role, User user) throws SQLException;
 
@@ -120,20 +142,20 @@ public interface RoleDAO {
      * @param conn 一个有效的数据库链接。
      * @param user User。
      *
-     * @throws SQLException 
-     * @return Role List
+     * @throws SQLException
+     * @return 一个包含 Role 的 List，无值 size()==0，永远不会返回 null。
      */
-    public List<Role> findByUser(Connection conn, User user) throws SQLException;
+    public List<Role> find(Connection conn, User user) throws SQLException;
 
     /**
-     * 通过authority id 取得匹配的Role name。
+     * 通过 authority id 取得匹配的Role name。
      * <p>
      *
      * @param conn 一个有效的数据库链接。
      * @param id Authority id。
      *
-     * @throws SQLException 
-     * @return Role name List
+     * @throws SQLException
+     * @return 一个包含 Role name 的 List，无值 size()==0，永远不会返回 null。
      */
     public List<String> findByAuthid(Connection conn, int id) throws SQLException;
 
@@ -144,8 +166,32 @@ public interface RoleDAO {
      * @param conn 一个有效的数据库链接。
      * @param name User username。
      *
-     * @throws SQLException 
-     * @return Role name List
+     * @throws SQLException
+     * @return 一个包含 Role name 的 List，如果没有任何匹配的数据，返回 null。
      */
     public List<String> findByUsername(Connection conn, String name) throws SQLException;
+
+    /**
+     * 将指定的 Role 和 Authority 解除绑定。
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param role Role。
+     * @param auth Authority。
+     *
+     * @throws SQLException
+     */
+    public void unbind(Connection conn, Role role, Authority auth) throws SQLException;
+
+
+    /**
+     * 将指定的 Role 和 User 解除绑定。
+     * <p>
+     *
+     * @param conn 一个有效的数据库链接。
+     * @param role 角色
+     * @param user 用户
+     *
+     * @throws SQLException
+     */
+    public void unbind(Connection conn, Role role, User user) throws SQLException;
 }

@@ -57,20 +57,18 @@ public class DeployWarIT {
         req.setParameter("password","123456");
         WebResponse wr = wc.getResponse(req);
 
-        req = new PostMethodWebRequest( "http://localhost:8080/PMServlet.z" );
-        req.setParameter("ci","add");
-        req.setParameter("crud","2");
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
+        req.setParameter("ci","userAdd");
         req.setParameter("User.username","tommy");
         req.setParameter("User.password","123456");
         req.setParameter("User.fullname","Tommy Wang");
         req.setParameter("User.emailaddress","x@x.x");
-        req.setParameter("User.enabled","");
+        req.setParameter("User.enabled","true");
         wr = wc.getResponse(req);
 
         String email = null;
-        req = new PostMethodWebRequest( "http://localhost:8080/PMServlet.z" );
-        req.setParameter("ci","find");
-        req.setParameter("crud","1");
+        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
+        req.setParameter("ci","userFind");
         req.setParameter("User.username","");
         req.setParameter("User.password","");
         req.setParameter("User.fullname","");

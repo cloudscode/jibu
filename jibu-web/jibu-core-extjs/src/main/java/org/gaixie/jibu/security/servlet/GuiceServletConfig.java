@@ -21,8 +21,10 @@ import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 import org.gaixie.jibu.security.dao.SecurityDAOModule;
+import org.gaixie.jibu.security.interceptor.SecurityInterceptorModule;
 import org.gaixie.jibu.security.service.SecurityServiceModule;
 import org.gaixie.jibu.security.servlet.SecurityServletModule;
+
 
 /**
  * GuiceServletConfig 是一个 Listener 类，在应用 deploy 时被触发。
@@ -49,6 +51,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
      */
     @Override protected Injector getInjector() {
         return Guice.createInjector(new SecurityServletModule(),
+                                    new SecurityInterceptorModule(),
                                     new SecurityServiceModule(),
                                     new SecurityDAOModule());
     }

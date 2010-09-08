@@ -42,7 +42,7 @@ import javax.servlet.http.HttpSession;
      * is null, this filter instance is not currently configured.
      */
     private FilterConfig filterConfig = null;
-    
+
     public void init(FilterConfig filterConfig)
         throws ServletException {
         this.filterConfig = filterConfig;

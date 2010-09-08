@@ -16,7 +16,7 @@ jibu.layout.classic.HeaderPanel = function(){
                                                  tooltip: 'Exit',
                                                  iconCls :'exit',
                                                  handler : function() {
-                                                     window.location = 'j_spring_security_logout';
+                                                     window.location = '/LoginServlet.x?ci=logout';
                                                  }
                                              }]
                                 });
@@ -47,14 +47,34 @@ jibu.layout.classic.NavPanel = function() {
                                                expanded:true,
                                                children:JibuNav.data
                                            });
-    this.tbar = [{
+    this.tbar = [' ',
+                 new Ext.form.TextField({
+                                            width: 180,
+                                            emptyText:'Find a Module',
+                                            enableKeyEvents: true,
+                                            listeners:{
+                                                render: function(f){
+                                                    this.filter = new Ext.tree.TreeFilter(this, {
+                                                                                              clearBlank: true,
+                                                                                              autoClear: true
+                                                                                          });
+                                                },
+                                                keydown: {
+                                                    fn: this.filterTree,
+                                                    buffer: 350,
+                                                    scope: this
+                                                },
+                                                scope: this
+                                            }
+                                        }), ' ', ' ',
+                 {
                      iconCls:'icon-expand-all',
-                     text:this.expandText,
+                     tooltip:this.expandText,
                      handler: function(){this.root.expand(true); },
                      scope: this
-                 },{
+                 },'-',{
                      iconCls:'icon-collapse-all',
-                     text:this.collapseText,
+                     tooltip:this.collapseText,
                      handler: function(){this.root.collapse(true); },
                      scope: this
                  }];
@@ -79,8 +99,34 @@ jibu.layout.classic.NavPanel = function() {
 
 Ext.extend(jibu.layout.classic.NavPanel, Ext.tree.TreePanel, {
                expandText:'Expand All',
-               collapseText:'Collapse All',    
-               allModulesText:'All Modules'
+               collapseText:'Collapse All',
+               allModulesText:'All Modules',
+               filterTree: function(t, e){
+                   var text = t.getValue();
+                   Ext.each(this.hiddenPkgs, function(n){
+                                n.ui.show();
+                            });
+                   if(!text){
+                       this.filter.clear();
+                       return;
+                   }
+                   this.expandAll();
+
+                   var re = new RegExp('^' + Ext.escapeRe(text), 'i');
+                   this.filter.filterBy(function(n){
+                                            return !n.isLeaf() || re.test(n.text);
+                                        });
+
+                   // hide empty packages that weren't filtered
+                   this.hiddenPkgs = [];
+                   var me = this;
+                   this.root.cascade(function(n){
+                                         if(!n.isLeaf() && n.ui.ctNode.offsetHeight < 3){
+                                             n.ui.hide();
+                                             me.hiddenPkgs.push(n);
+                                         }
+                                     });
+               }
            });
 
 jibu.layout.classic.MainPanel = function() {
@@ -91,7 +137,7 @@ jibu.layout.classic.MainPanel = function() {
 
     jibu.layout.classic.MainPanel.superclass.constructor.call(this, {
                                                                   region:'center',
-                                                                  margins:'0 0 5 0',
+                                                                  margins:'0 5 5 0',
                                                                   enableTabScroll : true,
                                                                   minTabWidth     : 75,
                                                                   activeTab:0
@@ -118,6 +164,7 @@ Ext.extend(jibu.layout.classic.MainPanel, Ext.TabPanel, {
            });
 
 Ext.onReady(function() {
+                Ext.QuickTips.init();
                 Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
                 var headerPanel = new jibu.layout.classic.HeaderPanel();
                 var navPanel = new jibu.layout.classic.NavPanel();
@@ -128,7 +175,7 @@ Ext.onReady(function() {
                                                      mainPanel.loadModule(node.attributes.url, node.attributes.text);
                                                  }
                                              });
-                
+
                 var viewport = new Ext.Viewport({
                                                     layout:'border',
                                                     items:[

@@ -18,14 +18,16 @@ package org.gaixie.jibu.security.servlet;
 
 import com.google.inject.servlet.ServletModule;
 
+import org.gaixie.jibu.security.servlet.AuthorityServlet;
 import org.gaixie.jibu.security.servlet.LoginFilter;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.gaixie.jibu.security.servlet.MainServlet;
-import org.gaixie.jibu.security.servlet.PMServlet;
+import org.gaixie.jibu.security.servlet.RoleServlet;
+import org.gaixie.jibu.security.servlet.UserServlet;
 
 /**
  * Security Servlet 的 Bind 类。
- * <p> 
+ * <p>
  * Servlet mapping ，以及 Filter的拦截策略都在这里定义。
  */
 public class SecurityServletModule extends ServletModule {
@@ -33,6 +35,8 @@ public class SecurityServletModule extends ServletModule {
         filter("*.y","*.z").through(LoginFilter.class);
         serve("/LoginServlet.x").with(LoginServlet.class);
         serve("/MainServlet.y").with(MainServlet.class);
-        serve("/PMServlet.z").with(PMServlet.class);
+        serve("/UserServlet.z").with(UserServlet.class);
+        serve("/AuthorityServlet.z").with(AuthorityServlet.class);
+        serve("/RoleServlet.z").with(RoleServlet.class);
     }
 }

@@ -27,7 +27,7 @@ public class User {
     private String username;
     private String password;
     private String emailaddress;
-    private boolean enabled=true;
+    private Boolean enabled;
     
     /**
      * No-arg constructor.
@@ -72,8 +72,8 @@ public class User {
     public String getEmailaddress() { return emailaddress; }
     public void setEmailaddress(String emailaddress) { this.emailaddress = emailaddress; }
 
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-    public boolean isEnabled() { return enabled; }
+    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
+    public Boolean getEnabled() { return enabled; }
 
     public boolean equals(Object o) {
         if (this == o) return true;

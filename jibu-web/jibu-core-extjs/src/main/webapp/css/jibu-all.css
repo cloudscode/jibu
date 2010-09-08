@@ -37,3 +37,12 @@
 .alert-icon {
 	background-image: url(../images/icons/alert.png) !important;
 }
+.star-icon {
+	background-image: url(../images/icons/star.png) !important;
+}
+.star-off-icon {
+	background-image: url(../images/icons/star-off.png) !important;
+}
+.refresh-icon {
+	background-image: url(../images/icons/refresh.png) !important;
+}

@@ -29,7 +29,7 @@ import org.gaixie.jibu.security.service.impl.UserServiceImpl;
 
 /**
  * Security 服务层的 Bind 类。
- * <p> 
+ * <p>
  */
 public class SecurityServiceModule extends AbstractModule {
 

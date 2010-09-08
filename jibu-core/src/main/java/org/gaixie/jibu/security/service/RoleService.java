@@ -34,7 +34,7 @@ public interface RoleService {
      * <p>
      *
      * @param id Role id。
-     * @return Role
+     * @return 一个 Role，如果没有对应的数据，返回 null。
      */
     public Role get(int id) ;
 
@@ -43,7 +43,7 @@ public interface RoleService {
      * <p>
      *
      * @param name Role name。
-     * @return Role
+     * @return 一个 Role，如果没有对应的数据，返回 null。
      */
     public Role get(String name) ;
 
@@ -53,9 +53,26 @@ public interface RoleService {
      *
      * @param role 新 Role。
      * @param parent 父 Role。
-     * @exception JibuException 如果角色名已存在，抛出。
+     * @exception JibuException 新增失败时抛出。
      */
-    public void addChild(Role role, Role parent) throws JibuException;
+    public void add(Role role, Role parent) throws JibuException;
+
+    /**
+     * 修改 Role 。
+     * <p>
+     * 所有非 null 的属性将被更新。id 属性不能为 null，且不会被更新。
+     * @param role Role
+     * @exception JibuException 修改失败时抛出。
+     */
+    public void update(Role role) throws JibuException;
+
+    /**
+     * 删除 Role。
+     *
+     * @param role Role
+     * @exception JibuException 删除失败时抛出。
+     */
+    public void delete(Role role) throws JibuException;
 
     /**
      * 得到一个完整的 Role List。
@@ -70,7 +87,7 @@ public interface RoleService {
      * <p>
      *
      * @param role Role。
-     * @param auth Authority。
+     * @param auth Authority，auth.getId() 不能为 null。
      * @exception JibuException 如果操作出现并发修改抛出。
      */
     public void bind(Role role, Authority auth) throws JibuException;
@@ -82,14 +99,14 @@ public interface RoleService {
      * @param auth Authority。
      * @return Role List
      */
-    public List<Role> findByAuthority(Authority auth);
+    public List<Role> find(Authority auth);
 
     /**
      * 将给定 Role 与 User 进行绑定。
      * <p>
      *
      * @param role Role。
-     * @param user User。
+     * @param user User，user.getId() 不能为 null。
      * @exception JibuException 如果操作出现并发修改抛出。
      */
     public void bind(Role role, User user) throws JibuException;
@@ -101,5 +118,25 @@ public interface RoleService {
      * @param user User。
      * @return Role List
      */
-    public List<Role> findByUser(User user);
+    public List<Role> find(User user);
+
+    /**
+     * 将给定 Role 与 Authorit 解除绑定。
+     * <p>
+     *
+     * @param role Role。
+     * @param auth Authority，auth.getId() 不能为 null。
+     * @exception JibuException 如果操作出现并发修改抛出。
+     */
+    public void unbind(Role role, Authority auth) throws JibuException;
+
+    /**
+     * 将给定 Role 与 User 解除绑定。
+     * <p>
+     *
+     * @param role Role。
+     * @param user User，user.getId() 不能为 null。
+     * @exception JibuException 如果操作出现并发修改抛出。
+     */
+    public void unbind(Role role, User user) throws JibuException;
 }

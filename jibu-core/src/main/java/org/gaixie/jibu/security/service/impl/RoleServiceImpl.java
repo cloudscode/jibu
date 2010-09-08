@@ -27,7 +27,9 @@ import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.cache.Cache;
 import org.gaixie.jibu.utils.CacheUtils;
 import org.gaixie.jibu.utils.ConnectionUtils;
+import org.gaixie.jibu.security.dao.AuthorityDAO;
 import org.gaixie.jibu.security.dao.RoleDAO;
+import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.Authority;
 import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
@@ -42,13 +44,19 @@ import org.slf4j.LoggerFactory;
 public class RoleServiceImpl implements RoleService {
     Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
     private final RoleDAO roleDAO;
+    private final AuthorityDAO authDAO;
+    private final UserDAO userDAO;
 
     /**
      * 使用 Guice 进行 DAO 的依赖注入。
      * <p>
      */
-    @Inject public RoleServiceImpl(RoleDAO roleDAO) {
+    @Inject public RoleServiceImpl(RoleDAO roleDAO,
+                                   UserDAO userDAO,
+                                   AuthorityDAO authDAO) {
         this.roleDAO = roleDAO;
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
     }
 
     public Role get(int id) {
@@ -79,17 +87,47 @@ public class RoleServiceImpl implements RoleService {
 	return role;
     }
 
-    public void addChild(Role role, Role parent) throws JibuException {
+    public void add(Role role, Role parent) throws JibuException {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
-	    roleDAO.saveChild(conn, role,parent);
+	    roleDAO.save(conn, role,parent);
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // RoleServiceImpl.001 = The role existed.
-            throw new JibuException("RoleServiceImpl.001");
-        } 
+            throw new JibuException(e.getMessage());
+        }
+    }
+
+    public void delete(Role role) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+	    roleDAO.delete(conn,role);
+            DbUtils.commitAndClose(conn);
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            throw new JibuException(e.getMessage());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 如果修改 Role，那么所有用于权限验证的 Cache 要重置。
+     */
+    public void update(Role role) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+	    roleDAO.update(conn,role);
+            DbUtils.commitAndClose(conn);
+	    CacheUtils.getAuthCache().clear();
+	    CacheUtils.getUserCache().clear();
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            throw new JibuException(e.getMessage());
+        }
     }
 
     public List<Role> getAll() {
@@ -115,24 +153,24 @@ public class RoleServiceImpl implements RoleService {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
-	    roleDAO.bind(conn, role, auth);
+            Authority a = authDAO.get(conn,auth.getId());
+	    roleDAO.bind(conn, role, a);
             DbUtils.commitAndClose(conn);
 	    Cache cache = CacheUtils.getAuthCache();
-	    cache.remove(auth.getValue());
+	    cache.remove(a.getValue());
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // RoleServiceImpl.002 = Bind authority failed.
-            throw new JibuException("RoleServiceImpl.002");
-        } 
+            throw new JibuException(e.getMessage());
+        }
     }
 
-    public List<Role> findByAuthority(Authority auth) {
+    public List<Role> find(Authority auth) {
         Connection conn = null;
 	List<Role> roles = null;
 
         try {
             conn = ConnectionUtils.getConnection();
-            roles = roleDAO.findByAuthority(conn,auth);
+            roles = roleDAO.find(conn,auth);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
@@ -151,28 +189,68 @@ public class RoleServiceImpl implements RoleService {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
-	    roleDAO.bind(conn,role,user);
+            User u = userDAO.get(conn,user.getId());
+	    roleDAO.bind(conn,role,u);
             DbUtils.commitAndClose(conn);
 	    Cache cache = CacheUtils.getUserCache();
-	    cache.remove(user.getUsername());
+	    cache.remove(u.getUsername());
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // RoleServiceImpl.003 = Bind user failed.
-	    throw new JibuException("RoleServiceImpl.003");
-        } 
+            throw new JibuException(e.getMessage());
+        }
     }
 
-    public List<Role> findByUser(User user) {
+    public List<Role> find(User user) {
         Connection conn = null;
 	List<Role> roles = null;
         try {
             conn = ConnectionUtils.getConnection();
-            roles = roleDAO.findByUser(conn,user);
+            roles = roleDAO.find(conn,user);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
             DbUtils.closeQuietly(conn);
         }
 	return roles;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 从 cache 中删除此 auth 对应的 roles。
+     */
+    public void unbind(Role role, Authority auth) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            Authority a = authDAO.get(conn,auth.getId());
+	    roleDAO.unbind(conn, role, a);
+            DbUtils.commitAndClose(conn);
+	    Cache cache = CacheUtils.getAuthCache();
+	    cache.remove(a.getValue());
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            throw new JibuException(e.getMessage());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 从 cache 中删除此 User 对应的 roles。
+     */
+    public void unbind(Role role, User user) throws JibuException {
+        Connection conn = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            User u = userDAO.get(conn,user.getId());
+	    roleDAO.unbind(conn,role,u);
+            DbUtils.commitAndClose(conn);
+	    Cache cache = CacheUtils.getUserCache();
+	    cache.remove(u.getUsername());
+        } catch(SQLException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            throw new JibuException(e.getMessage());
+        }
     }
 }

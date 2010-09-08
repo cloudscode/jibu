@@ -21,6 +21,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,41 +50,40 @@ import org.slf4j.LoggerFactory;
 
     @Inject private Injector injector;
 
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException {
         resp.setContentType("text/html;charset=UTF-8");
-        AuthorityService authService = 
+        AuthorityService authService =
             injector.getInstance(AuthorityService.class);
-        
-        ServletOutputStream output=resp.getOutputStream();
-        output.println(ServletUtils.head("Jibu Web Application")+
-                       ServletUtils.css("ext/resources/css/ext-all.css")+
-                       ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
-                       ServletUtils.javascript("ext/ext-all.js")+
-                       ServletUtils.css("css/jibu-all.css")+
-                       ServletUtils.css("js/classic/layout.css")+
-                       loadData(authService,req)+
-                       ServletUtils.javascript("js/classic/layout.js")+
-                       ServletUtils.body()+
-                       ServletUtils.div("header","")+
-                       ServletUtils.footer());
-        output.close();
+        PrintWriter pw = resp.getWriter();
+        pw.println(ServletUtils.head("Jibu Web Application")+
+                   ServletUtils.css("ext/resources/css/ext-all.css")+
+                   ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
+                   ServletUtils.javascript("ext/ext-all.js")+
+                   ServletUtils.css("css/jibu-all.css")+
+                   ServletUtils.css("js/classic/layout.css")+
+                   loadData(authService,req)+
+                   ServletUtils.javascript("js/classic/layout.js")+
+                   ServletUtils.body()+
+                   ServletUtils.div("header","")+
+                   ServletUtils.footer());
+        pw.close();
     }
 
-    public String loadData(AuthorityService authService, 
+    public String loadData(AuthorityService authService,
                            HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         Set mod = new HashSet();
-        ResourceBundle rb = 
+        ResourceBundle rb =
             ResourceBundle.getBundle("i18n/CoreExtjsResources");
 
         HttpSession ses = req.getSession(false);
-        Map<String,String> map = 
+        Map<String,String> map =
             authService.findMapByUsername((String)ses.getAttribute("username"));
 
         /*------------------------------------------------------------------------------------
          * 算法：
-         * 提高初次载入的效率，需要用一遍循环得到 
+         * 提高初次载入的效率，需要用一遍循环得到
          * 1）用于菜单加载的 树形数据 （json格式）。
          *    放入<script> 标签内，直接返回，无须第二次 ajax请求。
          *    pre:  前一个节点的层数
@@ -108,10 +107,10 @@ import org.slf4j.LoggerFactory;
             String val = (String)entry.getValue();
 
             // text: key 应该是国际化过的串，用于显示。
-            String node = "{\"url\":\""+key+"\",\"text\":\""+rb.getString(key)+"\",\"leaf\":"
+            String node = "{url:\""+key+"\",text:\""+rb.getString(key)+"\",leaf:"
                 +(("#".equals(val)) ? "false" : "true}");
-                
-            String[] path = key.split("\\."); 
+
+            String[] path = key.split("\\.");
             int cur = path.length;
 
             if (!"#".equals(val)) {
@@ -122,11 +121,11 @@ import org.slf4j.LoggerFactory;
             }
 
             int dist = pre - cur;
-                
+
             if (dist < 0) {                      // 层数在增加
                 // 第一个节点按照JSON格式需要特殊处理，注意在这里开始给 JibuNavs赋值
                 if (index == 0) sb.append("JibuNav.data = ["+node);
-                else sb.append(",\"children\":["+node);
+                else sb.append(",children:["+node);
             } else if (dist >0) {                // 层数在减少
                 for (int i=0;i<dist;i++) {
                     sb.append("]}");
@@ -145,11 +144,18 @@ import org.slf4j.LoggerFactory;
         sb.append("</script>\n");
 
         // 输出拥有权限的子系统 js 文件。
+
         Iterator ite = mod.iterator();
         while (ite.hasNext()){
             sb.append("  <script type=\"text/javascript\" src=\""+ite.next()+"\"></script>\n");
         }
 
+        /*
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/pm.js\"></script>\n");
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/user.js\"></script>\n");
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/role.js\"></script>\n");
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/authority.js\"></script>\n");
+        */
         return sb.toString();
     }
 

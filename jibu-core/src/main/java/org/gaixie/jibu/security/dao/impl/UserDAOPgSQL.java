@@ -25,6 +25,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.Criteria;
+import org.gaixie.jibu.security.model.Authority;
+import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,10 @@ import org.slf4j.LoggerFactory;
  */
 public class UserDAOPgSQL implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAOPgSQL.class);
+
+    public User get(Connection conn, int id) throws SQLException {
+        return null;
+    }
 
     public User get(Connection conn, String username) throws SQLException {
         return null;
@@ -48,6 +54,14 @@ public class UserDAOPgSQL implements UserDAO {
 
     }
 
+    public void update(Connection conn, User user) throws SQLException {
+
+    }
+
+    public void delete(Connection conn, User user) throws SQLException {
+
+    }
+
     public List<User> find( Connection conn, User user) throws SQLException {
         return null;
     }
@@ -58,6 +72,14 @@ public class UserDAOPgSQL implements UserDAO {
 
     public List<User> find(Connection conn, User user, Criteria criteria) 
         throws SQLException {
+        return null;
+    }
+
+    public List<User> find( Connection conn, Role role) throws SQLException {
+        return null;
+    }
+
+    public List<User> find( Connection conn, Authority auth) throws SQLException {
         return null;
     }
 }

@@ -57,16 +57,16 @@ public class LoginServletTest {
         EasyMock.expect(mockRequest.getParameter("username")).andReturn("admin");
         EasyMock.expect(mockRequest.getParameter("password")).andReturn("123456");
         output  = new ByteArrayOutputStream();
-        ServletOutputStream sos = new ServletOutputStream() {
+        PrintWriter pw  = new PrintWriter(output) {
                 public void write(final int theByte) {
                     output.write(theByte);
                 }
             };
   
         //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output)); 
-        EasyMock.expect(mockResponse.getOutputStream()).andReturn(sos);
+        EasyMock.expect(mockResponse.getWriter()).andReturn(pw);
         loginService.login("admin","123456");
-        EasyMock.expectLastCall().atLeastOnce();
+        EasyMock.expectLastCall().once();
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);
         ses.setAttribute("username", "admin");
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);

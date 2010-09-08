@@ -51,12 +51,6 @@ public class UserServiceTest extends CoreTestSupport {
     @Test public void testAdd() throws Exception {
         User user = new User("tommy wang","testUserServiceAdd","123456","bitorb@gmail.com",true);
         userService.add(user);
-        try {
-            userService.add(user);
-        } catch (JibuException e) {
-            Assert.assertTrue("UserService.001".equals(e.getMessage()));
-        }
-
         user = userService.get("testUserServiceAdd");
         Assert.assertNotNull(user);
     }
@@ -78,6 +72,12 @@ public class UserServiceTest extends CoreTestSupport {
         crt.setSort("username");
         crt.setDir("DESC");
 
+        // 没有 crt  select * from where enabled = true
+        // 有 分页 crt  SELECT * FROM ( 
+        //                            select ROW_NUMBER() OVER() AS R, userbase.* 
+        //                            from userbase) as TR
+        //               where R >0 AND R <=1
+        //               ORDER BY username DESC
         Assert.assertTrue(0 == crt.getTotal());
         List<User> users = userService.find(user,crt);
         Assert.assertTrue(1 == users.size());

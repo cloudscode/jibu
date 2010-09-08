@@ -25,9 +25,11 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.gaixie.jibu.utils.BeanConverter;
+import org.gaixie.jibu.utils.SQLBuilder;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.Criteria;
+import org.gaixie.jibu.security.model.Authority;
+import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.JibuException;
 import org.slf4j.Logger;
@@ -45,18 +47,41 @@ public class UserDAODerby implements UserDAO {
 	this.run = new QueryRunner();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，password 属性为 null。
+     */
+    public User get( Connection conn, int id) throws SQLException {
+        ResultSetHandler<User> h = new BeanHandler(User.class);
+        return run.query(conn
+                         , "SELECT id,username,fullname,emailaddress,enabled FROM userbase WHERE id=? "
+                         , h
+                         , id);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，password 属性为 null。
+     */
     public User get( Connection conn, String username) throws SQLException {
         ResultSetHandler<User> h = new BeanHandler(User.class);
         return run.query(conn
-                         , "SELECT id,username,password,fullname,emailaddress,enabled FROM userbase WHERE username=? "
+                         , "SELECT id,username,fullname,emailaddress,enabled FROM userbase WHERE username=? "
                          , h
                          , username);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，password 属性为 null。
+     */
     public User login(Connection conn,String username, String password) throws SQLException {
         ResultSetHandler<User> h = new BeanHandler(User.class);
         return run.query(conn
-                         , "SELECT id,username,password,fullname,emailaddress,enabled FROM userbase WHERE username=? AND password=?"
+                         , "SELECT id,username,fullname,emailaddress,enabled FROM userbase WHERE username=? AND password=? and enabled=1"
                          , h
                          , username
                          , password);
@@ -69,35 +94,63 @@ public class UserDAODerby implements UserDAO {
                    , user.getUsername()
                    , user.getPassword()
                    , user.getEmailaddress()
-                   , user.isEnabled()); 
+                   , user.getEnabled());
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * 返回值永远不会为 null，无值 size()==0  。
+     * 除 id 属性以外，所有非空的属性将会被更新至数据库中。
+     */
+    public void update(Connection conn, User user) throws SQLException {
+        String sql = "UPDATE userbase \n";
+        Integer id = user.getId();
+        user.setId(null);
+        try {
+            String s = SQLBuilder.beanToDerbyClause(user,",");
+            sql = sql + SQLBuilder.getSetClause(s) +"\n"+
+                "WHERE id=? ";
+        } catch (JibuException e) {
+            throw new SQLException(e.getMessage());
+        }
+        run.update(conn
+                   , sql
+                   , id);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * user.getId() 不能为 null。
+     */
+    public void delete(Connection conn, User user) throws SQLException {
+        run.update(conn
+                   , "DELETE FROM  userbase WHERE id=?"
+                   , user.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，返回 List 中所有 User 的 password 属性为 null。
      */
     public List<User> find( Connection conn, User user) throws SQLException {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
-        String sql = "SELECT id,username,password,fullname,emailaddress,enabled FROM userbase \n"; 
+        String sql = "SELECT id,username,fullname,emailaddress,enabled FROM userbase \n";
         try {
-            String s = BeanConverter.beanToDerbySQL(user);
-            sql = sql + BeanConverter.getWhereSQL(s);
+            String s = SQLBuilder.beanToDerbyClause(user,"AND");
+            sql = sql + SQLBuilder.getWhereClause(s);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }
         return run.query(conn, sql, h);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     */
     public int getTotal( Connection conn, User user) throws SQLException {
-        String sql = "SELECT COUNT(id) FROM userbase \n"; 
+        String sql = "SELECT COUNT(id) FROM userbase \n";
         try {
-            String s = BeanConverter.beanToDerbySQL(user);
-            sql = sql + BeanConverter.getWhereSQL(s);
+            String s = SQLBuilder.beanToDerbyClause(user,"AND");
+            sql = sql + SQLBuilder.getWhereClause(s);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }
@@ -107,19 +160,53 @@ public class UserDAODerby implements UserDAO {
     /**
      * {@inheritDoc}
      * <p>
-     * 返回值永远不会为 null，无值 size()==0  。
+     * 安全考虑，返回 List 中所有 User 的 password 属性为 null。
      */
     public List<User> find( Connection conn, User user, Criteria criteria) throws SQLException {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
-        String sql = "SELECT id,username,password,fullname,emailaddress,enabled FROM userbase \n"; 
+        String sql = "SELECT id,username,fullname,emailaddress,enabled FROM userbase \n";
         try {
-            String s = BeanConverter.beanToDerbySQL(user);
-            sql = sql + BeanConverter.getWhereSQL(s);
-            sql = BeanConverter.getSortSQL(sql,criteria);
-            sql = BeanConverter.getPagingDerbySQL(sql,criteria);
+            String s = SQLBuilder.beanToDerbyClause(user, "AND");
+            sql = sql + SQLBuilder.getWhereClause(s);
+            sql = SQLBuilder.getSortClause(sql,criteria);
+            sql = SQLBuilder.getPagingDerbyClause(sql,criteria);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }
         return run.query(conn, sql, h);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，返回 List 中所有 User 的 password 属性为 null，role.getId() 不能为 null。
+     */
+    public List<User> find( Connection conn, Role role) throws SQLException {
+        ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
+        return run.query(conn
+                         ,"SELECT u.id, u.username, u.fullname, u.emailaddress,u.enabled "+
+                         " FROM roles AS r, user_role_map AS m, userbase AS u "+
+                         " WHERE u.id = m.user_id "+
+                         " AND m.role_id = r.id "+
+                         " AND r.id = ? "
+                         , h, role.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 安全考虑，返回 List 中所有 User 的 password 属性为 null，auth.getId() 不能为 null。
+     */
+    public List<User> find( Connection conn, Authority auth) throws SQLException {
+        ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
+        return run.query(conn
+                         ,"SELECT u.id, u.username, u.fullname, u.emailaddress,u.enabled "+
+                         " FROM roles AS node, roles AS parent, user_role_map AS urm, role_authority_map AS ram, userbase AS u "+
+                         " WHERE parent.id = ram.role_id "+
+                         " AND node.lft BETWEEN parent.lft AND parent.rgt "+
+                         " AND node.id = urm.role_id "+
+                         " AND urm.user_id = u.id "+
+                         " AND ram.authority_id = ? "
+                         , h, auth.getId());
     }
 }

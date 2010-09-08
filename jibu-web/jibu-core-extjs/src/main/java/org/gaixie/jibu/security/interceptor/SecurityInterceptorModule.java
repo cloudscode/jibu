@@ -14,17 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.security;
+package org.gaixie.jibu.security.interceptor;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.matcher.Matchers;
+
+import javax.servlet.http.HttpServlet;
+
+import org.gaixie.jibu.security.annotation.CIVerify;
+import org.gaixie.jibu.security.interceptor.CIVerifyInterceptor;
 
 /**
- * Constants class used by The Jibu Security 。
+ * Security Interceptor 的 Bind 类。
+ * <p>
+ * 负责将 Matchers 与拦截器进行 Bind。
  */
+public class SecurityInterceptorModule extends AbstractModule {
 
-public class Constants {
-
-    public static final int VIEW     = 1;
-    public static final int ADD      = 2;
-    public static final int EDIT     = 4;
-    public static final int DELETE   = 8;
+    @Override protected void configure() {
+        bindInterceptor(Matchers.subclassesOf(HttpServlet.class),
+                        Matchers.annotatedWith(CIVerify.class),
+                        new CIVerifyInterceptor());
+    }
 }
-

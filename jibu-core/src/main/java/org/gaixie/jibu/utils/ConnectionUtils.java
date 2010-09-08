@@ -41,7 +41,7 @@ public class ConnectionUtils {
         Properties prop = new Properties();
         try {
             prop.load(ConnectionUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
-            dataSource = BasicDataSourceFactory.createDataSource(prop); 
+            dataSource = BasicDataSourceFactory.createDataSource(prop);
         } catch (IOException ioe) {
             logger.error("Failed to load file: "+PROPERTIES_FILE, ioe);
         } catch (Exception e) {

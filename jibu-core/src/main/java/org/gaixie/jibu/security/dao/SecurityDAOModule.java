@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 将 数据访问接口与实现进行绑定。
  * <p>
  * 默认为 Derby， 如果使用 Derby 数据库，会在 DI 时，自动创建 Schema。
- * @see SchemaCreate#create(String) 
+ * @see SchemaCreate#create(String)
  */
 public class SecurityDAOModule extends AbstractModule {
     private static final Logger logger = LoggerFactory.getLogger(SecurityDAOModule.class);

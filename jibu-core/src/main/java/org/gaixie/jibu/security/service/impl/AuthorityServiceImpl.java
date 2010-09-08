@@ -76,12 +76,12 @@ public class AuthorityServiceImpl implements AuthorityService {
 	return auth;
     }
 
-    public Authority get(String value, int mask) {
+    public Authority get(String value) {
         Connection conn = null;
 	Authority auth = null;
         try {
             conn = ConnectionUtils.getConnection();
-            auth = authDAO.get(conn,value,mask);
+            auth = authDAO.get(conn,value);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
@@ -106,9 +106,8 @@ public class AuthorityServiceImpl implements AuthorityService {
 	    cache.remove("authorities");
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // AuthorityServiceImpl.001 = The authority existed.
-            throw new JibuException("AuthorityServiceImpl.001");
-        } 
+            throw new JibuException(e.getMessage());
+        }
     }
 
     /**
@@ -169,121 +168,89 @@ public class AuthorityServiceImpl implements AuthorityService {
      * <p>
      * 初次调用会访问数据库，之后就访问 Cache，直到 Cache 更新。<br>
      * 将所有的 Authority 绑定的角色与 username 拥有的角色进行匹配，
-     * 成功则将 装入 Map。
+     * 成功则将 装入 Map。<br>
+     * 约定如果 authority.name 的长度小于 5位，将不包括在返回的 Map中。
+     * 也就是说，不用于菜单的显示，但权限验证依然有效。
      */
     public Map<String,String> findMapByUsername(String username) {
 	Map<String,String> treemap = new TreeMap<String,String>();
 	List<Authority> auths = getAll();
-	List<String> roleNames = findRoleNamesByUsername(username);
+
+	List<String> urole = findRoleNamesByUsername(username);
+        if (null== urole) return treemap;
+
 	for (Authority auth : auths) {
+            if (auth.getName().length() < 5) continue;
             // 写死ROLE_ADMIN角色无须任何判断，加载所有数据
-            if (roleNames.contains("ROLE_ADMIN")) {
+            if (urole.contains("ROLE_ADMIN")) {
                 putTreeMap(treemap,auth);
 		continue;
             }
 
-	    Map<Integer,List<String>> map = findMapByValue(auth.getValue());
-	    // 如果map为空，表示此auth不存在，并发修改产生？
+	    List<String> arole = findRoleNamesByValue(auth.getValue());
             // map.size()==0 ，表示auth还没绑定任何Role，所有用户都有权限
-            if (null == map) continue;
-	    if (map.size()==0) {
+	    if (arole.size()==0) {
                 putTreeMap(treemap,auth);
 		continue;
 	    }
-            boolean matched = false;
-            Iterator iter = map.entrySet().iterator();
-            while (iter.hasNext()&& !matched) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                Integer key = (Integer)entry.getKey();
-                List<String> val = (List<String>)entry.getValue();
-                for (String role : val) {
-                    if (roleNames.contains(role)) {
-                        putTreeMap(treemap,auth);
-                        // 一个auth.value可能因为mask不同，有多组role
-                        // 只要匹配任意一组，就可以在菜单上显示，break到最外层循环
-                        matched = true;
-                        break;
-                    }
+            for (String role : arole) {
+                if (urole.contains(role)) {
+                    putTreeMap(treemap,auth);
+                    break;
                 }
-
             }
 	}
 	return treemap;
     }
 
 
-    private Map<Integer,List<String>> findMapByValue(String value) {
+    private List<String> findRoleNamesByValue(String value) {
         Connection conn = null;
 	Cache cache = CacheUtils.getAuthCache();
-	Map<Integer,List<String>> map = (HashMap<Integer,List<String>>)cache.get(value);
-	if (null != map) return map;
-        map = new HashMap<Integer,List<String>>();
+	List<String> names = (List<String>)cache.get(value);
+	if (null != names) return names;
         try {
             conn = ConnectionUtils.getConnection();
-            // 先根据value取得一组authority(mask不同)，如果auth不存在，直接返回
-            List<Authority> auths = authDAO.findByValue(conn,value);
-            if (auths.size()==0) return null;
-            // 不同的mask有一组roles
-            for (Authority auth : auths) {
-                List<String> roles = roleDAO.findByAuthid(conn,auth.getId());
-                if (null != roles) {
-                    map.put(auth.getMask(),roles);
-                }
+            Authority auth = authDAO.get(conn,value);
+            if (null != auth) {
+                names = roleDAO.findByAuthid(conn,auth.getId());
+                cache.put(value,names);
             }
-	    cache.put(value,map);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
             DbUtils.closeQuietly(conn);
         }
-	return map;
+	return names;
     }
 
     /**
      * {@inheritDoc}
      * <p>
      * 初次调用会访问数据库，之后就访问 Cache，直到 Cache 更新。<br>
-     * 权限按下面过程进行验证：
-     * <ul>
-     * <li> 首先根据 action 得到一个结构为{@code <mask,List<Role>>>}
-     * 的 HashMap。</li>
-     * <li> 用 crud 依次与 mask 进行比对(位操作)，如果成功取得{@code List<Role>}</li>
-     * <li> 用 username 取得自己拥有的角色，与{@code List<Role>} 匹配，
-     * 成功则返回 true，如果全部匹配失败，返回false。</li>
-     * </ul><br>
-     * 除了正常的权限验证，还有下面一些默认约定：
+     * 权限验证有下面一些默认约定：
      * <ul>
      * <li>如果 username 没有绑定任何 Role，即没有任何权限，返回 false。</li>
      * <li>如果 username 有管理员角色 ROLE_ADMIN ，即拥有所有权限，返回 true。</li>
-     * <li>通过 action 没有找到任何匹配的 Authority，表示该操作无效，
+     * <li>通过 value 没有找到任何匹配的 Authority，表示该操作无效，
      * 返回 false。</li>
      * <li>如果匹配的 Authority 没有绑定任何 Role，认为它不受权限控制，
      * 返回 true。</li>
      * </ul>
      *
      */
-    public boolean verify(String action, int crud, String username) {
+    public boolean verify(String value, String username) {
         List<String> userRoles = findRoleNamesByUsername(username);
         if ( null == userRoles) return false;
         if (userRoles.contains("ROLE_ADMIN")) return true;
-
-        Map<Integer,List<String>> map  = findMapByValue(action);
+        List<String> authRoles = findRoleNamesByValue(value);
         // 要想暂时禁止所有用户访问，就只将此auth绑定到一个没有任何用户的角色上
-        if ( null == map ) return false;
-        if ( map.size()==0 ) return true;
+        if ( null == authRoles ) return false;
+        if ( authRoles.size()==0 ) return true;
 
-        Iterator iter = map.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            Integer mask = (Integer)entry.getKey();
-            // 位操作判断权限
-            if (crud == (crud & mask)) {
-                List<String> val = (List<String>)entry.getValue();
-                for (String role: val) {
-                    if(userRoles.contains(role)) {
-                        return true;
-                    }
-                }
+        for (String role: authRoles) {
+            if(userRoles.contains(role)) {
+                return true;
             }
         }
 	return false;
@@ -305,15 +272,14 @@ public class AuthorityServiceImpl implements AuthorityService {
 	    cache.remove("authorities");
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // AuthorityServiceImpl.002 = Delete the authority failed.
-            throw new JibuException("AuthorityServiceImpl.002");
-        } 
+            throw new JibuException(e.getMessage());
+        }
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * 此操作会清空 Cache 中 authorities 对应的 value 和 
+     * 此操作会清空 Cache 中 authorities 对应的 value 和
      * key = auth.getValue() 的数据，下次请求时装载。
      * @see #getAll()
      */
@@ -329,9 +295,8 @@ public class AuthorityServiceImpl implements AuthorityService {
             cache.remove(old.getValue());
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            // AuthorityServiceImpl.003 = Update the authority failed.
-            throw new JibuException("AuthorityServiceImpl.003");
-        } 
+            throw new JibuException(e.getMessage());
+        }
     }
 
     public List<Authority> findByName(String name) {
@@ -340,6 +305,49 @@ public class AuthorityServiceImpl implements AuthorityService {
         try {
             conn = ConnectionUtils.getConnection();
             auths = authDAO.findByName(conn,name);
+        } catch(SQLException e) {
+	    logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+	return auths;
+    }
+
+    public List<Authority> find(Authority auth) {
+        if (null == auth) return this.getAll();
+        Connection conn = null;
+	List<Authority> auths = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            auths = authDAO.find(conn,auth);
+        } catch(SQLException e) {
+	    logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+	return auths;
+    }
+
+    public List<Authority> find(User user) {
+        Connection conn = null;
+	List<Authority> auths = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            auths = authDAO.find(conn,user);
+        } catch(SQLException e) {
+	    logger.error(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
+        }
+	return auths;
+    }
+
+    public List<Authority> find(Role role) {
+        Connection conn = null;
+	List<Authority> auths = null;
+        try {
+            conn = ConnectionUtils.getConnection();
+            auths = authDAO.find(conn,role);
         } catch(SQLException e) {
 	    logger.error(e.getMessage());
         } finally {
