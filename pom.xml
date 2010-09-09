@@ -26,7 +26,7 @@
   <packaging>pom</packaging>
 
   <name>Jibu</name>
-  <description>稳定、高效、简洁的Web开发框架。</description>
+  <description>稳定、高效、简洁的 Java 应用开发模板。</description>
   <inceptionYear>2010</inceptionYear>
 
   <organization>
@@ -34,12 +34,45 @@
     <url>http://www.gaixie.org/</url>
   </organization>
 
+  <url>http://www.gaixie.org/</url>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:bitorb/jibu.git</connection>
+    <developerConnection>scm:git:git@github.com:bitorb/jibu.git</developerConnection>
+    <url>http://github.com/bitorb/jibu</url>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
+
+  <developers>
+    <developer>
+      <name>Tommy Wang</name>
+      <id>tommy</id>
+      <email>bitorb@gmail.com</email>
+      <organization />
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,6 +92,35 @@
     <module>assemblies</module>
     <module>itest</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <pluginManagement>
@@ -84,6 +146,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
         </plugin>
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
