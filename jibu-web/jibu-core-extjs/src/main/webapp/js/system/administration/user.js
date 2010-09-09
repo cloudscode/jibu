@@ -120,15 +120,14 @@ jibu.security.user.Grid = function(config){
                                                   });
     this.columns = [new Ext.grid.RowNumberer(),
                     {header: 'Username', width: 80, sortable: true, dataIndex: 'username'},
-                    {header: 'Full Name', width: 100, sortable: true,  dataIndex: 'fullname'},
-                    {header: 'Email Address', width: 120, sortable: true,  dataIndex: 'emailaddress'},
+                    {header: 'Full Name', width: 80, sortable: true,  dataIndex: 'fullname'},
                     {header: 'Enabled', width: 50, sortable: true, dataIndex: 'enabled'},
                     this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
-                     width: 130,
-                     emptyText: 'Select a property...',
+                     width: 100,
+                     emptyText: 'Select column',
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],
                                                         data: [
@@ -144,6 +143,7 @@ jibu.security.user.Grid = function(config){
                      text: '<b>=</b>'
                  },{
                      xtype: 'field',
+                     width: 100,
                      name: 'searchValue',
                      scope: this
                  },{
@@ -199,8 +199,7 @@ jibu.security.user.Grid = function(config){
     };
 
     jibu.security.user.Grid.superclass.constructor.call(this,{
-                                                            stripeRows: true,
-                                                            border: false
+                                                            stripeRows: true
                                                         });
 
 };

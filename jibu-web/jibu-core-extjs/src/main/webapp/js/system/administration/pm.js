@@ -1,24 +1,24 @@
 Ext.ns('jibu.security');
 jibu.security.PM =
     Ext.extend(Ext.Panel,{
-                   layout:'border',
+                   layout:'hbox',
+                   layoutConfig: {
+                       align : 'stretch',
+                       pack  : 'start'
+                   },
+
                    initComponent:function() {
                        var config = {
                            items:[{
                                       xtype:'system.administration.usergrid',
-                                      region:'west',
-                                      width:420,
-                                      split:true
+                                      flex:2
                                   },{
                                       xtype:'system.administration.roletree',
-                                      region:'center',
-                                      border:false
+                                      flex:1
                                   },{
                                       xtype:'system.administration.authgrid',
-                                      region:'east',
-                                      width:350,
-                                      split:true,
-                                      border:false
+                                      width:280
+
                                   }]
                        };
 

@@ -87,14 +87,14 @@ jibu.security.authority.Grid = function(config){
                                         });
     this.sm = new Ext.grid.CheckboxSelectionModel({singleSelect:true,sortable:true,header:''});
     this.columns = [new Ext.grid.RowNumberer(),
-                    {header: 'Name', width: 140, sortable: true, dataIndex: 'name'},
+                    {header: 'Name', width: 100, sortable: true, dataIndex: 'name'},
                     {header: 'Value', width: 100, sortable: true,  dataIndex: 'value'},
                     this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
-                     width: 130,
-                     emptyText: 'Select a property...',
+                     width: 100,
+                     emptyText: 'Select column',
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],
                                                         data: [
@@ -110,6 +110,7 @@ jibu.security.authority.Grid = function(config){
                      text: '<b>=</b>'
                  },{
                      xtype: 'field',
+                     width: 100,
                      name: 'searchValue',
                      scope: this
                  },{
@@ -158,8 +159,7 @@ jibu.security.authority.Grid = function(config){
     };
 
     jibu.security.authority.Grid.superclass.constructor.call(this,{
-                                                                 stripeRows: true,
-                                                                 border: false
+                                                                 stripeRows: true
                                                              });
 
 };

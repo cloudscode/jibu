@@ -49,7 +49,7 @@ jibu.layout.classic.NavPanel = function() {
                                            });
     this.tbar = [' ',
                  new Ext.form.TextField({
-                                            width: 180,
+                                            width: 150,
                                             emptyText:'Find a Module',
                                             enableKeyEvents: true,
                                             listeners:{
@@ -84,7 +84,7 @@ jibu.layout.classic.NavPanel = function() {
                                                                  region:"west",
                                                                  split:true,
                                                                  header:false,
-                                                                 width:255,
+                                                                 width:220,
                                                                  minSize:175,
                                                                  maxSize:500,
                                                                  collapsible:true,
