@@ -46,7 +46,9 @@
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/app.xml</descriptor>
+            <descriptor>src/main/assembly/src.xml</descriptor>
           </descriptors>
+          <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
     </plugins>
