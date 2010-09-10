@@ -20,7 +20,7 @@
 
   <groupId>org.gaixie.jibu</groupId>
   <artifactId>jibu-parent</artifactId>
-  <version>1.0.0-M1</version>
+  <version>1.0.0-M2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Jibu</name>
@@ -237,17 +237,17 @@
       <dependency>
         <groupId>org.gaixie.jibu</groupId>
         <artifactId>jibu-core</artifactId>
-        <version>1.0.0-M1</version>
+        <version>1.0.0-M2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.gaixie.jibu.plugins</groupId>
         <artifactId>jibu-json</artifactId>
-        <version>1.0.0-M1</version>
+        <version>1.0.0-M2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.gaixie.jibu.web</groupId>
         <artifactId>jibu-core-extjs</artifactId>
-        <version>1.0.0-M1</version>
+        <version>1.0.0-M2-SNAPSHOT</version>
         <type>war</type>
       </dependency>
       <dependency>
