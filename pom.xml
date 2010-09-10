@@ -46,7 +46,7 @@
   <scm>
     <connection>scm:git:git@github.com:bitorb/jibu.git</connection>
     <developerConnection>scm:git:git@github.com:bitorb/jibu.git</developerConnection>
-    <url>scm:git:git@github.com:bitorb/jibu.git</url>
+    <url>scm:git:git://github.com/bitorb/jibu.git</url>
   </scm>
 
   <distributionManagement>
