@@ -82,7 +82,7 @@ import org.gaixie.jibu.security.service.UserService;
             User user = ServletUtils.httpToBean(User.class,req);
             userService.add(user);
             jsonMap.put("success", true);
-            jsonMap.put("data", user.getUsername());
+            jsonMap.put("message", "操作成功！");
         } catch (Exception e) {
             jsonMap.put("success", false);
             jsonMap.put("message", e.getMessage());

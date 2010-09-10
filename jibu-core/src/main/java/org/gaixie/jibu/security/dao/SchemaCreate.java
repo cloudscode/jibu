@@ -17,15 +17,19 @@
 package org.gaixie.jibu.security.dao;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Arrays;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
@@ -58,22 +62,25 @@ public class SchemaCreate {
             String dpn = dbm.getDatabaseProductName();
             if (!"Apache Derby".equals(dpn)) throw new SQLException("Database is not Apache Derby!");
             QueryRunner run = new QueryRunner();
-
-            InputStream in = this.getClass().getResourceAsStream("/dbscripts/"+type+"/.");
-            BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
-            String ln;
-            while ((ln = rdr.readLine()) != null) {
-                handleFile(run,conn,"/dbscripts/"+type+"/"+ln);
+            URL url = this.getClass().getResource("/dbscripts/"+type+"/");
+            File dir = new File(url.toURI());
+            File[] files = dir.listFiles();
+            Arrays.sort(files);
+            for (File file:files){
+                if(file.isFile()){
+                    handleFile(run,conn,"/dbscripts/"+type+"/"+file.getName());
+                }
             }
-            rdr.close();
-
             DbUtils.commitAndClose(conn);
         } catch (SQLException se) {
             DbUtils.rollbackAndCloseQuietly(conn);
             logger.warn("Schema create failed: "+ se.getMessage());
         } catch (IOException ie) {
             DbUtils.rollbackAndCloseQuietly(conn);
-            logger.warn("Schema create failed: "+ ie.getMessage());
+            logger.warn("Read SQL Scripts failed: "+ ie.getMessage());
+        } catch (URISyntaxException e) {
+            DbUtils.rollbackAndCloseQuietly(conn);
+            logger.warn("Get SQL Scripts Directory failed: "+ e.getMessage());
         }
     }
 
@@ -91,7 +98,7 @@ public class SchemaCreate {
         checkForMissingLineTerminator(command);
     }
 
-    private StringBuilder handleLine(StringBuilder command 
+    private StringBuilder handleLine(StringBuilder command
                                      ,String line
                                      ,QueryRunner run
                                      ,Connection conn) throws SQLException {
@@ -102,7 +109,7 @@ public class SchemaCreate {
         } else if (trimmedLine.endsWith(";")) {
             command.append(line.substring(0, line.lastIndexOf(";")));
             command.append(" ");
-            run.update(conn, command.toString()); 
+            run.update(conn, command.toString());
             command.setLength(0);
         } else if (trimmedLine.length() > 0) {
             command.append(line);
@@ -115,7 +122,7 @@ public class SchemaCreate {
         return trimmedLine.startsWith("//") || trimmedLine.startsWith("--");
     }
 
-    private void checkForMissingLineTerminator(StringBuilder command) 
+    private void checkForMissingLineTerminator(StringBuilder command)
         throws SQLException {
         if (command != null && command.toString().trim().length() > 0) {
             throw new SQLException("Missing end-of-line terminator (;) => " + command);

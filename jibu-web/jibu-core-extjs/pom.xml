@@ -55,7 +55,7 @@
         <configuration>
           <packagingExcludes>WEB-INF/lib/*.jar,ext/**</packagingExcludes>
           <!-- 不要把压缩前的js打入war包 -->
-          <warSourceExcludes>js/**/*.js</warSourceExcludes>
+          <warSourceExcludes>js/**/*.js,ext-ux/**/*.js</warSourceExcludes>
           <overlays>
             <overlay>
               <groupId>org.gaixie.extjs-wrapped</groupId>
@@ -104,6 +104,13 @@
             <aggregation>
               <removeIncluded>true</removeIncluded>
               <output>${build.webappDirectory}/js/system/administration/administration-all.js</output>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </aggregation>
+            <aggregation>
+              <removeIncluded>true</removeIncluded>
+              <output>${build.webappDirectory}/ext-ux/ext-ux-all.js</output>
               <includes>
                 <include>**/*.js</include>
               </includes>

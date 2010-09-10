@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
                    ServletUtils.javascript("ext/ext-all.js")+
                    ServletUtils.css("css/jibu-all.css")+
                    ServletUtils.css("js/classic/layout.css")+
+                   ServletUtils.javascript("ext-ux/ext-ux-all.js")+
                    loadData(authService,req)+
                    ServletUtils.javascript("js/classic/layout.js")+
                    ServletUtils.body()+
@@ -149,8 +150,9 @@ import org.slf4j.LoggerFactory;
         while (ite.hasNext()){
             sb.append("  <script type=\"text/javascript\" src=\""+ite.next()+"\"></script>\n");
         }
-
         /*
+
+          sb.append("  <script type=\"text/javascript\" src=\"ext-ux/msg-bus.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/pm.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/user.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/role.js\"></script>\n");

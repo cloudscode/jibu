@@ -45,12 +45,12 @@ jibu.security.authority.Form = function() {
 //  页面上的字符串在这里定义
 Ext.extend(jibu.security.authority.Form, Ext.FormPanel, {
                submitFn: function() {
-                   var authid = this.getForm().findField("Authority.id").getValue();
+                   var authid = this.getForm().findField('Authority.id').getValue();
                    var url;
                    if (authid.length > 0) {
-                       url = '/AuthorityServlet.z?ci=authUpdate';
+                       url = 'AuthorityServlet.z?ci=authUpdate';
                    } else {
-                       url = '/AuthorityServlet.z?ci=authAdd';
+                       url = 'AuthorityServlet.z?ci=authAdd';
                    }
 
                    this.getForm().submit(
@@ -77,7 +77,7 @@ jibu.security.authority.Grid = function(config){
     this.store = new Ext.data.JsonStore({
                                             // destroy the store if the grid is destroyed
                                             autoDestroy: true,
-                                            url: '/AuthorityServlet.z?ci=authFind',
+                                            url: 'AuthorityServlet.z?ci=authFind',
                                             root: 'data',
                                             fields: [
                                                 {name: 'id', type: 'int'},
@@ -228,9 +228,9 @@ Ext.extend(jibu.security.authority.Grid,Ext.grid.GridPanel,{
                        if (btn == 'yes') {
                            Ext.Ajax.request(
                                {
-                                   url:"/AuthorityServlet.z?ci=authDelete",
+                                   url:'AuthorityServlet.z?ci=authDelete',
                                    params:{
-                                       'id':record.get("id")
+                                       'id':record.get('id')
                                    },
                                    method:'POST',
                                    success: function(r,a){

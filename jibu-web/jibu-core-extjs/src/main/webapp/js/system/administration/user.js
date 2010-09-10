@@ -69,12 +69,12 @@ jibu.security.user.Form = function() {
 //  页面上的字符串在这里定义
 Ext.extend(jibu.security.user.Form, Ext.FormPanel, {
                submitFn: function() {
-                   var uid = this.getForm().findField("User.id").getValue();
+                   var uid = this.getForm().findField('User.id').getValue();
                    var url;
                    if (uid.length > 0) {
-                       url = '/UserServlet.z?ci=userUpdate';
+                       url = 'UserServlet.z?ci=userUpdate';
                    } else {
-                       url = '/UserServlet.z?ci=userAdd';
+                       url = 'UserServlet.z?ci=userAdd';
                    }
 
                    this.getForm().submit(
@@ -102,7 +102,7 @@ jibu.security.user.Grid = function(config){
                                             // destroy the store if the grid is destroyed
                                             autoDestroy: true,
                                             remoteSort : true,
-                                            url: '/UserServlet.z?ci=userFind',
+                                            url: 'UserServlet.z?ci=userFind',
                                             root: 'data',
                                             fields: [
                                                 {name: 'id', type: 'int'},
@@ -259,7 +259,7 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                                                                     {id:'User.enabled',value:record.get('enabled')}
                                                                    ];
                                                         this.items.itemAt(0).getForm().setValues(data);
-                                                        this.items.itemAt(0).getForm().findField("User.username").disable();
+                                                        this.items.itemAt(0).getForm().findField('User.username').disable();
                                                     }
                                                 }
                                             });
@@ -273,9 +273,9 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                        if (btn == 'yes') {
                            Ext.Ajax.request(
                                {
-                                   url:"/UserServlet.z?ci=userDelete",
+                                   url:'UserServlet.z?ci=userDelete',
                                    params:{
-                                       'id':record.get("id")
+                                       'id':record.get('id')
                                    },
                                    method:'POST',
                                    success: function(r,a){

@@ -4,7 +4,10 @@ Ext.ns('jibu.layout.classic');
 jibu.layout.classic.HeaderPanel = function(){
     this.bbar = new Ext.Toolbar({
                                     border:true,
-                                    items : ['->',{
+                                    items : [' ',' ',{
+                                                 xtype:'displayfield',
+                                                 id:'message-board'
+                                             },'->',{
                                                  text:this.userText,
                                                  tooltip: 'User Setting',
                                                  iconCls :'user',
@@ -16,7 +19,7 @@ jibu.layout.classic.HeaderPanel = function(){
                                                  tooltip: 'Exit',
                                                  iconCls :'exit',
                                                  handler : function() {
-                                                     window.location = '/LoginServlet.x?ci=logout';
+                                                     window.location = 'LoginServlet.x?ci=logout';
                                                  }
                                              }]
                                 });

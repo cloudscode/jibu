@@ -119,7 +119,7 @@ jibu.security.PM =
                                               }
 
                                               this.fromwhere ='';
-                                              this.userStarBtn.setIconClass("star-off-icon");
+                                              this.userStarBtn.setIconClass('star-off-icon');
                                               this.checkedAuthIds.length=0;
                                               resetRoleFn(this.rolePanel,this.rolePanel.getBottomToolbar(), this.roleStarBtn);
                                               resetAuthFn(this.authSM, this.authPanel.getBottomToolbar(), this.authStarBtn);
@@ -138,7 +138,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:"/RoleServlet.z?ci=bindUser",
+                                                      url:'RoleServlet.z?ci=bindUser',
                                                       params:{
                                                           'user.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -170,7 +170,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:"/RoleServlet.z?ci=unbindUser",
+                                                      url:'RoleServlet.z?ci=unbindUser',
                                                       params:{
                                                           'user.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -228,7 +228,7 @@ jibu.security.PM =
                                                if (this.fromwhere=='' || this.fromwhere=='user') {
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:"/RoleServlet.z?ci=userBindCheck",
+                                                           url:'RoleServlet.z?ci=userBindCheck',
                                                            params:{
                                                                'username':this.userSM.getSelected().get('username')},
                                                            method:'POST',
@@ -273,7 +273,7 @@ jibu.security.PM =
                                                                this.rolePanel.resumeEvents();
                                                                this.authSM.resumeEvents();
 
-                                                               this.userStarBtn.setIconClass("star-icon");
+                                                               this.userStarBtn.setIconClass('star-icon');
                                                                this.roleRefreshBtn.disable();
                                                                this.fromwhere = 'user';
                                                            },
@@ -301,7 +301,7 @@ jibu.security.PM =
                                               }
 
                                               this.fromwhere ='';
-                                              this.authStarBtn.setIconClass("star-off-icon");
+                                              this.authStarBtn.setIconClass('star-off-icon');
                                               this.checkedAuthIds.length=0;
                                               resetRoleFn(this.rolePanel,this.rolePanel.getBottomToolbar(), this.roleStarBtn);
                                               // 在 clearSection() 之前必须保证 unlock，做完后为初始状态不用置回 lock
@@ -320,7 +320,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:"/RoleServlet.z?ci=bindAuth",
+                                                      url:'RoleServlet.z?ci=bindAuth',
                                                       params:{
                                                           'authority.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -351,7 +351,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:"/RoleServlet.z?ci=unbindAuth",
+                                                      url:'RoleServlet.z?ci=unbindAuth',
                                                       params:{
                                                           'authority.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -409,7 +409,7 @@ jibu.security.PM =
                                                if (this.fromwhere=='' || this.fromwhere=='auth') {
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:"/RoleServlet.z?ci=authBindCheck",
+                                                           url:'RoleServlet.z?ci=authBindCheck',
                                                            params:{
                                                                'id':this.authSM.getSelected().get('id')},
                                                            method:'POST',
@@ -452,7 +452,7 @@ jibu.security.PM =
                                                                this.rolePanel.resumeEvents();
                                                                this.userSM.resumeEvents();
 
-                                                               this.authStarBtn.setIconClass("star-icon");
+                                                               this.authStarBtn.setIconClass('star-icon');
                                                                this.roleRefreshBtn.disable();
                                                                this.fromwhere = 'auth';
                                                            },
@@ -470,7 +470,7 @@ jibu.security.PM =
                                                    var ck = this.rolePanel.getChecked();
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:"/RoleServlet.z?ci=roleBindCheck",
+                                                           url:'RoleServlet.z?ci=roleBindCheck',
                                                            params:{
                                                                'id':ck[0].id},
                                                            method:'POST',
@@ -513,7 +513,7 @@ jibu.security.PM =
                                                                this.userSM.resumeEvents();
                                                                this.authSM.resumeEvents();
 
-                                                               this.roleStarBtn.setIconClass("star-icon");
+                                                               this.roleStarBtn.setIconClass('star-icon');
                                                                this.roleRefreshBtn.disable();
                                                                this.fromwhere = 'role';
                                                            },
@@ -556,7 +556,7 @@ jibu.security.PM =
                                                  this.checkedAuthIds.length=0;
                                                  resetAuthFn(this.authSM, this.authPanel.getBottomToolbar(), this.authStarBtn);
                                                  resetUserFn(this.userSM, this.userPanel.getBottomToolbar(), this.userStarBtn);
-                                                 this.roleStarBtn.setIconClass("star-off-icon");
+                                                 this.roleStarBtn.setIconClass('star-off-icon');
                                              } else {
                                                  rbbar.get('role-delete-button').disable();
                                                  rbbar.get('role-edit-button').disable();
@@ -572,9 +572,9 @@ jibu.security.PM =
                                              if (this.fromwhere=='user' ) {
                                                  var url;
                                                  if(b) {
-                                                     url = "/RoleServlet.z?ci=bindUser";
+                                                     url = 'RoleServlet.z?ci=bindUser';
                                                  } else {
-                                                     url = "/RoleServlet.z?ci=unbindUser";
+                                                     url = 'RoleServlet.z?ci=unbindUser';
                                                  }
 
                                                  Ext.Ajax.request(
@@ -617,9 +617,9 @@ jibu.security.PM =
                                              if (this.fromwhere=='auth') {
                                                  var url;
                                                  if(b) {
-                                                     url = "/RoleServlet.z?ci=bindAuth";
+                                                     url = 'RoleServlet.z?ci=bindAuth';
                                                  } else {
-                                                     url = "/RoleServlet.z?ci=unbindAuth";
+                                                     url = 'RoleServlet.z?ci=unbindAuth';
                                                  }
                                                  Ext.Ajax.request(
                                                      {
