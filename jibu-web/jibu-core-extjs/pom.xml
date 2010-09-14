@@ -51,6 +51,7 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <attachClasses>true</attachClasses>
           <packagingExcludes>WEB-INF/lib/*.jar,ext/**</packagingExcludes>
           <!-- 不要把压缩前的js打入war包 -->
           <warSourceExcludes>js/**/*.js,ext-ux/**/*.js</warSourceExcludes>
