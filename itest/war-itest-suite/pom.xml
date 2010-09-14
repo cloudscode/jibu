@@ -77,6 +77,7 @@
     <dependency>
       <groupId>org.gaixie.jibu.plugins</groupId>
       <artifactId>jibu-json</artifactId>
+      <version>1.0.0-M2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>

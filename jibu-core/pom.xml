@@ -59,14 +59,17 @@
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
+      <version>${derby.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
+      <version>${dbutils.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
+      <version>${dbcp.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -31,4 +31,65 @@
   <modules>
     <module>jibu-core-extjs</module>
   </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+          <version>${jetty.version}</version>
+          <configuration>
+            <webAppConfig>
+              <contextPath>/</contextPath>
+            </webAppConfig>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>3.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-servlet</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5-20081211</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.gaixie.jibu.plugins</groupId>
+        <artifactId>jibu-json</artifactId>
+        <version>1.0.0-M2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gaixie.jibu.web</groupId>
+        <artifactId>jibu-core-extjs</artifactId>
+        <version>1.0.0-M2-SNAPSHOT</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.gaixie.extjs-wrapped</groupId>
+        <artifactId>extjs-wrapped</artifactId>
+        <version>3.2.1</version>
+        <type>zip</type>
+        <scope>runtime</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
