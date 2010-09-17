@@ -109,6 +109,13 @@
             </aggregation>
             <aggregation>
               <removeIncluded>true</removeIncluded>
+              <output>${build.webappDirectory}/js/system/system-all.js</output>
+              <includes>
+                <include>**/*.js</include>
+              </includes>
+            </aggregation>
+            <aggregation>
+              <removeIncluded>true</removeIncluded>
               <output>${build.webappDirectory}/ext-ux/ext-ux-all.js</output>
               <includes>
                 <include>**/*.js</include>

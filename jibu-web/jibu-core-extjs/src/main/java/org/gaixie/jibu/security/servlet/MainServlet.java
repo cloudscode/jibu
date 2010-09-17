@@ -76,7 +76,8 @@ import org.slf4j.LoggerFactory;
         StringBuilder sb = new StringBuilder();
         Set mod = new HashSet();
         ResourceBundle rb =
-            ResourceBundle.getBundle("i18n/CoreExtjsResources");
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
 
         HttpSession ses = req.getSession(false);
         Map<String,String> map =
@@ -150,13 +151,14 @@ import org.slf4j.LoggerFactory;
         while (ite.hasNext()){
             sb.append("  <script type=\"text/javascript\" src=\""+ite.next()+"\"></script>\n");
         }
-        /*
 
+        /*
           sb.append("  <script type=\"text/javascript\" src=\"ext-ux/msg-bus.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/pm.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/user.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/role.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/authority.js\"></script>\n");
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/setting.js\"></script>\n");
         */
         return sb.toString();
     }

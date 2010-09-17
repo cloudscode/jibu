@@ -35,7 +35,9 @@ import javax.servlet.http.HttpSession;
 
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
+import org.gaixie.jibu.security.model.Setting;
 import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.security.service.SettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,11 +52,11 @@ import org.slf4j.LoggerFactory;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException {
-        LoginService loginService = injector.getInstance(LoginService.class);
+
 
         if ("login".equals(req.getParameter("ci"))) {
             resp.setContentType("application/json;charset=UTF-8");
-            login(loginService,req,resp);
+            login(injector,req,resp);
         }
         if ("logout".equals(req.getParameter("ci"))) {
             logout(req,resp);
@@ -66,27 +68,35 @@ import org.slf4j.LoggerFactory;
         doGet(req, resp);
     }
 
-    protected void login(LoginService loginService,
+    protected void login(Injector injector,
                          HttpServletRequest req,
                          HttpServletResponse resp)
         throws IOException {
+        LoginService loginService = injector.getInstance(LoginService.class);
+        SettingService settingService = injector.getInstance(SettingService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
         String password=req.getParameter("password");
 
-        //        Locale locale = req.getLocale();
-        //        System.out.println(locale.toString());
         PrintWriter pw = resp.getWriter();
-
         try {
             loginService.login(username, password);
             // check if we have a session
             HttpSession ses = req.getSession(true);
             ses.setAttribute("username", username);
 
+            // 首先看用户是否选择过语言。
+            // 如果选择过，直接读取选择的语言，以Locale对象放入session。
+            // 如果没有选择，取当前浏览器支持的默认locale ，并放入session。
+            Setting setting = settingService.getByUsername("language",username);
+            if (setting != null) {
+                ses.setAttribute("locale", ServletUtils.convertToLocale(setting.getValue()));
+            } else {
+                ses.setAttribute("locale", req.getLocale());
+                // ses.setAttribute("locale", new Locale("zh","CN"));
+            }
             //resp.sendRedirect("/main.y");
             jsonMap.put("success", true);
-            jsonMap.put("data", username);
         } catch (Exception e) {
             jsonMap.put("success", false);
             jsonMap.put("message", "Login Failed! "+e.getMessage());

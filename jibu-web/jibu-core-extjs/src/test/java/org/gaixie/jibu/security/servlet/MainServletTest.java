@@ -19,6 +19,7 @@ package org.gaixie.jibu.security.servlet;
 import com.google.inject.Injector;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -50,13 +51,17 @@ public class MainServletTest {
         HttpSession mockSes = (HttpSession) EasyMock.createMock(HttpSession.class);
         EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
         EasyMock.expect((String)mockSes.getAttribute("username")).andReturn("admin");
-        ResourceBundle rb = 
-            ResourceBundle.getBundle("i18n/CoreExtjsResources");
+        Locale locale = new Locale("en","US");
+        EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
+        EasyMock.expect((Locale)mockSes.getAttribute("locale")).andReturn(locale);
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",locale);
         Map<String,String> map = new TreeMap<String,String>();
         map.put("system","#");
         map.put("system.administration","#");
         map.put("system.administration.pm","/PMServlet.z");
-        map.put("system.preferences","/PreferServet.z");
+        map.put("system.setting","/SettingServet.y");
         EasyMock.expect(mockAuthService.findMapByUsername("admin")).andReturn(map);
 
         EasyMock.replay(mockRequest);
@@ -73,7 +78,7 @@ public class MainServletTest {
                   +rb.getString("system.administration")+"\",leaf:false,children:[");
         sb.append("{url:\"system.administration.pm\",text:\""
                   +rb.getString("system.administration.pm")+"\",leaf:true}]},");
-        sb.append("{url:\"system.preferences\",text:\""+rb.getString("system.preferences")+"\",leaf:true}]}];\n");
+        sb.append("{url:\"system.setting\",text:\""+rb.getString("system.setting")+"\",leaf:true}]}];\n");
         sb.append("</script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/administration-all.js\"></script>\n");

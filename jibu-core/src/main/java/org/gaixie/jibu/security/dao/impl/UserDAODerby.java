@@ -113,6 +113,7 @@ public class UserDAODerby implements UserDAO {
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }
+        user.setId(id);
         run.update(conn
                    , sql
                    , id);

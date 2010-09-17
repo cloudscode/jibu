@@ -16,20 +16,22 @@
  */
 package org.gaixie.jibu.security.service;
 
+import org.gaixie.jibu.JibuException;
+
 /**
- * 系统登录服务接口。
- * <p>
+ * Login Exception class.
  */
-public interface LoginService {
+public class LoginException extends JibuException {
+    public LoginException() {
+        super();
+    }
 
     /**
-     * 通过用户名及密码进行登录验证。
-     * <p>
+     * Construct LoginException with message string.
      *
-     * @param username 登录用户名。
-     * @param password 没有进行hash的登录密码。
-     *
-     * @exception LoginException 用户名或密码错误时抛出。
+     * @param s Error message string.
      */
-    public void login(String username, String password) throws LoginException;
+    public LoginException(String s) {
+        super(s);
+    }
 }

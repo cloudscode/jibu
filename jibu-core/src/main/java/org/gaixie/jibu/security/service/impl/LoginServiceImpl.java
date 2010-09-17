@@ -22,10 +22,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.commons.dbutils.DbUtils;
-import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.security.MD5;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.service.LoginException;
 import org.gaixie.jibu.security.service.LoginService;
 import org.gaixie.jibu.utils.ConnectionUtils;
 import org.slf4j.Logger;
@@ -42,14 +42,14 @@ public class LoginServiceImpl implements LoginService {
     @Inject public LoginServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
-    
-    public void login(String username, String password) throws JibuException {
+
+    public void login(String username, String password) throws LoginException {
         Connection conn = null;
         String cryptpassword = MD5.encodeString(password,null);
         try {
             conn = ConnectionUtils.getConnection();
             User user = userDAO.login(conn,username,cryptpassword);
-            if (null == user) throw new JibuException("LoginService.001");
+            if (null == user) throw new LoginException("Username or password is incorrect.");
         } catch(SQLException e) {
             logger.error(e.getMessage());
         } finally {

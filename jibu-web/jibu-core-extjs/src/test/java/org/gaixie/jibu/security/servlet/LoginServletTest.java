@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.easymock.EasyMock;
+import org.gaixie.jibu.security.model.Setting;
 import org.gaixie.jibu.security.service.LoginService;
+import org.gaixie.jibu.security.service.SettingService;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +42,9 @@ public class LoginServletTest {
     private HttpServletRequest mockRequest;
     private HttpServletResponse mockResponse;
     private ByteArrayOutputStream output;
-    private LoginService loginService;
+    private LoginService mockLoginService;
+    private SettingService mockSettingService;
+    private Injector mockInjector;
 
     @Before public void setUp() {
         loginServlet = new LoginServlet();
@@ -47,39 +52,55 @@ public class LoginServletTest {
         //创建request和response的Mock
         mockRequest = (HttpServletRequest)EasyMock.createMock(HttpServletRequest.class);
         mockResponse = (HttpServletResponse) EasyMock.createMock(HttpServletResponse.class);
-        loginService = EasyMock.createMock(LoginService.class);
+        mockInjector = EasyMock.createMock(Injector.class);
+        mockLoginService = EasyMock.createMock(LoginService.class);
+        mockSettingService = EasyMock.createMock(SettingService.class);
 
     }
 
-    @Test 
+    @Test
         public void testLoginSuccess() throws Exception {
         //录制request和response的动作
         EasyMock.expect(mockRequest.getParameter("username")).andReturn("admin");
         EasyMock.expect(mockRequest.getParameter("password")).andReturn("123456");
+        Locale locale = new Locale("zh","CN");
+        EasyMock.expect(mockRequest.getLocale()).andReturn(locale);
         output  = new ByteArrayOutputStream();
         PrintWriter pw  = new PrintWriter(output) {
                 public void write(final int theByte) {
                     output.write(theByte);
                 }
             };
-  
-        //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output)); 
+
+        //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output));
+
         EasyMock.expect(mockResponse.getWriter()).andReturn(pw);
-        loginService.login("admin","123456");
+        EasyMock.expect(mockInjector.getInstance(LoginService.class)).andReturn(mockLoginService);
+        EasyMock.expect(mockInjector.getInstance(SettingService.class)).andReturn(mockSettingService);
+
+        mockLoginService.login("admin","123456");
         EasyMock.expectLastCall().once();
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);
         ses.setAttribute("username", "admin");
+        Setting setting = new Setting("language","zh_CN",0,true);
+        EasyMock.expect(mockSettingService.getByUsername("language","admin")).andReturn(null);
+        //EasyMock.expect(mockSettingService.getByUsername("language","admin")).andReturn(setting);
+        ses.setAttribute("locale", locale);
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);
         //回放
         EasyMock.replay(mockRequest);
         EasyMock.replay(mockResponse);
-        EasyMock.replay(loginService);
+        EasyMock.replay(mockInjector);
+        EasyMock.replay(mockLoginService);
+        EasyMock.replay(mockSettingService);
         EasyMock.replay(ses);
 
-        loginServlet.login(loginService,mockRequest, mockResponse);
+        loginServlet.login(mockInjector,mockRequest, mockResponse);
         EasyMock.verify(mockRequest);
         EasyMock.verify(mockResponse);
-        EasyMock.verify(loginService);
+        EasyMock.verify(mockInjector);
+        EasyMock.verify(mockLoginService);
+        EasyMock.verify(mockSettingService);
         EasyMock.verify(ses);
     }
 }

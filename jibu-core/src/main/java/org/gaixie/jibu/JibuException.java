@@ -24,8 +24,8 @@ public class JibuException extends Exception {
     public JibuException() {
         super();
     }
-    
-    
+
+
     /**
      * Construct JibuException with message string.
      *
@@ -34,8 +34,8 @@ public class JibuException extends Exception {
     public JibuException(String s) {
         super(s);
     }
-    
-    
+
+
     /**
      * Construct JibuException, wrapping existing throwable.
      *
@@ -45,8 +45,8 @@ public class JibuException extends Exception {
     public JibuException(String s, Throwable t) {
         super(s, t);
     }
-    
-    
+
+
     /**
      * Construct JibuException, wrapping existing throwable.
      *

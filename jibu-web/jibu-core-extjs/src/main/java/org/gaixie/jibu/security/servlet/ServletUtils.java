@@ -20,6 +20,8 @@ import java.beans.IntrospectionException;
 import java.text.ParseException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -174,16 +176,42 @@ public class ServletUtils {
     }
 
     /**
-     * 从 Session 中得到当前用户的语言设置 。
+     * 从 Session 中得到当前用户的 Locale 。
      * <p>
      * @param req HttpServletRequest。
-     * @return locale
+     * @return locale，如果session为空，返回客户端默认的Locale
      */
-    public static String getLocale(HttpServletRequest req) {
+    public static Locale getLocale(HttpServletRequest req) {
         HttpSession ses = req.getSession(false);
-        String locale = null;
         if (null!=ses) {
-            locale = (String) ses.getValue("locale");
+            return (Locale) ses.getAttribute("locale");
+        } else {
+            return req.getLocale();
+        }
+    }
+
+    /**
+     * 将一个字符串转化为 Locale 。
+     * <p>
+     * @param localeCode 用于转化为 Locale对象的字符串，格式如 zh_CN, en 等。
+     * @return Locale
+     */
+    public static Locale convertToLocale(String localeCode) {
+        Locale locale = null;
+        String[] elements = localeCode.split("_");
+
+        switch (elements.length) {
+        case 1:
+            locale = new Locale(elements[0]);
+            break;
+        case 2:
+            locale = new Locale(elements[0], elements[1]);
+            break;
+        case 3:
+            locale = new Locale(elements[0], elements[1], elements[2]);
+            break;
+        default:
+            throw new RuntimeException("Can't handle localeCode = \"" + localeCode + "\".  Elements.length = " + elements.length);
         }
         return locale;
     }
