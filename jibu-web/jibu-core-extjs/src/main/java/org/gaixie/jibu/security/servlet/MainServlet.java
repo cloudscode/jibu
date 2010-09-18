@@ -108,8 +108,8 @@ import org.slf4j.LoggerFactory;
             String key = (String)entry.getKey();
             String val = (String)entry.getValue();
 
-            // text: key 应该是国际化过的串，用于显示。
-            String node = "{url:\""+key+"\",text:\""+rb.getString(key)+"\",leaf:"
+            // text: key 应该是国际化过的串，用于显示，以menu为前缀。
+            String node = "{url:\""+key+"\",text:\""+rb.getString("menu."+key)+"\",leaf:"
                 +(("#".equals(val)) ? "false" : "true}");
 
             String[] path = key.split("\\.");

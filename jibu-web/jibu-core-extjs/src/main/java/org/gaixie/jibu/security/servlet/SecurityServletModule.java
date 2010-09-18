@@ -34,6 +34,7 @@ import org.gaixie.jibu.security.servlet.UserServlet;
 public class SecurityServletModule extends ServletModule {
     @Override protected void configureServlets() {
         filter("*.y","*.z").through(LoginFilter.class);
+        serve("/").with(LoginServlet.class);
         serve("/LoginServlet.x").with(LoginServlet.class);
         serve("/MainServlet.y").with(MainServlet.class);
         serve("/SettingServlet.y").with(SettingServlet.class);

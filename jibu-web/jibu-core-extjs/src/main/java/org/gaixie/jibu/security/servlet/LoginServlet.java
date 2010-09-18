@@ -36,6 +36,7 @@ import javax.servlet.http.HttpSession;
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
 import org.gaixie.jibu.security.model.Setting;
+import org.gaixie.jibu.security.service.LoginException;
 import org.gaixie.jibu.security.service.LoginService;
 import org.gaixie.jibu.security.service.SettingService;
 import org.slf4j.Logger;
@@ -55,11 +56,11 @@ import org.slf4j.LoggerFactory;
 
 
         if ("login".equals(req.getParameter("ci"))) {
-            resp.setContentType("application/json;charset=UTF-8");
             login(injector,req,resp);
-        }
-        if ("logout".equals(req.getParameter("ci"))) {
+        } else if ("logout".equals(req.getParameter("ci"))) {
             logout(req,resp);
+        } else {
+            loadPage(req,resp,null);
         }
     }
 
@@ -74,11 +75,8 @@ import org.slf4j.LoggerFactory;
         throws IOException {
         LoginService loginService = injector.getInstance(LoginService.class);
         SettingService settingService = injector.getInstance(SettingService.class);
-        Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
         String password=req.getParameter("password");
-
-        PrintWriter pw = resp.getWriter();
         try {
             loginService.login(username, password);
             // check if we have a session
@@ -95,14 +93,9 @@ import org.slf4j.LoggerFactory;
                 ses.setAttribute("locale", req.getLocale());
                 // ses.setAttribute("locale", new Locale("zh","CN"));
             }
-            //resp.sendRedirect("/main.y");
-            jsonMap.put("success", true);
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", "Login Failed! "+e.getMessage());
-        } finally {
-            pw.println((new JSONObject(jsonMap)).toString());
-            pw.close();
+            resp.sendRedirect("MainServlet.y");
+        } catch (LoginException le) {
+            loadPage(req,resp,"login.message.001");
         }
     }
 
@@ -111,9 +104,79 @@ import org.slf4j.LoggerFactory;
         throws IOException {
         // check if we have a session
         HttpSession ses = req.getSession(false);
-        if (null != ses) {
+        if (ses != null) {
             ses.invalidate();
         }
         resp.sendRedirect("/");
+    }
+
+    protected void loadPage(HttpServletRequest req,
+                            HttpServletResponse resp,String message)
+        throws IOException {
+        HttpSession ses = req.getSession(false);
+        if (ses != null) {
+            String username = (String)ses.getAttribute("username");
+            if (username != null) {
+                resp.sendRedirect("MainServlet.y");
+                return;
+            }
+        }
+
+        resp.setContentType("text/html;charset=UTF-8");
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div id=\"login\">");
+        if (message != null) {
+            sb.append("  <div id=\"login_error\">");
+            sb.append(rb.getString(message));
+            sb.append("  </div>");
+        }
+        sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=login\">\n"+
+                  "    <p>\n"+
+                  "      <label>"+rb.getString("login.username")+"<br>\n"+
+                  "      <input id=\"user_name\" type=\"text\" value=\"\" name=\"username\"/>\n"+
+                  "      </label>\n"+
+                  "    </p>\n"+
+                  "    <p>\n"+
+                  "      <label>"+rb.getString("login.password")+"<br>\n"+
+                  "      <input id=\"user_pass\" type=\"password\" value=\"\" name=\"password\"/>\n"+
+                  "      </label>\n"+
+                  "    </p>\n"+
+                  "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.login")+"\" />\n"+
+                  "    <a id=\"lostpw\" href=\"#\">"+rb.getString("login.lostpassword")+"</a>\n"+
+                  "  </form>\n");
+        sb.append("</div>");
+
+        PrintWriter pw = resp.getWriter();
+        pw.println(ServletUtils.head("Jibu")+
+                   loginCSS()+
+                   ServletUtils.body()+
+                   sb.toString()+
+                   ServletUtils.footer());
+        pw.close();
+    }
+
+    private String loginCSS() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<style type=\"text/css\">");
+
+        sb.append("* {margin:0;padding:0;}\n");
+        sb.append("#login {margin:7em auto;width:320px;}\n");
+        sb.append("#login_error {background-color:#FFEBE8;border-color:#CC0000;"+
+                  "border-style:solid;border-width:1px;margin:0 0 16px 8px;padding:10px 16px;font-size:11px;}\n");
+
+        sb.append("#login_form {-moz-box-shadow:0 4px 18px #C8C8C8;background:#FFFFFF none repeat scroll 0 0;"+
+                  "border:1px solid #CCCCCC;font-weight:normal;margin-left:8px;margin-bottom:0;padding:16px;}\n");
+        sb.append("label {font-size:12px;}\n");
+        sb.append("#user_pass, #user_name {border:1px solid #CCCCCC;font-size:18px;margin-bottom:12px;"+
+                  "margin-right:6px;margin-top:2px;padding:3px;width:97%;}\n");
+        sb.append("#login_button {font-size:12px;padding-left:12px;padding-right:12px;padding-top:2px;width:auto;}\n");
+        sb.append("#lostpw {font-size:11px;}\n");
+
+        sb.append("</style>");
+        return sb.toString();
     }
 }
