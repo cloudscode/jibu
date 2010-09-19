@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -55,6 +56,7 @@ import org.slf4j.LoggerFactory;
         resp.setContentType("text/html;charset=UTF-8");
         AuthorityService authService =
             injector.getInstance(AuthorityService.class);
+        String locale = ServletUtils.getLocale(req).toString();
         PrintWriter pw = resp.getWriter();
         pw.println(ServletUtils.head("Jibu Web Application")+
                    ServletUtils.css("ext/resources/css/ext-all.css")+
@@ -65,6 +67,7 @@ import org.slf4j.LoggerFactory;
                    ServletUtils.javascript("ext-ux/ext-ux-all.js")+
                    loadData(authService,req)+
                    ServletUtils.javascript("js/classic/layout.js")+
+                   ServletUtils.javascript("locale/js/classic/layout-"+locale+".js")+
                    ServletUtils.body()+
                    ServletUtils.div("header","")+
                    ServletUtils.footer());
@@ -75,9 +78,9 @@ import org.slf4j.LoggerFactory;
                            HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         Set mod = new HashSet();
+        Locale locale = ServletUtils.getLocale(req);
         ResourceBundle rb =
-            ResourceBundle.getBundle("i18n/CoreExtjsResources",
-                                     ServletUtils.getLocale(req));
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",locale);
 
         HttpSession ses = req.getSession(false);
         Map<String,String> map =
@@ -119,7 +122,7 @@ import org.slf4j.LoggerFactory;
                 // s = 要加载的js 文件路经
                 String s = key.substring(0,key.lastIndexOf("."));
                 s = s.replace(".","/");
-                mod.add("js/"+s+"/"+path[cur-2]+"-all.js");
+                mod.add("js/"+s+"/"+path[cur-2]);
             }
 
             int dist = pre - cur;
@@ -148,8 +151,11 @@ import org.slf4j.LoggerFactory;
         // 输出拥有权限的子系统 js 文件。
 
         Iterator ite = mod.iterator();
+        String module;
         while (ite.hasNext()){
-            sb.append("  <script type=\"text/javascript\" src=\""+ite.next()+"\"></script>\n");
+            module = (String)ite.next();
+            sb.append("  <script type=\"text/javascript\" src=\""+module+"-all.js\"></script>\n");
+            sb.append("  <script type=\"text/javascript\" src=\"locale/"+module+"-all-"+locale.toString()+".js\"></script>\n");
         }
 
         /*

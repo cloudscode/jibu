@@ -256,7 +256,7 @@ import org.slf4j.LoggerFactory;
         String key=req.getParameter("key");
         String password = req.getParameter("password");
         String repassword = req.getParameter("repassword");
-        
+
         if (password == null) {
             reset(req,resp,"<div id=\"login_message\">"+rb.getString("login.message.005")+"</div>\n",true);
         } else if (!password.equals(repassword)) {
@@ -287,20 +287,20 @@ import org.slf4j.LoggerFactory;
         sb.append(message);
         // 如果操作成功，不再显示 from，失败才显示。
         if (showForm) {
-        sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=resetPassword\">\n"+
-                  "    <input type=\"hidden\" name=\"key\" value=\""+req.getParameter("key")+"\">\n"+
-                  "    <p>\n"+
-                  "      <label>"+rb.getString("login.password")+"<br>\n"+
-                  "      <input id=\"user_name\" type=\"password\" value=\"\" name=\"password\"/>\n"+
-                  "      </label>\n"+
-                  "    </p>\n"+
-                  "    <p>\n"+
-                  "      <label>"+rb.getString("login.repassword")+"<br>\n"+
-                  "      <input id=\"user_pass\" type=\"password\" value=\"\" name=\"repassword\"/>\n"+
-                  "      </label>\n"+
-                  "    </p>\n"+
-                  "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.submit")+"\" />\n"+
-                  "  </form>\n");
+            sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=resetPassword\">\n"+
+                      "    <input type=\"hidden\" name=\"key\" value=\""+req.getParameter("key")+"\">\n"+
+                      "    <p>\n"+
+                      "      <label>"+rb.getString("login.password")+"<br>\n"+
+                      "      <input id=\"user_name\" type=\"password\" value=\"\" name=\"password\"/>\n"+
+                      "      </label>\n"+
+                      "    </p>\n"+
+                      "    <p>\n"+
+                      "      <label>"+rb.getString("login.repassword")+"<br>\n"+
+                      "      <input id=\"user_pass\" type=\"password\" value=\"\" name=\"repassword\"/>\n"+
+                      "      </label>\n"+
+                      "    </p>\n"+
+                      "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.submit")+"\" />\n"+
+                      "  </form>\n");
         } else {
             sb.append("<p id=\"backto\"><a href=\"LoginServlet.x\">"+rb.getString("login.backtologin")+"</a></p>\n");
         }

@@ -8,15 +8,15 @@ jibu.layout.classic.HeaderPanel = function(){
                                                  xtype:'displayfield',
                                                  id:'message-board'
                                              },'->',{
-                                                 text:this.userText,
-                                                 tooltip: 'User Setting',
+                                                 text:this.accountText,
+                                                 tooltip: this.accountTooltip,
                                                  iconCls :'user',
                                                  handler : function() {
-                                                     mainPanel.loadModule('system.setting', 'User Setting');
+                                                     mainPanel.loadModule('system.setting', 'Account Setting');
                                                  }
                                              },'-',{
                                                  text:this.exitText,
-                                                 tooltip: 'Exit',
+                                                 tooltip: this.exitText,
                                                  iconCls :'exit',
                                                  handler : function() {
                                                      window.location = 'LoginServlet.x?ci=logout';
@@ -36,7 +36,8 @@ jibu.layout.classic.HeaderPanel = function(){
 };
 
 Ext.extend(jibu.layout.classic.HeaderPanel, Ext.Panel, {
-               userText:'User',
+               accountText:'Account',
+               accountTooltip:'Account Setting',
                exitText:'Exit'
            });
 
@@ -53,7 +54,7 @@ jibu.layout.classic.NavPanel = function() {
     this.tbar = [' ',
                  new Ext.form.TextField({
                                             width: 150,
-                                            emptyText:'Find a Module',
+                                            emptyText:this.findModuleText,
                                             enableKeyEvents: true,
                                             listeners:{
                                                 render: function(f){
@@ -101,9 +102,9 @@ jibu.layout.classic.NavPanel = function() {
 };
 
 Ext.extend(jibu.layout.classic.NavPanel, Ext.tree.TreePanel, {
+               findModuleText:'Find a Module',
                expandText:'Expand All',
                collapseText:'Collapse All',
-               allModulesText:'All Modules',
                filterTree: function(t, e){
                    var text = t.getValue();
                    Ext.each(this.hiddenPkgs, function(n){
@@ -149,7 +150,7 @@ jibu.layout.classic.MainPanel = function() {
 };
 
 Ext.extend(jibu.layout.classic.MainPanel, Ext.TabPanel, {
-               centerPanelText:'Center Panel',
+               centerPanelText:'Welcome',
                loadModule : function(moduleName,moduleTitle){
                    var tab;
                    if(!(tab = this.getItem(moduleTitle))){

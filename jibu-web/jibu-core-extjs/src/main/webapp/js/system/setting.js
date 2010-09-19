@@ -7,13 +7,15 @@ jibu.security.setting.Form =
                    password: 'New Password',
                    passwordRepeat: 'Re-enter new password',
 	           userInformation:'User Information',
-	           settings: 'Settings',
+	           settings: 'Preference Settings',
 	           theme : 'Theme',
 	           language : 'Language',
 	           fl_layout : 'Layout',
 	           confirmPassword: 'Passwords do not match',
 	           passwordInfo: 'Password',
                    oldPassword: 'Current Password',
+                   submitText: 'Submit',
+                   waitMsgText: 'Submitting...',
 	           initComponent:function() {
 	               var config = {
 	    	           labelWidth: 150,
@@ -148,14 +150,14 @@ jibu.security.setting.Form =
 	    			       buttonAlign:'center',
 	    			       buttons: [{
                                                      id:'setting_submitBtn',
-	    		                             text: 'Submit',
+	    		                             text: this.submitText,
 	    		                             scope:this,
 	    		                             formBind:true,
 	    		                             handler:function() {
 	    			    	                 this.getForm().submit({
 	    			                                                   url: 'SettingServlet.y?ci=settingUpdate',
 	    			                                                   method: 'POST',
-	    			                                                   waitMsg: 'Submitting...',
+	    			                                                   waitMsg: this.waitMsgText,
 	    			                                                   success: function(form, action) {
 	    			                                                   },
 	    			                                                   failure: function(form, action) {

@@ -88,6 +88,8 @@ import org.slf4j.LoggerFactory;
             List<Setting> settings = settingService.findByUsername(username);
             ResourceBundle rb =
                 ResourceBundle.getBundle("i18n/CoreExtjsResources");
+            // 这里取到的Setting 包含默认值，但 language除外，它取的是客户端 locale
+            // 参见 patch01.sql 的 language 初始化。
             for (Setting s : settings) {
                 String key = "setting."+s.getName()+"."+s.getValue();
                 s.setValue(rb.getString(key));
@@ -159,7 +161,7 @@ import org.slf4j.LoggerFactory;
 
             String[] sids = req.getParameterValues("settings.id");
             int count = sids.length;
-            int[] ids = new int[count]; 
+            int[] ids = new int[count];
             for(int i =0 ; i<count ; i++) {
                 ids[i] = Integer.parseInt(sids[i]);
             }
