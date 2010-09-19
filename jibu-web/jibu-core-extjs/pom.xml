@@ -170,6 +170,10 @@
       <artifactId>jibu-json</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.gaixie.jibu.plugins</groupId>
+      <artifactId>jibu-mail</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.gaixie.extjs-wrapped</groupId>
       <artifactId>extjs-wrapped</artifactId>
       <version>3.2.1</version>

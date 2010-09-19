@@ -17,6 +17,7 @@
 package org.gaixie.jibu.itest;
 
 import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
@@ -50,12 +51,14 @@ public class DeployWarIT {
 
     @Test
         public void test1() throws Exception {
+        // 不要在加载 ajax 文件时报错，这里不对js文件做测试，也不会调用。
+        HttpUnitOptions.setExceptionsThrownOnScriptError(false);
         WebConversation wc = new WebConversation();
         WebRequest req = new GetMethodWebRequest( "http://localhost:8080/LoginServlet.x" );
         req.setParameter("ci","login");
         req.setParameter("username","admin");
         req.setParameter("password","123456");
-        WebResponse wr = wc.getResponse(req);
+        WebResponse wr =  wc.getResponse(req);
 
         req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
         req.setParameter("ci","userAdd");

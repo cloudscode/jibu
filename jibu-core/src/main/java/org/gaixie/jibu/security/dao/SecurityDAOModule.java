@@ -21,10 +21,12 @@ import com.google.inject.AbstractModule;
 import org.gaixie.jibu.security.dao.AuthorityDAO;
 import org.gaixie.jibu.security.dao.RoleDAO;
 import org.gaixie.jibu.security.dao.SettingDAO;
+import org.gaixie.jibu.security.dao.TokenDAO;
 import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.dao.impl.AuthorityDAODerby;
 import org.gaixie.jibu.security.dao.impl.RoleDAODerby;
 import org.gaixie.jibu.security.dao.impl.SettingDAODerby;
+import org.gaixie.jibu.security.dao.impl.TokenDAODerby;
 import org.gaixie.jibu.security.dao.impl.UserDAODerby;
 import org.gaixie.jibu.security.dao.impl.UserDAOPgSQL;
 import org.slf4j.Logger;
@@ -57,6 +59,7 @@ public class SecurityDAOModule extends AbstractModule {
             bind(AuthorityDAO.class).to(AuthorityDAODerby.class);
             bind(RoleDAO.class).to(RoleDAODerby.class);
             bind(SettingDAO.class).to(SettingDAODerby.class);
+            bind(TokenDAO.class).to(TokenDAODerby.class);
         }
         if ("PostgreSQL".equalsIgnoreCase(databaseType)){
             bind(UserDAO.class).to(UserDAOPgSQL.class);

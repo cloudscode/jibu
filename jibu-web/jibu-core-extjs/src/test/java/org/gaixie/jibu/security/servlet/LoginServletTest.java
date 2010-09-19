@@ -65,16 +65,6 @@ public class LoginServletTest {
         EasyMock.expect(mockRequest.getParameter("password")).andReturn("123456");
         Locale locale = new Locale("zh","CN");
         EasyMock.expect(mockRequest.getLocale()).andReturn(locale);
-        output  = new ByteArrayOutputStream();
-        PrintWriter pw  = new PrintWriter(output) {
-                public void write(final int theByte) {
-                    output.write(theByte);
-                }
-            };
-
-        //        PrintWriter pw = new PrintWriter(new OutputStreamWriter(output));
-
-        EasyMock.expect(mockResponse.getWriter()).andReturn(pw);
         EasyMock.expect(mockInjector.getInstance(LoginService.class)).andReturn(mockLoginService);
         EasyMock.expect(mockInjector.getInstance(SettingService.class)).andReturn(mockSettingService);
 
@@ -87,6 +77,7 @@ public class LoginServletTest {
         //EasyMock.expect(mockSettingService.getByUsername("language","admin")).andReturn(setting);
         ses.setAttribute("locale", locale);
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);
+        mockResponse.sendRedirect("MainServlet.y");
         //回放
         EasyMock.replay(mockRequest);
         EasyMock.replay(mockResponse);

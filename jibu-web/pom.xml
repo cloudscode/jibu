@@ -78,6 +78,11 @@
         <version>1.0.0-M2-SNAPSHOT</version>
       </dependency>
       <dependency>
+        <groupId>org.gaixie.jibu.plugins</groupId>
+        <artifactId>jibu-mail</artifactId>
+        <version>1.0.0-M2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
         <groupId>org.gaixie.jibu.web</groupId>
         <artifactId>jibu-core-extjs</artifactId>
         <version>1.0.0-M2-SNAPSHOT</version>
