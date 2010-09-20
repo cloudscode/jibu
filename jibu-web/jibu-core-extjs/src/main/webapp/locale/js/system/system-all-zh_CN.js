@@ -1,11 +1,11 @@
 if(jibu.security.setting.Form) {
     Ext.override(jibu.security.setting.Form, {
-                     fullName : '真实姓名',
+                     fullName : '全名',
                      email : '电子邮件',
                      userName: '用户名',
                      password: '新密码',
                      passwordRepeat: '再次输入新密码',
-                     userInformation:'用户信息',
+                     userInformation:'账户信息',
                      settings: '喜好设置',
                      theme : '主题',
 	             language : '语言',

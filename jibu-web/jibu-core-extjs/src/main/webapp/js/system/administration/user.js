@@ -5,7 +5,7 @@ jibu.security.user.Form = function() {
                                                             items : [{
                                                                          xtype: 'fieldset',
                                                                          labelWidth: 150,
-                                                                         title: 'User Detail',
+                                                                         title: this.userDetailText,
                                                                          layout: 'form',
                                                                          collapsible: true,
                                                                          defaults: {width: 210},
@@ -16,23 +16,23 @@ jibu.security.user.Form = function() {
                                                                                      name: 'User.id',
                                                                                      allowBlank:true
                                                                                  },{
-                                                                                     fieldLabel: 'Username',
+                                                                                     fieldLabel: this.usernameText,
                                                                                      name: 'User.username',
                                                                                      allowBlank:false
                                                                                  },{
-                                                                                     fieldLabel: 'Fullname',
+                                                                                     fieldLabel: this.fullnameText,
                                                                                      name: 'User.fullname',
                                                                                      allowBlank:false
                                                                                  },{
-                                                                                     fieldLabel: 'Email Address',
+                                                                                     fieldLabel: this.emailText,
                                                                                      name: 'User.emailaddress'
                                                                                  },{
-                                                                                     fieldLabel: 'Password',
+                                                                                     fieldLabel: this.passwordText,
                                                                                      name: 'User.password',
                                                                                      inputType: 'password'
                                                                                  },{
                                                                                      xtype: 'radiogroup',
-                                                                                     fieldLabel: 'Enabled',
+                                                                                     fieldLabel: this.enabledText,
                                                                                      name: 'User.enabled',
                                                                                      items: [{
                                                                                                  inputValue: 'true',
@@ -51,12 +51,12 @@ jibu.security.user.Form = function() {
                                                                      },{
                                                                          buttonAlign:'center',
                                                                          buttons: [{
-                                                                                       text: 'Submit',
+                                                                                       text: this.submitText,
                                                                                        scope:this,
                                                                                        formBind:true,
                                                                                        handler: this.submitFn
                                                                                    },{
-                                                                                       text: 'Cancel',
+                                                                                       text: this.cancelText,
                                                                                        handler: function() {
                                                                                            Ext.WindowMgr.getActive().close();
                                                                                        }
@@ -68,6 +68,15 @@ jibu.security.user.Form = function() {
 
 //  页面上的字符串在这里定义
 Ext.extend(jibu.security.user.Form, Ext.FormPanel, {
+               userDetailText: 'User Detail',
+               usernameText: 'Username',
+               fullnameText:'Full Name',
+               emailText: 'E-mail',
+               passwordText:'Password',
+               enabledText:'Enabled',
+               submitText:'Submit',
+               cancelText:'Cancel',
+               waitMsg:'Submitting...',
                submitFn: function() {
                    var uid = this.getForm().findField('User.id').getValue();
                    var url;
@@ -82,7 +91,7 @@ Ext.extend(jibu.security.user.Form, Ext.FormPanel, {
                            url: url,
                            method: 'POST',
                            disabled:true,
-                           waitMsg: 'Submitting...',
+                           waitMsg: this.waitMsg,
                            success: function(form, action) {
                                Ext.Msg.alert('Success', action.result.message);
                            },
@@ -119,19 +128,20 @@ jibu.security.user.Grid = function(config){
                                                       header:''
                                                   });
     this.columns = [new Ext.grid.RowNumberer(),
-                    {header: 'Username', width: 80, sortable: true, dataIndex: 'username'},
-                    {header: 'Full Name', width: 80, sortable: true,  dataIndex: 'fullname'},
-                    {header: 'Enabled', width: 50, sortable: true, dataIndex: 'enabled'},
+                    {header: this.usernameText, width: 80, sortable: true, dataIndex: 'username'},
+                    {header: this.fullnameText, width: 80, sortable: true,  dataIndex: 'fullname'},
+                    {header: this.enabledText,  width: 50, sortable: true, dataIndex: 'enabled'},
                     this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
                      width: 100,
-                     emptyText: 'Select column',
+                     emptyText: this.selectColumnText,
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],
                                                         data: [
-                                                            ['User.username', 'Username']
+                                                            ['User.username', this.usernameText],
+                                                            ['User.fullname', this.fullnameText]
                                                         ]
                                                     }),
                      valueField : 'prop',
@@ -139,16 +149,17 @@ jibu.security.user.Grid = function(config){
                      mode: 'local',
                      scope: this,
                      triggerAction: 'all'
-                 },{
-                     text: '<b>=</b>'
-                 },{
+                 },'  ',{
+                     xtype:'displayfield',
+                     html: '<b>=</b>'
+                 },'  ',{
                      xtype: 'field',
                      width: 100,
                      name: 'searchValue',
                      scope: this
                  },{
                      xtype: 'button',
-                     tooltip: 'Search',
+                     tooltip: this.searchTooltip,
                      scope: this,
                      iconCls :'search-icon',
                      handler : this.searchUserFn
@@ -156,7 +167,7 @@ jibu.security.user.Grid = function(config){
                      id: 'user-star-button',
                      iconCls: 'star-off-icon',
                      disabled:true,
-                     tooltip: 'Load binded data.'
+                     tooltip: this.starTooltip
                  }];
 
     // paging bar on the bottom
@@ -169,18 +180,18 @@ jibu.security.user.Grid = function(config){
                 '-',
                 {
                     iconCls: 'add-icon',
-                    tooltip: 'Add User',
+                    tooltip: this.addTooltip,
                     handler: this.userAddFn
                 },{
                     id:'user-edit-button',
-                    tooltip: 'Edit User',
+                    tooltip: this.editTooltip,
                     iconCls: 'edit-icon',
                     scope: this,
                     disabled:true,
                     handler: this.userEditFn
                 },{
                     id:'user-delete-button',
-                    tooltip: 'Delete User',
+                    tooltip: this.delTooltip,
                     iconCls: 'delete-icon',
                     scope: this,
                     disabled:true,
@@ -205,6 +216,19 @@ jibu.security.user.Grid = function(config){
 };
 
 Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
+               usernameText: 'Username',
+               fullnameText:'Full Name',
+               enabledText:'Enabled',
+               selectColumnText:'Select Within',
+               searchTooltip: 'Search',
+               starTooltip:'Load binded data.',
+               addTooltip:'Add User',
+               editTooltip:'Edit User',
+               delTooltip:'Delete User',
+               userAddTitle:'User Add',
+               userEditTitle:'User Edit',
+               delMsgTitle:'Delete',
+               delMsgText:'Are you sure you want to permanently delete the data?',
                searchUserFn : function(btn,event){
                    var key = this.getTopToolbar().find('name','searchType')[0].getValue();
                    var value = this.getTopToolbar().find('name','searchValue')[0].getValue();
@@ -219,7 +243,7 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                },
                userAddFn: function(btn,event){
                    var win = new Ext.Window({
-                                                title: 'User Add',
+                                                title: this.userAddTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -240,7 +264,7 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                userEditFn: function(btn,event){
                    var record = this.getSelectionModel().getSelected();
                    var win = new Ext.Window({
-                                                title: 'User Edit',
+                                                title: this.userEditTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -291,8 +315,8 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                    };
 
                    Ext.MessageBox.show({
-                                           title:'删除确认',
-                                           msg: '数据一旦删除后将无法恢复。 <br />是否确定要删除此数据？',
+                                           title:this.delMsgTitle,
+                                           msg: this.delMsgText,
                                            buttons: Ext.MessageBox.YESNO,
                                            fn: userDelAjaxFn,
                                            icon: Ext.MessageBox.WARNING

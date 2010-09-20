@@ -5,7 +5,7 @@ jibu.security.role.Form = function() {
                                                             items : [{
                                                                          xtype: 'fieldset',
                                                                          labelWidth: 150,
-                                                                         title: 'Role Detail',
+                                                                         title: this.roleDetailText,
                                                                          layout: 'form',
                                                                          collapsible: true,
                                                                          defaults: {width: 210},
@@ -20,29 +20,29 @@ jibu.security.role.Form = function() {
                                                                                      name: 'pid',
                                                                                      allowBlank:true
                                                                                  },{
-                                                                                     fieldLabel: 'Parent Name',
+                                                                                     fieldLabel: this.parentNameText,
                                                                                      name: 'pname',
                                                                                      allowBlank:true,
                                                                                      disabled:true
                                                                                  },{
-                                                                                     fieldLabel: 'Name',
+                                                                                     fieldLabel: this.nameText,
                                                                                      name: 'Role.name',
                                                                                      allowBlank:false
                                                                                  },{
                                                                                      xtype: 'textarea',
-                                                                                     fieldLabel: 'Description',
+                                                                                     fieldLabel: this.descriptionText,
                                                                                      name: 'Role.description',
                                                                                      allowBlank:false
                                                                                  }]
                                                                      },{
                                                                          buttonAlign:'center',
                                                                          buttons: [{
-                                                                                       text: 'Submit',
+                                                                                       text: this.submitText,
                                                                                        scope:this,
                                                                                        formBind:true,
                                                                                        handler: this.submitFn
                                                                                    },{
-                                                                                       text: 'Cancel',
+                                                                                       text: this.cancelText,
                                                                                        handler: function() {
                                                                                            Ext.WindowMgr.getActive().close();
                                                                                        }
@@ -54,6 +54,13 @@ jibu.security.role.Form = function() {
 
 //  页面上的字符串在这里定义
 Ext.extend(jibu.security.role.Form, Ext.FormPanel, {
+               roleDetailText:'Role Detail',
+               parentNameText:'Parent Name',
+               nameText:'Name',
+               descriptionText:'Description',
+               submitText:'Submit',
+               cancelText:'Cancel',
+               waitMsgText:'Submitting...',
                submitFn: function() {
                    var rid = this.getForm().findField("Role.id").getValue();
                    var url;
@@ -68,7 +75,7 @@ Ext.extend(jibu.security.role.Form, Ext.FormPanel, {
                            url: url,
                            method: 'POST',
                            disabled:true,
-                           waitMsg: 'Submitting...',
+                           waitMsg: this.waitMsgText,
                            success: function(form, action) {
                                Ext.Msg.alert('Success', action.result.message);
                            },
@@ -110,33 +117,33 @@ jibu.security.role.CheckTree = function(config){
                    id: 'role-refresh-button',
                    xtype: 'button',
                    iconCls: 'refresh-icon',
-                   tooltip: 'Reload role tree',
+                   tooltip: this.refreshTooltip,
                    scope: this,
                    handler : this.loadRoleFn
                },{
                    id: 'role-star-button',
                    iconCls: 'star-off-icon',
                    disabled:true,
-                   tooltip: 'Load binded data.'
+                   tooltip: this.starTooltip
                }];
 
     this.bbar = [{
                      id:'role-add-button',
-                     tooltip:'Add Role',
+                     tooltip:this.addTooltip,
                      iconCls: 'add-icon',
                      disabled:true,
                      scope: this,
                      handler: this.roleAddFn
                  },{
                      id:'role-edit-button',
-                     tooltip: 'Edit Role',
+                     tooltip: this.editTooltip,
                      iconCls: 'edit-icon',
                      scope: this,
                      disabled:true,
                      handler: this.roleEditFn
                  },{
                      id:'role-delete-button',
-                     tooltip:'Delete Role',
+                     tooltip:this.delTooltip,
                      iconCls: 'delete-icon',
                      disabled:true,
                      scope: this,
@@ -150,6 +157,15 @@ jibu.security.role.CheckTree = function(config){
 };
 
 Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
+               refreshTooltip:'Reload role tree',
+               starTooltip:'Load binded data.',
+               addTooltip:'Add Role',
+               editTooltip:'Edit Role',
+               delTooltip:'Delete Role',
+               roleAddTitle:'Role Add',
+               roleEditTitle:'Role Edit',
+               delMsgTitle:'Delete',
+               delMsgText:'Are you sure you want to permanently delete the data?',
                buildTree :  function(root,data){
                    var child = null;
                    for(var i =0;i<data.length;i++){
@@ -181,7 +197,7 @@ Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
                roleAddFn: function(btn,event){
                    var ck = this.getChecked();
                    var win = new Ext.Window({
-                                                title: 'Role Add',
+                                                title: this.roleAddTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -203,7 +219,7 @@ Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
                roleEditFn: function(btn,event){
                    var ck = this.getChecked();
                    var win = new Ext.Window({
-                                                title: 'Role Edit',
+                                                title: this.roleEditTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -249,8 +265,8 @@ Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
                    };
 
                    Ext.MessageBox.show({
-                                           title:'删除确认',
-                                           msg: '数据一旦删除后将无法恢复。 <br />是否确定要删除此数据？',
+                                           title:this.delMsgTitle,
+                                           msg: this.delMsgText,
                                            buttons: Ext.MessageBox.YESNO,
                                            fn: roleDelAjaxFn,
                                            icon: Ext.MessageBox.WARNING

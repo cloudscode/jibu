@@ -104,14 +104,17 @@
               <removeIncluded>true</removeIncluded>
               <output>${build.webappDirectory}/js/system/administration/administration-all.js</output>
               <includes>
-                <include>**/*.js</include>
+                <include>${build.webappDirectory}/js/system/administration/user.js</include>
+                <include>${build.webappDirectory}/js/system/administration/role.js</include>
+                <include>${build.webappDirectory}/js/system/administration/authority.js</include>
+                <include>${build.webappDirectory}/js/system/administration/pm.js</include>
               </includes>
             </aggregation>
             <aggregation>
               <removeIncluded>true</removeIncluded>
               <output>${build.webappDirectory}/js/system/system-all.js</output>
               <includes>
-                <include>**/*.js</include>
+                <include>${build.webappDirectory}/js/system/setting.js</include>
               </includes>
             </aggregation>
             <aggregation>

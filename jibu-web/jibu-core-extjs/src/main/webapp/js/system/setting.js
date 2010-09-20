@@ -6,7 +6,7 @@ jibu.security.setting.Form =
                    userName: 'User Name',
                    password: 'New Password',
                    passwordRepeat: 'Re-enter new password',
-	           userInformation:'User Information',
+	           userInformation:'Account Information',
 	           settings: 'Preference Settings',
 	           theme : 'Theme',
 	           language : 'Language',
@@ -57,6 +57,7 @@ jibu.security.setting.Form =
 		                       items :[{
 		                                   fieldLabel: this.oldPassword,
 		                                   name: 'oldpassword',
+		                                   allowBlank:false,
 		                                   inputType: 'password'
 		                               }, {
 		                                   fieldLabel: this.password,

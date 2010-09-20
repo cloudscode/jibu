@@ -73,15 +73,18 @@ public class MainServletTest {
         sb.append("<script type=\"text/javascript\">\n");
         sb.append("JibuNav={};\n");
         sb.append("JibuNav.data = [{url:\"system\",text:\""
-                  +rb.getString("menu.system")+"\",leaf:false,children:[");
+                  +rb.getString("system")+"\",leaf:false,children:[");
         sb.append("{url:\"system.administration\",text:\""
-                  +rb.getString("menu.system.administration")+"\",leaf:false,children:[");
+                  +rb.getString("system.administration")+"\",leaf:false,children:[");
         sb.append("{url:\"system.administration.pm\",text:\""
-                  +rb.getString("menu.system.administration.pm")+"\",leaf:true}]},");
-        sb.append("{url:\"system.setting\",text:\""+rb.getString("menu.system.setting")+"\",leaf:true}]}];\n");
+                  +rb.getString("system.administration.pm")+"\",leaf:true}]},");
+        sb.append("{url:\"system.setting\",text:\""+rb.getString("system.setting")+"\",leaf:true}]}];\n");
         sb.append("</script>\n");
-        sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/administration-all.js\"></script>\n");
+        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/administration/administration-all-"+locale.toString()+".js\"></script>\n");
+        sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
+        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/system-all-"+locale.toString()+".js\"></script>\n");
+
         Assert.assertTrue(data.equals(sb.toString()));
         EasyMock.verify(mockRequest);
         EasyMock.verify(mockSes);

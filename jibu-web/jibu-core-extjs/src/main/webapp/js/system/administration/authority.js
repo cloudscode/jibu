@@ -5,7 +5,7 @@ jibu.security.authority.Form = function() {
                                                                  items : [{
                                                                               xtype: 'fieldset',
                                                                               labelWidth: 100,
-                                                                              title: 'Authority Detail',
+                                                                              title: this.authDetailText,
                                                                               layout: 'form',
                                                                               collapsible: true,
                                                                               defaults: {width: 250},
@@ -16,23 +16,23 @@ jibu.security.authority.Form = function() {
                                                                                           name: 'Authority.id',
                                                                                           allowBlank:true
                                                                                       },{
-                                                                                          fieldLabel: 'Name',
+                                                                                          fieldLabel: this.nameText,
                                                                                           name: 'Authority.name',
                                                                                           allowBlank:false
                                                                                       },{
-                                                                                          fieldLabel: 'Value',
+                                                                                          fieldLabel: this.valueText,
                                                                                           name: 'Authority.value',
                                                                                           allowBlank:false
                                                                                       }]
                                                                           },{
                                                                               buttonAlign:'center',
                                                                               buttons: [{
-                                                                                            text: 'Submit',
+                                                                                            text: this.submitText,
                                                                                             scope:this,
                                                                                             formBind:true,
                                                                                             handler: this.submitFn
                                                                                         },{
-                                                                                            text: 'Cancel',
+                                                                                            text: this.cancelText,
                                                                                             handler: function() {
                                                                                                 Ext.WindowMgr.getActive().close();
                                                                                             }
@@ -44,6 +44,12 @@ jibu.security.authority.Form = function() {
 
 //  页面上的字符串在这里定义
 Ext.extend(jibu.security.authority.Form, Ext.FormPanel, {
+               authDetailText:'Authority Detail',
+               nameText:'Name',
+               valueText:'Value',
+               submitText:'Submit',
+               cancelText:'Cancel',
+               waitMsgText:'Submitting...',
                submitFn: function() {
                    var authid = this.getForm().findField('Authority.id').getValue();
                    var url;
@@ -58,7 +64,7 @@ Ext.extend(jibu.security.authority.Form, Ext.FormPanel, {
                            url: url,
                            method: 'POST',
                            disabled:true,
-                           waitMsg: 'Submitting...',
+                           waitMsg: this.waitMsgText,
                            success: function(form, action) {
                                Ext.Msg.alert('Success', action.result.message);
                            },
@@ -87,18 +93,19 @@ jibu.security.authority.Grid = function(config){
                                         });
     this.sm = new Ext.grid.CheckboxSelectionModel({singleSelect:true,sortable:true,header:''});
     this.columns = [new Ext.grid.RowNumberer(),
-                    {header: 'Name', width: 100, sortable: true, dataIndex: 'name'},
-                    {header: 'Value', width: 100, sortable: true,  dataIndex: 'value'},
+                    {header: this.nameText,  width: 100, sortable: true, dataIndex: 'name'},
+                    {header: this.valueText, width: 100, sortable: true,  dataIndex: 'value'},
                     this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
                      width: 100,
-                     emptyText: 'Select column',
+                     emptyText: this.selectColumnText,
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],
                                                         data: [
-                                                            ['Authority.name', 'Name']
+                                                            ['Authority.name', this.nameText],
+                                                            ['Authority.value', this.valueText]
                                                         ]
                                                     }),
                      valueField : 'prop',
@@ -106,16 +113,17 @@ jibu.security.authority.Grid = function(config){
                      mode: 'local',
                      scope: this,
                      triggerAction: 'all'
-                 },{
-                     text: '<b>=</b>'
-                 },{
+                 },'  ',{
+                     xtype:'displayfield',
+                     html: '<b>=</b>'
+                 },'  ',{
                      xtype: 'field',
                      width: 100,
                      name: 'searchValue',
                      scope: this
                  },{
                      xtype: 'button',
-                     tooltip: 'Search',
+                     tooltip: this.searchTooltip,
                      scope: this,
                      iconCls :'search-icon',
                      handler : this.searchAuthFn
@@ -123,25 +131,25 @@ jibu.security.authority.Grid = function(config){
                      id: 'auth-star-button',
                      iconCls: 'star-off-icon',
                      disabled:true,
-                     tooltip: 'Load binded data.'
+                     tooltip: this.starTooltip
                  }];
 
     // paging bar on the bottom
     this.bbar = [
         {
             iconCls: 'add-icon',
-            tooltip: 'Add Authority',
+            tooltip: this.addTooltip,
             handler: this.authAddFn
         },{
             id:'auth-edit-button',
-            tooltip: 'Edit Authority',
+            tooltip: this.editTooltip,
             iconCls: 'edit-icon',
             scope: this,
             disabled:true,
             handler: this.authEditFn
         },{
             id:'auth-delete-button',
-            tooltip: 'Delete Authority',
+            tooltip: this.delTooltip,
             iconCls: 'delete-icon',
             scope: this,
             disabled:true,
@@ -165,6 +173,18 @@ jibu.security.authority.Grid = function(config){
 };
 
 Ext.extend(jibu.security.authority.Grid,Ext.grid.GridPanel,{
+               nameText:'Name',
+               valueText:'Value',
+               selectColumnText:'Select Within',
+               searchTooltip: 'Search',
+               starTooltip:'Load binded data.',
+               addTooltip:'Add Authority',
+               editTooltip:'Edit Authority',
+               delTooltip:'Delete Authority',
+               authAddTitle:'Authority Add',
+               authEditTitle:'Authority Edit',
+               delMsgTitle:'Delete',
+               delMsgText:'Are you sure you want to permanently delete the data?',
                searchAuthFn : function(btn,event){
                    var key = this.getTopToolbar().find('name','searchType')[0].getValue();
                    var value = this.getTopToolbar().find('name','searchValue')[0].getValue();
@@ -179,7 +199,7 @@ Ext.extend(jibu.security.authority.Grid,Ext.grid.GridPanel,{
                },
                authAddFn: function(btn,event){
                    var win = new Ext.Window({
-                                                title: 'Authority Add',
+                                                title: this.authAddTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -200,7 +220,7 @@ Ext.extend(jibu.security.authority.Grid,Ext.grid.GridPanel,{
                authEditFn: function(btn,event){
                    var record = this.getSelectionModel().getSelected();
                    var win = new Ext.Window({
-                                                title: 'Authority Edit',
+                                                title: this.authEditTitle,
                                                 width:500,
                                                 height:300,
                                                 border:false,
@@ -245,8 +265,8 @@ Ext.extend(jibu.security.authority.Grid,Ext.grid.GridPanel,{
                    };
 
                    Ext.MessageBox.show({
-                                           title:'删除确认',
-                                           msg: '数据一旦删除后将无法恢复。 <br />是否确定要删除此数据？',
+                                           title:this.delMsgTitle,
+                                           msg: this.delMsgText,
                                            buttons: Ext.MessageBox.YESNO,
                                            fn: authDelAjaxFn,
                                            icon: Ext.MessageBox.WARNING

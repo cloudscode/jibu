@@ -12,7 +12,7 @@ jibu.layout.classic.HeaderPanel = function(){
                                                  tooltip: this.accountTooltip,
                                                  iconCls :'user',
                                                  handler : function() {
-                                                     mainPanel.loadModule('system.setting', 'Account Setting');
+                                                     mainPanel.loadModule('system.setting', this.getText());
                                                  }
                                              },'-',{
                                                  text:this.exitText,

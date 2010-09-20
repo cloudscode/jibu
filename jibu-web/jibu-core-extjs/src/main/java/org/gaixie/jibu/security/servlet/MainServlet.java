@@ -23,11 +23,11 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
         resp.setContentType("text/html;charset=UTF-8");
         AuthorityService authService =
             injector.getInstance(AuthorityService.class);
-        String locale = ServletUtils.getLocale(req).toString();
+        Locale locale = ServletUtils.getLocale(req);
         PrintWriter pw = resp.getWriter();
         pw.println(ServletUtils.head("Jibu Web Application")+
                    ServletUtils.css("ext/resources/css/ext-all.css")+
@@ -67,7 +67,8 @@ import org.slf4j.LoggerFactory;
                    ServletUtils.javascript("ext-ux/ext-ux-all.js")+
                    loadData(authService,req)+
                    ServletUtils.javascript("js/classic/layout.js")+
-                   ServletUtils.javascript("locale/js/classic/layout-"+locale+".js")+
+                   ServletUtils.javascript("locale/js/classic/layout-"
+                                           + getLanguage(locale)+".js")+
                    ServletUtils.body()+
                    ServletUtils.div("header","")+
                    ServletUtils.footer());
@@ -77,7 +78,8 @@ import org.slf4j.LoggerFactory;
     public String loadData(AuthorityService authService,
                            HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
-        Set mod = new HashSet();
+        // 用一个有序的 TreeSet，使其可以被Mock测试，性能损失可以被忽略。
+        Set mod = new TreeSet();
         Locale locale = ServletUtils.getLocale(req);
         ResourceBundle rb =
             ResourceBundle.getBundle("i18n/CoreExtjsResources",locale);
@@ -112,7 +114,7 @@ import org.slf4j.LoggerFactory;
             String val = (String)entry.getValue();
 
             // text: key 应该是国际化过的串，用于显示，以menu为前缀。
-            String node = "{url:\""+key+"\",text:\""+rb.getString("menu."+key)+"\",leaf:"
+            String node = "{url:\""+key+"\",text:\""+rb.getString(key)+"\",leaf:"
                 +(("#".equals(val)) ? "false" : "true}");
 
             String[] path = key.split("\\.");
@@ -155,7 +157,7 @@ import org.slf4j.LoggerFactory;
         while (ite.hasNext()){
             module = (String)ite.next();
             sb.append("  <script type=\"text/javascript\" src=\""+module+"-all.js\"></script>\n");
-            sb.append("  <script type=\"text/javascript\" src=\"locale/"+module+"-all-"+locale.toString()+".js\"></script>\n");
+            sb.append("  <script type=\"text/javascript\" src=\"locale/"+module+"-all-"+getLanguage(locale)+".js\"></script>\n");
         }
 
         /*
@@ -167,6 +169,13 @@ import org.slf4j.LoggerFactory;
           sb.append("  <script type=\"text/javascript\" src=\"js/system/setting.js\"></script>\n");
         */
         return sb.toString();
+    }
+
+    private String getLanguage(Locale locale) {
+        if (locale.getLanguage().equals(new Locale("zh", "", "").getLanguage())) {
+            return locale.toString();
+        } 
+        return locale.getLanguage();
     }
 
     public void doPost(HttpServletRequest req,  HttpServletResponse resp)
