@@ -12,6 +12,12 @@ This product includes software developed by Google.
 Licensed under the Apache License 2.0.
 
 =========================================================================
+==  JSON Notice                                                        ==
+=========================================================================
+This product includes software developed by JSON.org.
+Licensed under the The JSON License.
+
+=========================================================================
 ==  Apache Commons Notice                                              ==
 =========================================================================
 This product includes software developed by

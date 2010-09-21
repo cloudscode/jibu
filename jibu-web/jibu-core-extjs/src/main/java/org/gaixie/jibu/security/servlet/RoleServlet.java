@@ -103,29 +103,25 @@ import org.slf4j.LoggerFactory;
 
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String username=req.getParameter("username");
-        try {
-            User user = userService.get(username);
-            List<Role> roles = roleService.find(user);
-            List<Authority> auths = authService.find(user);
-            JSONArray aryrole = new JSONArray();
-            for (Role r : roles) {
-                aryrole.put(r.getId());
-            }
 
-            JSONArray aryauth = new JSONArray();
-            for (Authority a : auths) {
-                aryauth.put(a.getId());
-            }
-            jsonMap.put("success", true);
-            jsonMap.put("roles", aryrole);
-            jsonMap.put("auths", aryauth);
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
-        } finally {
-            return (new JSONObject(jsonMap)).toString();
+        User user = userService.get(username);
+        List<Role> roles = roleService.find(user);
+        List<Authority> auths = authService.find(user);
+        JSONArray aryrole = new JSONArray();
+        for (Role r : roles) {
+            aryrole.put(r.getId());
         }
+
+        JSONArray aryauth = new JSONArray();
+        for (Authority a : auths) {
+            aryauth.put(a.getId());
+        }
+        jsonMap.put("success", true);
+        jsonMap.put("roles", aryrole);
+        jsonMap.put("auths", aryauth);
+        return (new JSONObject(jsonMap)).toString();
     }
+
 
     @CIVerify
         protected String bindUser(HttpServletRequest req,
@@ -136,6 +132,10 @@ import org.slf4j.LoggerFactory;
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String userid=req.getParameter("user.id");
         String roleid=req.getParameter("role.id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             User user = new User();
             user.setId(Integer.parseInt(userid));
@@ -151,9 +151,11 @@ import org.slf4j.LoggerFactory;
 
             jsonMap.put("success", true);
             jsonMap.put("auths", aryauth);
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -167,6 +169,10 @@ import org.slf4j.LoggerFactory;
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String userid=req.getParameter("user.id");
         String roleid=req.getParameter("role.id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             User user = new User();
             user.setId(Integer.parseInt(userid));
@@ -182,9 +188,11 @@ import org.slf4j.LoggerFactory;
 
             jsonMap.put("success", true);
             jsonMap.put("auths", aryauth);
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -198,6 +206,10 @@ import org.slf4j.LoggerFactory;
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String authid=req.getParameter("authority.id");
         String roleid=req.getParameter("role.id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = new Authority();
             auth.setId(Integer.parseInt(authid));
@@ -213,9 +225,11 @@ import org.slf4j.LoggerFactory;
 
             jsonMap.put("success", true);
             jsonMap.put("users", aryuser);
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -230,30 +244,24 @@ import org.slf4j.LoggerFactory;
 
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String id=req.getParameter("id");
-        try {
-            Authority auth = authService.get(Integer.parseInt(id));
-            List<Role> roles = roleService.find(auth);
-            List<User> users = userService.find(auth);
+        Authority auth = authService.get(Integer.parseInt(id));
+        List<Role> roles = roleService.find(auth);
+        List<User> users = userService.find(auth);
 
-            JSONArray aryrole = new JSONArray();
-            for (Role r : roles) {
-                aryrole.put(r.getId());
-            }
-
-            JSONArray aryuser = new JSONArray();
-            for (User u : users) {
-                aryuser.put(u.getId());
-            }
-
-            jsonMap.put("success", true);
-            jsonMap.put("roles", aryrole);
-            jsonMap.put("users", aryuser);
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
-        } finally {
-            return (new JSONObject(jsonMap)).toString();
+        JSONArray aryrole = new JSONArray();
+        for (Role r : roles) {
+            aryrole.put(r.getId());
         }
+
+        JSONArray aryuser = new JSONArray();
+        for (User u : users) {
+            aryuser.put(u.getId());
+        }
+
+        jsonMap.put("success", true);
+        jsonMap.put("roles", aryrole);
+        jsonMap.put("users", aryuser);
+        return (new JSONObject(jsonMap)).toString();
     }
 
     @CIVerify
@@ -265,6 +273,10 @@ import org.slf4j.LoggerFactory;
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String authid=req.getParameter("authority.id");
         String roleid=req.getParameter("role.id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = new Authority();
             auth.setId(Integer.parseInt(authid));
@@ -281,9 +293,11 @@ import org.slf4j.LoggerFactory;
 
             jsonMap.put("success", true);
             jsonMap.put("users", aryuser);
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -298,46 +312,45 @@ import org.slf4j.LoggerFactory;
 
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String id = req.getParameter("id");
-        try {
-            Role role = roleService.get(Integer.parseInt(id));
-            List<User> users = userService.find(role);
-            List<Authority> auths = authService.find(role);
-            JSONArray aryuser = new JSONArray();
-            for (User u : users) {
-                aryuser.put(u.getId());
-            }
-
-            JSONArray aryauth = new JSONArray();
-            for (Authority a : auths) {
-                aryauth.put(a.getId());
-            }
-
-            jsonMap.put("success", true);
-            jsonMap.put("users", aryuser);
-            jsonMap.put("auths", aryauth);
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
-        } finally {
-            return (new JSONObject(jsonMap)).toString();
+        Role role = roleService.get(Integer.parseInt(id));
+        List<User> users = userService.find(role);
+        List<Authority> auths = authService.find(role);
+        JSONArray aryuser = new JSONArray();
+        for (User u : users) {
+            aryuser.put(u.getId());
         }
+
+        JSONArray aryauth = new JSONArray();
+        for (Authority a : auths) {
+            aryauth.put(a.getId());
+        }
+
+        jsonMap.put("success", true);
+        jsonMap.put("users", aryuser);
+        jsonMap.put("auths", aryauth);
+        return (new JSONObject(jsonMap)).toString();
     }
+
 
     @CIVerify
         protected String roleAdd(HttpServletRequest req,
                                  Injector injector) {
         RoleService roleService = injector.getInstance(RoleService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Role role = ServletUtils.httpToBean(Role.class,req);
             String pid = req.getParameter("pid");
             Role prole = roleService.get(Integer.parseInt(pid));
             roleService.add(role,prole);
             jsonMap.put("success", true);
-            jsonMap.put("message", "增加成功");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -348,14 +361,18 @@ import org.slf4j.LoggerFactory;
                                     Injector injector) {
         RoleService roleService = injector.getInstance(RoleService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Role role = ServletUtils.httpToBean(Role.class,req);
             roleService.update(role);
             jsonMap.put("success", true);
-            jsonMap.put("message", "更新成功!");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -367,15 +384,20 @@ import org.slf4j.LoggerFactory;
         RoleService roleService = injector.getInstance(RoleService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String id = req.getParameter("id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Role role = new Role();
             role.setId(Integer.parseInt(id));
             roleService.delete(role);
             jsonMap.put("success", true);
-            jsonMap.put("message", "成功删除");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }

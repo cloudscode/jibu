@@ -25,7 +25,8 @@ jibu.security.user.Form = function() {
                                                                                      allowBlank:false
                                                                                  },{
                                                                                      fieldLabel: this.emailText,
-                                                                                     name: 'User.emailaddress'
+                                                                                     name: 'User.emailaddress',
+                                                                                     vtype:'email'
                                                                                  },{
                                                                                      fieldLabel: this.passwordText,
                                                                                      name: 'User.password',

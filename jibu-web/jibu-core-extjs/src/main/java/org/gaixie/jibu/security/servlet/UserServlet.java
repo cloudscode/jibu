@@ -40,12 +40,15 @@ import org.gaixie.jibu.security.annotation.CIVerify;
 import org.gaixie.jibu.security.model.Criteria;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 响应用户管理相关操作的请求。
  * <p>
  */
 @Singleton public class UserServlet extends HttpServlet {
+    final static Logger logger = LoggerFactory.getLogger(UserServlet.class);
     @Inject private Injector injector;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -78,14 +81,18 @@ import org.gaixie.jibu.security.service.UserService;
                                  Injector injector) {
         UserService userService = injector.getInstance(UserService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             User user = ServletUtils.httpToBean(User.class,req);
             userService.add(user);
             jsonMap.put("success", true);
-            jsonMap.put("message", "操作成功！");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -95,14 +102,18 @@ import org.gaixie.jibu.security.service.UserService;
                                 Injector injector) {
         UserService userService = injector.getInstance(UserService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             User user = ServletUtils.httpToBean(User.class,req);
             userService.update(user);
             jsonMap.put("success", true);
-            jsonMap.put("message", "更新成功!");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -114,16 +125,20 @@ import org.gaixie.jibu.security.service.UserService;
         UserService userService = injector.getInstance(UserService.class);
 
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         String id = req.getParameter("id");
         try {
             User user = new User();
             user.setId(Integer.parseInt(id));
             userService.delete(user);
             jsonMap.put("success", true);
-            jsonMap.put("message", "成功删除");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -134,6 +149,9 @@ import org.gaixie.jibu.security.service.UserService;
                                   Injector injector) {
         UserService userService = injector.getInstance(UserService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
 
         try {
             User user = ServletUtils.httpToBean(User.class,req);
@@ -144,9 +162,8 @@ import org.gaixie.jibu.security.service.UserService;
             if (null != criteria && criteria.getLimit()>0) {
                 jsonMap.put("total", criteria.getTotal());
             }
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }

@@ -174,7 +174,7 @@ import org.slf4j.LoggerFactory;
     private String getLanguage(Locale locale) {
         if (locale.getLanguage().equals(new Locale("zh", "", "").getLanguage())) {
             return locale.toString();
-        } 
+        }
         return locale.getLanguage();
     }
 

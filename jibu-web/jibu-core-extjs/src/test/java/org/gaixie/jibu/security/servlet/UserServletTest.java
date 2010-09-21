@@ -20,6 +20,7 @@ import com.google.inject.Injector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.easymock.EasyMock; 
 import org.gaixie.jibu.security.model.User;
@@ -50,6 +51,7 @@ public class UserServletTest {
         nullRequest.setParameter("User.fullname", "Tommy Wang");
         nullRequest.setParameter("User.emailaddress", "tommy@111.com");
         nullRequest.setParameter("User.enabled", "true");
+        nullRequest.setLocale(new Locale("zh","CN"));
         User user = new User("Tommy Wang","tommy","123456","tommy@111.com",true);
         //录制request和response的动作
         EasyMock.expect(mockInjector.getInstance(UserService.class)).andReturn(mockUserService);

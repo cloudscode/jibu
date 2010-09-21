@@ -81,9 +81,9 @@ public class MainServletTest {
         sb.append("{url:\"system.setting\",text:\""+rb.getString("system.setting")+"\",leaf:true}]}];\n");
         sb.append("</script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/administration-all.js\"></script>\n");
-        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/administration/administration-all-"+locale.toString()+".js\"></script>\n");
+        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/administration/administration-all-"+locale.getLanguage()+".js\"></script>\n");
         sb.append("  <script type=\"text/javascript\" src=\"js/system/system-all.js\"></script>\n");
-        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/system-all-"+locale.toString()+".js\"></script>\n");
+        sb.append("  <script type=\"text/javascript\" src=\"locale/js/system/system-all-"+locale.getLanguage()+".js\"></script>\n");
 
         Assert.assertTrue(data.equals(sb.toString()));
         EasyMock.verify(mockRequest);

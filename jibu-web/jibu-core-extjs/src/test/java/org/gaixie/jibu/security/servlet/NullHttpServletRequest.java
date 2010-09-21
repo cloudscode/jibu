@@ -18,9 +18,14 @@ import javax.servlet.http.HttpSession;
 
 public class NullHttpServletRequest implements HttpServletRequest {
     public Hashtable parameters = new Hashtable();
+    public Locale locale;
 
     public void setParameter(String key, String value) {
         parameters.put(key, value);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
     public String getAuthType() {
@@ -194,7 +199,7 @@ public class NullHttpServletRequest implements HttpServletRequest {
 
     public Locale getLocale() {
         // TODO Auto-generated method stub
-        return null;
+        return this.locale;
     }
 
     public Enumeration getLocales() {

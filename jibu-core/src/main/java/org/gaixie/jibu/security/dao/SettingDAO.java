@@ -166,7 +166,6 @@ public interface SettingDAO {
      * <p>
      *
      * @param conn 一个有效的数据库链接
-     * @param username User username。
      *
      * @throws SQLException
      * @return 一个包含 Setting 的 List，无值 size()==0，永远不会返回 null。
@@ -178,6 +177,7 @@ public interface SettingDAO {
      * <p>
      *
      * @param conn 一个有效的数据库链接。
+     * @param username User username。
      *
      * @throws SQLException
      * @return 一个包含 Setting 的 List，无值 size()==0，永远不会返回 null。

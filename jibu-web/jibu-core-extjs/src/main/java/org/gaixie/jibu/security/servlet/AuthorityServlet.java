@@ -39,12 +39,15 @@ import org.gaixie.jibu.json.JSONObject;
 import org.gaixie.jibu.security.annotation.CIVerify;
 import org.gaixie.jibu.security.model.Authority;
 import org.gaixie.jibu.security.service.AuthorityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 响应权限资源相关操作的请求。
  * <p>
  */
 @Singleton public class AuthorityServlet extends HttpServlet {
+    final static Logger logger = LoggerFactory.getLogger(AuthorityServlet.class);
     @Inject private Injector injector;
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -78,7 +81,8 @@ import org.gaixie.jibu.security.service.AuthorityService;
         AuthorityService authService = injector.getInstance(AuthorityService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         ResourceBundle rb =
-            ResourceBundle.getBundle("i18n/CoreExtjsResources");
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = ServletUtils.httpToBean(Authority.class,req);
             List<Authority> auths = authService.find(auth);
@@ -89,9 +93,8 @@ import org.gaixie.jibu.security.service.AuthorityService;
             }
             jsonMap.put("success", true);
             jsonMap.put("data", new JSONArray(auths,false));
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -102,14 +105,19 @@ import org.gaixie.jibu.security.service.AuthorityService;
                                  Injector injector) {
         AuthorityService authService = injector.getInstance(AuthorityService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = ServletUtils.httpToBean(Authority.class,req);
             authService.add(auth);
             jsonMap.put("success", true);
-            jsonMap.put("message", "添加成功!");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -119,14 +127,19 @@ import org.gaixie.jibu.security.service.AuthorityService;
                                 Injector injector) {
         AuthorityService authService = injector.getInstance(AuthorityService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = ServletUtils.httpToBean(Authority.class,req);
             authService.update(auth);
             jsonMap.put("success", true);
-            jsonMap.put("message", "更新成功!");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }
@@ -138,15 +151,20 @@ import org.gaixie.jibu.security.service.AuthorityService;
         AuthorityService authService = injector.getInstance(AuthorityService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
         String id = req.getParameter("id");
+
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
         try {
             Authority auth = new Authority();
             auth.setId(Integer.parseInt(id));
             authService.delete(auth);
             jsonMap.put("success", true);
-            jsonMap.put("message", "成功删除");
-        } catch (Exception e) {
+            jsonMap.put("message", rb.getString("message.001"));
+        } catch (JibuException e) {
+            logger.error(e.getMessage());
             jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
+            jsonMap.put("message", rb.getString("message.002"));
         } finally {
             return (new JSONObject(jsonMap)).toString();
         }

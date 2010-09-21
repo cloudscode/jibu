@@ -82,61 +82,50 @@ import org.slf4j.LoggerFactory;
         SettingService settingService = injector.getInstance(SettingService.class);
         UserService userService = injector.getInstance(UserService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
-        try {
-            HttpSession ses = req.getSession(false);
-            String username = (String)ses.getAttribute("username");
-            List<Setting> settings = settingService.findByUsername(username);
-            ResourceBundle rb =
-                ResourceBundle.getBundle("i18n/CoreExtjsResources");
-            // 这里取到的Setting 包含默认值，但 language除外，它取的是客户端 locale
-            // 参见 patch01.sql 的 language 初始化。
-            for (Setting s : settings) {
-                String key = "setting."+s.getName()+"."+s.getValue();
-                s.setValue(rb.getString(key));
-            }
-
-            Map<String, Object> data = new HashMap<String, Object>();
-            User user = userService.get(username);
-            data.put("User.id",user.getId());
-            data.put("User.username",user.getUsername());
-            data.put("User.fullname",user.getFullname());
-            data.put("User.emailaddress",user.getEmailaddress());
-
-            jsonMap.put("success", true);
-            jsonMap.put("data", new JSONObject(data));
-            jsonMap.put("settings", new JSONArray(settings,false));
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
-        } finally {
-            return (new JSONObject(jsonMap)).toString();
+        HttpSession ses = req.getSession(false);
+        String username = (String)ses.getAttribute("username");
+        List<Setting> settings = settingService.findByUsername(username);
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
+        // 这里取到的Setting 包含默认值，但 language除外，它取的是客户端 locale
+        // 参见 patch01.sql 的 language 初始化。
+        for (Setting s : settings) {
+            String key = "setting."+s.getName()+"."+s.getValue();
+            s.setValue(rb.getString(key));
         }
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        User user = userService.get(username);
+        data.put("User.id",user.getId());
+        data.put("User.username",user.getUsername());
+        data.put("User.fullname",user.getFullname());
+        data.put("User.emailaddress",user.getEmailaddress());
+
+        jsonMap.put("success", true);
+        jsonMap.put("data", new JSONObject(data));
+        jsonMap.put("settings", new JSONArray(settings,false));
+        return (new JSONObject(jsonMap)).toString();
     }
 
     protected String settingLoad(HttpServletRequest req,
                                  Injector injector) {
         SettingService settingService = injector.getInstance(SettingService.class);
         Map<String, Object> jsonMap = new HashMap<String, Object>();
-        try {
-            String name = req.getParameter("settings.name");
-            List<Setting> settings = settingService.findByName(name);
-            ResourceBundle rb =
-                ResourceBundle.getBundle("i18n/CoreExtjsResources",
-                                         ServletUtils.getLocale(req));
-            for (Setting s : settings) {
-                String key = "setting."+s.getName()+"."+s.getValue();
-                s.setValue(rb.getString(key));
-            }
-
-            jsonMap.put("success", true);
-            //            jsonMap.put("data", new JSONObject(data));
-            jsonMap.put("settings", new JSONArray(settings,false));
-        } catch (Exception e) {
-            jsonMap.put("success", false);
-            jsonMap.put("message", e.getMessage());
-        } finally {
-            return (new JSONObject(jsonMap)).toString();
+        String name = req.getParameter("settings.name");
+        List<Setting> settings = settingService.findByName(name);
+        ResourceBundle rb =
+            ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
+        for (Setting s : settings) {
+            String key = "setting."+s.getName()+"."+s.getValue();
+            s.setValue(rb.getString(key));
         }
+
+        jsonMap.put("success", true);
+        //            jsonMap.put("data", new JSONObject(data));
+        jsonMap.put("settings", new JSONArray(settings,false));
+        return (new JSONObject(jsonMap)).toString();
     }
 
     protected String settingUpdate(HttpServletRequest req,
@@ -171,7 +160,7 @@ import org.slf4j.LoggerFactory;
         } catch (LoginException le) {
             jsonMap.put("success", false);
             jsonMap.put("message", rb.getString("setting.message.001"));
-        } catch (Exception e) {
+        } catch (JibuException e) {
             logger.error(e.getMessage());
             jsonMap.put("success", false);
             jsonMap.put("message", rb.getString("message.002"));
