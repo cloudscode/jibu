@@ -116,10 +116,10 @@ public interface SettingService {
      * 保存给定 username 所有选择的 Setting 的对应关系，同时更新 user的相关属性。
      * <p>
      *
-     * @param sids Setting id 数组。
+     * @param ids Setting id List。
      * @param user User。
      */
-    public void updateMe(int[] sids, User user) throws JibuException;
+    public void updateMe(List<Integer> ids, User user) throws JibuException;
 
     /**
      * 将 username 的所有 Setting 恢复为默认值。

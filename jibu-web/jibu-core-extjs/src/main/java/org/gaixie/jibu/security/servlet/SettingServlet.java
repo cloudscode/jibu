@@ -22,6 +22,7 @@ import com.google.inject.Singleton;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -148,13 +149,14 @@ import org.slf4j.LoggerFactory;
             User user = ServletUtils.httpToBean(User.class,req);
             user.setId(u.getId());
 
+            List<Integer> list = new ArrayList<Integer>();
             String[] sids = req.getParameterValues("settings.id");
-            int count = sids.length;
-            int[] ids = new int[count];
-            for(int i =0 ; i<count ; i++) {
-                ids[i] = Integer.parseInt(sids[i]);
+            for (String sid : sids) {
+                if(!sid.isEmpty()) {
+                    list.add(Integer.valueOf(sid));
+                }
             }
-            settingService.updateMe(ids, user);
+            settingService.updateMe(list, user);
             jsonMap.put("success", true);
             jsonMap.put("message", rb.getString("message.001"));
         } catch (LoginException le) {

@@ -188,7 +188,7 @@ public class SettingServiceImpl implements SettingService {
         }
     }
 
-    public void updateMe(int[] sids, User user) throws JibuException {
+    public void updateMe(List<Integer> ids, User user) throws JibuException {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
@@ -201,7 +201,7 @@ public class SettingServiceImpl implements SettingService {
             userDAO.update(conn,user);
             settingDAO.unbindAll(conn,uid);
             Setting setting = null;
-            for(int id:sids) {
+            for(Integer id:ids) {
                 setting = settingDAO.get(conn,id);
                 if(setting.getSortindex()!=0) {
                     settingDAO.bind(conn,id,uid);
