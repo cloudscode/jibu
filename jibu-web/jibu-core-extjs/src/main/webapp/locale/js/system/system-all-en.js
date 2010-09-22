@@ -4,7 +4,7 @@ if(jibu.security.setting.Form) {
                      email : 'E-mail',
                      userName: 'User Name',
                      password: 'New Password',
-                     passwordRepeat: 'Re-enter new password',
+                     passwordRepeat: 'Re-enter New Password',
                      userInformation:'Account Information',
                      settings: 'Preference Settings',
                      theme : 'Theme',
