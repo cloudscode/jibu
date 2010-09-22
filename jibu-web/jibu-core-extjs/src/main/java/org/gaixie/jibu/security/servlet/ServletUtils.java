@@ -184,10 +184,12 @@ public class ServletUtils {
     public static Locale getLocale(HttpServletRequest req) {
         HttpSession ses = req.getSession(false);
         if (null!=ses) {
-            return (Locale) ses.getAttribute("locale");
-        } else {
-            return req.getLocale();
+            Object obj = ses.getAttribute("locale");
+            if( obj != null) {
+                return (Locale) obj;
+            }
         }
+        return req.getLocale();
     }
 
     /**

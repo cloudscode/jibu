@@ -131,12 +131,12 @@ jibu.security.user.Grid = function(config){
     this.columns = [new Ext.grid.RowNumberer(),
                     {header: this.usernameText, width: 80, sortable: true, dataIndex: 'username'},
                     {header: this.fullnameText, width: 80, sortable: true,  dataIndex: 'fullname'},
-                    {header: this.enabledText,  width: 50, sortable: true, dataIndex: 'enabled'},
+                    {header: this.enabledText,  width: 70, sortable: true, dataIndex: 'enabled'},
                     this.sm];
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
-                     width: 100,
+                     width: 110,
                      emptyText: this.selectColumnText,
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],

@@ -131,20 +131,6 @@ jibu.security.setting.Form =
 			                                             triggerAction:'all',
 			                                             fieldLabel:this.theme,
 			                                             selectOnFocus:true
-                                                                     /*
-		        		                              listeners:{
-			        		                      scope: this,
-			        		                      'select':function(field,newValue,oldValue){
-			        		                      var theme = field.lastSelectionText;
-			        		                      if ('gray' == theme){
-			        		                      theme = 'xtheme-gray-extend.css';
-			        		                      }else{
-			        		                      theme = 'xtheme-default.css';
-			        		                      }
-			        		                      Ext.util.CSS.swapStyleSheet('theme', 'js-lib/ext-ux-js/resources/css/' + theme);
-			        		                      }
-		        		                              }
-                                                                      */
 			        	                         })
 			               ]
 	    		           },{
@@ -166,7 +152,24 @@ jibu.security.setting.Form =
 	    			    	                                       });
 	    				             }
 	    		                         }]
-		    	           }]
+		    	           }],
+		           listeners:{
+                               render:function(){
+		                   this.form.load(
+                                       {
+		                           url: 'SettingServlet.y?ci=formLoad',
+ 		                           success:function(f,a){
+                                               var settings = a.result.settings;
+                                               // f.setValues() 会把显示值和实际值都置为 settings[i].value
+                                               // 需要 Ext.fly 将实际值置为 settings[i].id，而且必须在 f.setValues() 之后
+                                               for (var i=0;i<settings.length;i++) {
+                                                   f.setValues([{id:'setting_'+settings[i].name,value:settings[i].value}]);
+		                                   Ext.fly('h_setting_'+settings[i].name).dom.value=settings[i].id;
+                                               }
+		                           }
+		                       });
+		               }
+                           }
 	    	       }; // eof config object
 		       // apply config
 		       Ext.apply(this, Ext.apply(this.initialConfig, config));
@@ -191,21 +194,7 @@ jibu.security.setting.Form =
 		       Ext.apply(Ext.form.VTypes, {
 			             passwordAgainText: this.confirmPassword
 			         });
-		   },// eo funtion initComponent
-		   onRender:function(){
-	               jibu.security.setting.Form.superclass.onRender.apply(this, arguments);
-		       this.form.load({
-		                          url: 'SettingServlet.y?ci=formLoad',
- 		                          success:function(f,a){
-		                              Ext.each(a.result.settings,function(o,i){
-		                                           Ext.getCmp('setting_'+o.name).setRawValue(o.value);
-		                                           Ext.fly('h_'+Ext.getCmp('setting_'+o.name).getId()).dom.value=o.id;
-		                                       });
-
-		                          }
-		                      });
-		   }
-
+		   }// eo funtion initComponent
                });
 
 Ext.reg('system.setting', jibu.security.setting.Form);

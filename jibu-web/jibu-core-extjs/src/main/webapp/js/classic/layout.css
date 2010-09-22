@@ -21,9 +21,4 @@
 .exit {
     background-image: url(images/exit.gif) !important;
 }
-#header {
-    border:0 none;background:#1E4176;
-}
-.main-header .x-panel-body {
-    background:transparent;
-}
+

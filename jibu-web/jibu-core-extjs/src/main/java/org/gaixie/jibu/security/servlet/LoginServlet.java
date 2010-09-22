@@ -38,12 +38,10 @@ import org.gaixie.jibu.JibuException;
 import org.gaixie.jibu.json.JSONException;
 import org.gaixie.jibu.json.JSONObject;
 import org.gaixie.jibu.mail.JavaMailSender;
-import org.gaixie.jibu.security.model.Setting;
 import org.gaixie.jibu.security.model.Token;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.LoginException;
 import org.gaixie.jibu.security.service.LoginService;
-import org.gaixie.jibu.security.service.SettingService;
 import org.gaixie.jibu.security.service.TokenException;
 import org.gaixie.jibu.security.service.UserService;
 import org.slf4j.Logger;
@@ -85,7 +83,6 @@ import org.slf4j.LoggerFactory;
                          HttpServletResponse resp)
         throws IOException {
         LoginService loginService = injector.getInstance(LoginService.class);
-        SettingService settingService = injector.getInstance(SettingService.class);
         String username=req.getParameter("username");
         String password=req.getParameter("password");
         try {
@@ -93,17 +90,6 @@ import org.slf4j.LoggerFactory;
             // check if we have a session
             HttpSession ses = req.getSession(true);
             ses.setAttribute("username", username);
-
-            // 首先看用户是否选择过语言。
-            // 如果选择过，直接读取选择的语言，以Locale对象放入session。
-            // 如果没有选择，取当前浏览器支持的默认locale ，并放入session。
-            Setting setting = settingService.getByUsername("language",username);
-            if (setting != null) {
-                ses.setAttribute("locale", ServletUtils.convertToLocale(setting.getValue()));
-            } else {
-                ses.setAttribute("locale", req.getLocale());
-                // ses.setAttribute("locale", new Locale("zh","CN"));
-            }
             resp.sendRedirect("MainServlet.y");
         } catch (LoginException le) {
             loadPage(req,resp,"login.message.001");

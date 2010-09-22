@@ -49,14 +49,16 @@ public class MainServletTest {
 
     @Test public void testLoadData() throws Exception {
         HttpSession mockSes = (HttpSession) EasyMock.createMock(HttpSession.class);
-        EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
-        EasyMock.expect((String)mockSes.getAttribute("username")).andReturn("admin");
+
         Locale locale = new Locale("en","US");
         EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
         EasyMock.expect((Locale)mockSes.getAttribute("locale")).andReturn(locale);
-
         ResourceBundle rb =
             ResourceBundle.getBundle("i18n/CoreExtjsResources",locale);
+
+        EasyMock.expect(mockRequest.getSession(false)).andReturn(mockSes);
+        EasyMock.expect((String)mockSes.getAttribute("username")).andReturn("admin");
+
         Map<String,String> map = new TreeMap<String,String>();
         map.put("system","#");
         map.put("system.administration","#");

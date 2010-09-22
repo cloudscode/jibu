@@ -99,7 +99,7 @@ jibu.security.authority.Grid = function(config){
     this.tbar = [{
                      xtype : 'combo',
                      name : 'searchType',
-                     width: 100,
+                     width: 110,
                      emptyText: this.selectColumnText,
                      store: new Ext.data.ArrayStore({
                                                         fields: ['prop', 'displayText'],
