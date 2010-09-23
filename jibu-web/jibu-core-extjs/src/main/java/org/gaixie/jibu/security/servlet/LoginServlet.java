@@ -104,7 +104,13 @@ import org.slf4j.LoggerFactory;
         if (ses != null) {
             ses.invalidate();
         }
-        resp.sendRedirect("/");
+
+        String reason = req.getParameter("reason");
+        if("sessionExpired".equals(reason)) {
+            loadPage(req,resp,"login.message.010");
+        } else {
+            resp.sendRedirect("/");
+        }
     }
 
     protected void loadPage(HttpServletRequest req,

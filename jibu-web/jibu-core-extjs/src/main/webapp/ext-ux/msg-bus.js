@@ -10,7 +10,8 @@ jibu.msg.bus = function(all,resp){
             }
         }
     } else {
-        Ext.get('message-board').update('<span style="color:red;font-weight:bold;">您的网页已过期,请重新登录!</span>');
+        resp.responseText='';
+        window.location = 'LoginServlet.x?ci=logout&reason=sessionExpired';
     }
 };
 Ext.Ajax.on('requestcomplete', jibu.msg.bus, this);
