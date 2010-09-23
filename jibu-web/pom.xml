@@ -91,7 +91,7 @@
       <dependency>
         <groupId>org.gaixie.extjs-wrapped</groupId>
         <artifactId>extjs-wrapped</artifactId>
-        <version>3.2.2-SNAPSHOT</version>
+        <version>3.2.1.1</version>
         <type>zip</type>
         <scope>runtime</scope>
       </dependency>
