@@ -19,7 +19,7 @@ jibu.layout.classic.HeaderPanel = function(){
                                                  tooltip: this.exitText,
                                                  iconCls :'exit',
                                                  handler : function() {
-                                                     window.location = 'LoginServlet.x?ci=logout';
+                                                     window.location = 'Login.x?ci=logout';
                                                  }
                                              }]
                                 });

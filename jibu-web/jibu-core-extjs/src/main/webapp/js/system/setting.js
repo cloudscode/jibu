@@ -83,7 +83,7 @@ jibu.security.setting.Form =
 			        	                             store:new Ext.data.JsonStore({
 			            	                                                              fields:[{name:'id', type:'int'},
 			    	        	                                                              {name:'value', type:'string'}],
-			            	                                                              url:'SettingServlet.y?ci=settingLoad',
+			            	                                                              url:'Setting.y?ci=settingLoad',
                                                                                                       root:'settings',
 			            	                                                              baseParams:{'settings.name' :'language'}
 			            	                                                          }),
@@ -100,7 +100,7 @@ jibu.security.setting.Form =
 			        	                             store:new Ext.data.JsonStore({
 			            	                                                              fields:[{name:'id', type:'int'},
 			    	        	                                                              {name:'value', type:'string'}],
-			            	                                                              url:'SettingServlet.y?ci=settingLoad',
+			            	                                                              url:'Setting.y?ci=settingLoad',
                                                                                                       root:'settings',
 			            	                                                              baseParams:{'settings.name' :'layout'}
 			            	                                                          }),
@@ -117,7 +117,7 @@ jibu.security.setting.Form =
 			        	                             store:new Ext.data.JsonStore({
 			            	                                                              fields:[{name:'id', type:'int'},
 			    	        	                                                              {name:'value', type:'string'}],
-			            	                                                              url:'SettingServlet.y?ci=settingLoad',
+			            	                                                              url:'Setting.y?ci=settingLoad',
                                                                                                       root:'settings',
 			            	                                                              baseParams:{
 			        		 	                                                  'settings.name' :'theme'
@@ -142,7 +142,7 @@ jibu.security.setting.Form =
 	    		                             formBind:true,
 	    		                             handler:function() {
 	    			    	                 this.getForm().submit({
-	    			                                                   url: 'SettingServlet.y?ci=settingUpdate',
+	    			                                                   url: 'Setting.y?ci=settingUpdate',
 	    			                                                   method: 'POST',
 	    			                                                   waitMsg: this.waitMsgText,
 	    			                                                   success: function(form, action) {
@@ -157,7 +157,7 @@ jibu.security.setting.Form =
                                render:function(){
 		                   this.form.load(
                                        {
-		                           url: 'SettingServlet.y?ci=formLoad',
+		                           url: 'Setting.y?ci=formLoad',
  		                           success:function(f,a){
                                                var settings = a.result.settings;
                                                // f.setValues() 会把显示值和实际值都置为 settings[i].value

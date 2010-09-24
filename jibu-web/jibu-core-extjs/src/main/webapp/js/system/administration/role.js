@@ -65,9 +65,9 @@ Ext.extend(jibu.security.role.Form, Ext.FormPanel, {
                    var rid = this.getForm().findField("Role.id").getValue();
                    var url;
                    if (rid.length > 0) {
-                       url = 'RoleServlet.z?ci=roleUpdate';
+                       url = 'Role.z?ci=roleUpdate';
                    } else {
-                       url = 'RoleServlet.z?ci=roleAdd';
+                       url = 'Role.z?ci=roleAdd';
                    }
 
                    this.getForm().submit(
@@ -97,7 +97,7 @@ jibu.security.role.CheckTree = function(config){
     this.listeners = {
         render: function(n) {
             Ext.Ajax.request({
-                                 url:'RoleServlet.z?ci=getAllRole',
+                                 url:'Role.z?ci=getAllRole',
                                  method:'POST',
                                  success: function(r,a){
                                      //Ext.Msg.alert('信息2',r.responseText);
@@ -178,7 +178,7 @@ Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
 
                loadRoleFn : function(btn,event){
                    Ext.Ajax.request({
-                                        url:'RoleServlet.z?ci=getAllRole',
+                                        url:'Role.z?ci=getAllRole',
                                         method:'POST',
                                         success: function(r,a){
                                             //Ext.Msg.alert('信息2',r.responseText);
@@ -248,7 +248,7 @@ Ext.extend(jibu.security.role.CheckTree,Ext.tree.TreePanel,{
                        if (btn == 'yes') {
                            Ext.Ajax.request(
                                {
-                                   url:'RoleServlet.z?ci=roleDelete',
+                                   url:'Role.z?ci=roleDelete',
                                    params:{
                                        'id':ck[0].id
                                    },

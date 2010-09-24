@@ -60,9 +60,13 @@ import javax.servlet.http.HttpSession;
         }
 
         if (!allowedRequest) {
-            ((HttpServletResponse) res).sendRedirect("/");
+            ((HttpServletResponse) res).sendRedirect("Login.x");
             return;
         }
+        //不要cache 通过此Filter的response。
+        //http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+        ((HttpServletResponse)res).setHeader("Pragma", "no-cache");
+        ((HttpServletResponse)res).setHeader("Cache-Control","no-cache,no-store,max-age=0");
         chain.doFilter(req, res);
     }
 

@@ -62,8 +62,8 @@ public class MainServletTest {
         Map<String,String> map = new TreeMap<String,String>();
         map.put("system","#");
         map.put("system.administration","#");
-        map.put("system.administration.pm","/PMServlet.z");
-        map.put("system.setting","/SettingServet.y");
+        map.put("system.administration.pm","/Role.z");
+        map.put("system.setting","/Setting.y");
         EasyMock.expect(mockAuthService.findMapByUsername("admin")).andReturn(map);
 
         EasyMock.replay(mockRequest);

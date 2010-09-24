@@ -35,11 +35,11 @@ public class SecurityServletModule extends ServletModule {
     @Override protected void configureServlets() {
         filter("*.y","*.z").through(LoginFilter.class);
         serve("/").with(LoginServlet.class);
-        serve("/LoginServlet.x").with(LoginServlet.class);
-        serve("/MainServlet.y").with(MainServlet.class);
-        serve("/SettingServlet.y").with(SettingServlet.class);
-        serve("/UserServlet.z").with(UserServlet.class);
-        serve("/AuthorityServlet.z").with(AuthorityServlet.class);
-        serve("/RoleServlet.z").with(RoleServlet.class);
+        serve("/Login.x").with(LoginServlet.class);
+        serve("/Main.y").with(MainServlet.class);
+        serve("/Setting.y").with(SettingServlet.class);
+        serve("/User.z").with(UserServlet.class);
+        serve("/Authority.z").with(AuthorityServlet.class);
+        serve("/Role.z").with(RoleServlet.class);
     }
 }

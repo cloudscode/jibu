@@ -54,13 +54,13 @@ public class DeployWarIT {
         // 不要在加载 ajax 文件时报错，这里不对js文件做测试，也不会调用。
         HttpUnitOptions.setExceptionsThrownOnScriptError(false);
         WebConversation wc = new WebConversation();
-        WebRequest req = new GetMethodWebRequest( "http://localhost:8080/LoginServlet.x" );
+        WebRequest req = new GetMethodWebRequest( "http://localhost:8080/Login.x" );
         req.setParameter("ci","login");
         req.setParameter("username","admin");
         req.setParameter("password","123456");
         WebResponse wr =  wc.getResponse(req);
 
-        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
+        req = new PostMethodWebRequest( "http://localhost:8080/User.z" );
         req.setParameter("ci","userAdd");
         req.setParameter("User.username","tommy");
         req.setParameter("User.password","123456");
@@ -70,7 +70,7 @@ public class DeployWarIT {
         wr = wc.getResponse(req);
 
         String email = null;
-        req = new PostMethodWebRequest( "http://localhost:8080/UserServlet.z" );
+        req = new PostMethodWebRequest( "http://localhost:8080/User.z" );
         req.setParameter("ci","userFind");
         req.setParameter("User.username","");
         req.setParameter("User.password","");

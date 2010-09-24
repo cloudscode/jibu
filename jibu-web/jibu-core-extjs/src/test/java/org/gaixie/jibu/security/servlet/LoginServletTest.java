@@ -65,7 +65,7 @@ public class LoginServletTest {
         HttpSession ses = (HttpSession) EasyMock.createMock(HttpSession.class);
         ses.setAttribute("username", "admin");
         EasyMock.expect(mockRequest.getSession(true)).andReturn(ses);
-        mockResponse.sendRedirect("MainServlet.y");
+        mockResponse.sendRedirect("Main.y");
         //回放
         EasyMock.replay(mockRequest);
         EasyMock.replay(mockResponse);

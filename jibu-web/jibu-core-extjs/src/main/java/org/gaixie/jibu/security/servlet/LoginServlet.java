@@ -90,7 +90,7 @@ import org.slf4j.LoggerFactory;
             // check if we have a session
             HttpSession ses = req.getSession(true);
             ses.setAttribute("username", username);
-            resp.sendRedirect("MainServlet.y");
+            resp.sendRedirect("Main.y");
         } catch (LoginException le) {
             loadPage(req,resp,"login.message.001");
         }
@@ -109,7 +109,7 @@ import org.slf4j.LoggerFactory;
         if("sessionExpired".equals(reason)) {
             loadPage(req,resp,"login.message.010");
         } else {
-            resp.sendRedirect("/");
+            resp.sendRedirect("Login.x");
         }
     }
 
@@ -120,7 +120,7 @@ import org.slf4j.LoggerFactory;
         if (ses != null) {
             String username = (String)ses.getAttribute("username");
             if (username != null) {
-                resp.sendRedirect("MainServlet.y");
+                resp.sendRedirect("Main.y");
                 return;
             }
         }
@@ -137,7 +137,7 @@ import org.slf4j.LoggerFactory;
             sb.append(rb.getString(message));
             sb.append("  </div>");
         }
-        sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=login\">\n"+
+        sb.append("  <form id=\"login_form\" method=\"post\" action=\"Login.x?ci=login\">\n"+
                   "    <p>\n"+
                   "      <label>"+rb.getString("login.username")+"<br>\n"+
                   "      <input id=\"user_name\" type=\"text\" value=\"\" name=\"username\"/>\n"+
@@ -149,7 +149,7 @@ import org.slf4j.LoggerFactory;
                   "      </label>\n"+
                   "    </p>\n"+
                   "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.login")+"\" />\n"+
-                  "    <a id=\"lostpw\" href=\"LoginServlet.x?ci=getToken\">"+rb.getString("login.lostpassword")+"</a>\n"+
+                  "    <a id=\"lostpw\" href=\"Login.x?ci=getToken\">"+rb.getString("login.lostpassword")+"</a>\n"+
                   "  </form>\n");
         sb.append("</div>");
 
@@ -175,7 +175,7 @@ import org.slf4j.LoggerFactory;
         sb.append(message);
         // 如果操作成功，不再显示 from，失败才显示。
         if (showForm) {
-            sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=getToken\">\n"+
+            sb.append("  <form id=\"login_form\" method=\"post\" action=\"Login.x?ci=getToken\">\n"+
                       "    <p>\n"+
                       "      <label>"+rb.getString("login.username")+"<br>\n"+
                       "      <input id=\"user_name\" type=\"text\" value=\"\" name=\"username\"/>\n"+
@@ -184,7 +184,7 @@ import org.slf4j.LoggerFactory;
                       "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.submit")+"\" />\n"+
                       "  </form>\n");
         } else {
-            sb.append("<p id=\"backto\"><a href=\"LoginServlet.x\">"+rb.getString("login.backtologin")+"</a></p>\n");
+            sb.append("<p id=\"backto\"><a href=\"Login.x\">"+rb.getString("login.backtologin")+"</a></p>\n");
         }
         sb.append("</div>");
 
@@ -279,7 +279,7 @@ import org.slf4j.LoggerFactory;
         sb.append(message);
         // 如果操作成功，不再显示 from，失败才显示。
         if (showForm) {
-            sb.append("  <form id=\"login_form\" method=\"post\" action=\"LoginServlet.x?ci=resetPassword\">\n"+
+            sb.append("  <form id=\"login_form\" method=\"post\" action=\"Login.x?ci=resetPassword\">\n"+
                       "    <input type=\"hidden\" name=\"key\" value=\""+req.getParameter("key")+"\">\n"+
                       "    <p>\n"+
                       "      <label>"+rb.getString("login.password")+"<br>\n"+
@@ -294,7 +294,7 @@ import org.slf4j.LoggerFactory;
                       "    <input id=\"login_button\" type=\"submit\" value=\""+rb.getString("button.submit")+"\" />\n"+
                       "  </form>\n");
         } else {
-            sb.append("<p id=\"backto\"><a href=\"LoginServlet.x\">"+rb.getString("login.backtologin")+"</a></p>\n");
+            sb.append("<p id=\"backto\"><a href=\"Login.x\">"+rb.getString("login.backtologin")+"</a></p>\n");
         }
         sb.append("</div>");
 

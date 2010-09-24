@@ -138,7 +138,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:'RoleServlet.z?ci=bindUser',
+                                                      url:'Role.z?ci=bindUser',
                                                       params:{
                                                           'user.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -170,7 +170,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:'RoleServlet.z?ci=unbindUser',
+                                                      url:'Role.z?ci=unbindUser',
                                                       params:{
                                                           'user.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -228,7 +228,7 @@ jibu.security.PM =
                                                if (this.fromwhere=='' || this.fromwhere=='user') {
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:'RoleServlet.z?ci=userBindCheck',
+                                                           url:'Role.z?ci=userBindCheck',
                                                            params:{
                                                                'username':this.userSM.getSelected().get('username')},
                                                            method:'POST',
@@ -320,7 +320,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:'RoleServlet.z?ci=bindAuth',
+                                                      url:'Role.z?ci=bindAuth',
                                                       params:{
                                                           'authority.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -351,7 +351,7 @@ jibu.security.PM =
                                               var ck = this.rolePanel.getChecked();
                                               Ext.Ajax.request(
                                                   {
-                                                      url:'RoleServlet.z?ci=unbindAuth',
+                                                      url:'Role.z?ci=unbindAuth',
                                                       params:{
                                                           'authority.id':record.data.id,
                                                           'role.id':ck[0].id
@@ -409,7 +409,7 @@ jibu.security.PM =
                                                if (this.fromwhere=='' || this.fromwhere=='auth') {
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:'RoleServlet.z?ci=authBindCheck',
+                                                           url:'Role.z?ci=authBindCheck',
                                                            params:{
                                                                'id':this.authSM.getSelected().get('id')},
                                                            method:'POST',
@@ -470,7 +470,7 @@ jibu.security.PM =
                                                    var ck = this.rolePanel.getChecked();
                                                    Ext.Ajax.request(
                                                        {
-                                                           url:'RoleServlet.z?ci=roleBindCheck',
+                                                           url:'Role.z?ci=roleBindCheck',
                                                            params:{
                                                                'id':ck[0].id},
                                                            method:'POST',
@@ -572,9 +572,9 @@ jibu.security.PM =
                                              if (this.fromwhere=='user' ) {
                                                  var url;
                                                  if(b) {
-                                                     url = 'RoleServlet.z?ci=bindUser';
+                                                     url = 'Role.z?ci=bindUser';
                                                  } else {
-                                                     url = 'RoleServlet.z?ci=unbindUser';
+                                                     url = 'Role.z?ci=unbindUser';
                                                  }
 
                                                  Ext.Ajax.request(
@@ -617,9 +617,9 @@ jibu.security.PM =
                                              if (this.fromwhere=='auth') {
                                                  var url;
                                                  if(b) {
-                                                     url = 'RoleServlet.z?ci=bindAuth';
+                                                     url = 'Role.z?ci=bindAuth';
                                                  } else {
-                                                     url = 'RoleServlet.z?ci=unbindAuth';
+                                                     url = 'Role.z?ci=unbindAuth';
                                                  }
                                                  Ext.Ajax.request(
                                                      {

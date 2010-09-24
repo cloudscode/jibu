@@ -82,9 +82,9 @@ Ext.extend(jibu.security.user.Form, Ext.FormPanel, {
                    var uid = this.getForm().findField('User.id').getValue();
                    var url;
                    if (uid.length > 0) {
-                       url = 'UserServlet.z?ci=userUpdate';
+                       url = 'User.z?ci=userUpdate';
                    } else {
-                       url = 'UserServlet.z?ci=userAdd';
+                       url = 'User.z?ci=userAdd';
                    }
 
                    this.getForm().submit(
@@ -112,7 +112,7 @@ jibu.security.user.Grid = function(config){
                                             // destroy the store if the grid is destroyed
                                             autoDestroy: true,
                                             remoteSort : true,
-                                            url: 'UserServlet.z?ci=userFind',
+                                            url: 'User.z?ci=userFind',
                                             root: 'data',
                                             fields: [
                                                 {name: 'id', type: 'int'},
@@ -298,7 +298,7 @@ Ext.extend(jibu.security.user.Grid,Ext.grid.GridPanel,{
                        if (btn == 'yes') {
                            Ext.Ajax.request(
                                {
-                                   url:'UserServlet.z?ci=userDelete',
+                                   url:'User.z?ci=userDelete',
                                    params:{
                                        'id':record.get('id')
                                    },
