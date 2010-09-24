@@ -18,6 +18,8 @@ package org.gaixie.jibu.security.interceptor;
 
 import com.google.inject.Injector;
 
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -40,7 +42,10 @@ public class CIVerifyInterceptor implements MethodInterceptor {
         if (allowed) {
             obj = inv.proceed();
         } else {
-            obj = "{\"message\":\"no permission\",\"success\":false}";
+            ResourceBundle rb =
+                ResourceBundle.getBundle("i18n/CoreExtjsResources",
+                                     ServletUtils.getLocale(req));
+            obj = "{\"message\":\""+rb.getString("message.003")+"\",\"success\":false}";
         }
         return obj;
     }
