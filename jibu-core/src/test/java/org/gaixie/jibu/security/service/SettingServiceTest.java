@@ -39,27 +39,24 @@ public class SettingServiceTest extends CoreTestSupport {
     private UserService userService;
 
     @Before public void setup() throws Exception {
-        settingService = getInjector().getInstance(SettingService.class); 
-        userService = getInjector().getInstance(UserService.class); 
+        settingService = getInjector().getInstance(SettingService.class);
+        userService = getInjector().getInstance(UserService.class);
         Setting setting = new Setting("theme","blue",0,true);
         settingService.add(setting);
         setting = new Setting("theme","gray",1,true);
         settingService.add(setting);
     }
 
-
     @Test public void testGet() throws Exception {
-        Setting setting = settingService.get(1);
+        Setting setting = settingService.get("theme","blue");
         Assert.assertNotNull(setting);
-        Setting s = settingService.get("theme","blue");
-        Assert.assertTrue(setting.equals(s));
-        s = settingService.getDefault("theme");
+        Setting s = settingService.getDefault("theme");
         Assert.assertTrue(setting.equals(s));
     }
 
     @Test public void testGetByUsername() throws Exception {
         Setting dfsetting = settingService.getDefault("theme");
-        User user = userService.get("admin"); 
+        User user = userService.get("admin");
         Setting s = settingService.getByUsername("theme","admin");
         // 没有bind，所以取到 null
         Assert.assertNull(s);
@@ -79,14 +76,13 @@ public class SettingServiceTest extends CoreTestSupport {
         Assert.assertTrue(settings.size()==2);
     }
 
-
     @After public void tearDown() {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(conn, "DELETE from user_setting_map"); 
-            run.update(conn, "DELETE from settings"); 
+            run.update(conn, "DELETE from user_setting_map");
+            run.update(conn, "DELETE from settings");
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
