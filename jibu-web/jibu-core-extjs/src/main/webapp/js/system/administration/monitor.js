@@ -38,17 +38,18 @@ jibu.security.monitor.Panel =
 
                            ctx.stroke();
                            ctx.lineWidth = 1.5;
+                           // 单位值在整个 y轴所占的比例。
                            var ydisc = Number(125/ymax).toFixed(0);
                            if(data.length>0) {
                                ctx.beginPath();
                                ctx.strokeStyle ='red';
-                               var x = 625-25-(5*data.length)+4;
+                               var x = 625-25-5+4;
                                var y = 175-25-data[0]*ydisc;
                                for(i=0;i<data.length;i++) {
                                    // 画实际值
                                    // data[i]/count * 125 是当前记录在数据区的比例。
                                    ctx.moveTo(x, y);
-                                   x = 625-25-(5*(data.length-i))+4;
+                                   x = 625-25-5-(5*(data.length-i))+4;
                                    y = 175-25-data[i]*ydisc;
                                    ctx.lineTo(x, y);
                                }
@@ -58,11 +59,11 @@ jibu.security.monitor.Panel =
                            if (data2.length>0){
                                ctx.beginPath();
                                ctx.strokeStyle ='green';
-                               var x = 625-25-(5*data2.length)+4;
+                               var x = 625-25-5+4;
                                var y = 175-25-data2[0]*ydisc;
                                for(i=0;i<data2.length;i++) {
                                    ctx.moveTo(x, y);
-                                   x = 625-25-(5*(data2.length-i))+4;
+                                   x = 625-25-5-(5*(data2.length-i))+4;
                                    y = 175-25-data2[i]*ydisc;
                                    ctx.lineTo(x, y);
                                }
@@ -73,11 +74,11 @@ jibu.security.monitor.Panel =
                            if (data3.length>0){
                                ctx.beginPath();
                                ctx.strokeStyle ='blue';
-                               var x = 625-25-(5*data3.length)+4;
+                               var x = 625-25-5+4;
                                var y = 175-25-data3[0]*lydisc;
                                for(i=0;i<data3.length;i++) {
                                    ctx.moveTo(x, y);
-                                   x = 625-25-(5*(data3.length-i))+4;
+                                   x = 625-25-5-(5*(data3.length-i))+4;
                                    y = 175-25-data3[i]*lydisc;
                                    ctx.lineTo(x, y);
                                }
@@ -244,7 +245,7 @@ jibu.security.monitor.Panel =
                                                    }
 
                                                }
-                                               intervalID = setInterval(ajax, 1000);
+                                               intervalID = setInterval(ajax, 2000);
                                            }
                                        }
                                    }]
