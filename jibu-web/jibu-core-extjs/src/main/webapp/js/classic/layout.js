@@ -1,5 +1,5 @@
 Ext.BLANK_IMAGE_URL = "ext/resources/images/default/s.gif";
-Ext.ns('jibu.layout.classic');
+Ext.ns('jibu.msg','jibu.layout.classic');
 
 jibu.layout.classic.HeaderPanel = function(){
     this.bbar = new Ext.Toolbar({
@@ -166,6 +166,14 @@ Ext.extend(jibu.layout.classic.MainPanel, Ext.TabPanel, {
                    this.setActiveTab(moduleName);
                }
            });
+
+jibu.msg.show = function(message,success){
+    if (success) {
+        Ext.get('message-board').update('<span style="color:green;font-weight:bold;">'+message+'</span>');
+    } else {
+        Ext.get('message-board').update('<span style="color:red;font-weight:bold;">'+message+'</span>');
+    }
+};
 
 Ext.onReady(function() {
                 Ext.QuickTips.init();

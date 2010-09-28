@@ -63,37 +63,36 @@ import org.slf4j.LoggerFactory;
         List<Setting> settings = settingService.findByUsername(username);
 
         String theme = null;
+        String layout = null;
         // 首先看用户是否选择过语言。
         // 如果选择过，直接读取选择的语言，以Locale对象放入session。
         // 如果没有选择，取当前浏览器支持的默认locale
         for (Setting setting :settings) {
             if ("theme".equals(setting.getName())) {
                 theme = setting.getValue();
+            } else if ("layout".equals(setting.getName())) {
+                layout = setting.getValue();
             } else if ("language".equals(setting.getName())) {
                 ses.setAttribute("locale", ServletUtils.convertToLocale(setting.getValue()));
             }
         }
+
         Locale locale = ServletUtils.getLocale(req);
 
         PrintWriter pw = resp.getWriter();
         pw.println(ServletUtils.head("Jibu")+
-                   ServletUtils.css("ext/resources/css/ext-all.css"));
-
-        if (theme != null) {
-            pw.println(ServletUtils.css("ext/resources/css/xtheme-"+
-                                        theme.toLowerCase()+".css"));
-        }
-
-        pw.println(ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
+                   ServletUtils.css("ext/resources/css/ext-all.css")+
+                   ServletUtils.css("ext/resources/css/xtheme-"+theme.toLowerCase()+".css")+
+                   ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
                    ServletUtils.javascript("ext/ext-all.js")+
                    ServletUtils.javascript("ext/locale/ext-lang-"+ getLanguage(locale)+".js")+
                    "<!--[if IE]>"+ServletUtils.javascript("js/html5/excanvas.js")+"<![endif]-->"+
                    ServletUtils.css("css/jibu-all.css")+
-                   ServletUtils.css("js/classic/layout.css")+
                    ServletUtils.javascript("ext-ux/ext-ux-all.js")+
                    loadData(authService,req)+
-                   ServletUtils.javascript("js/classic/layout.js")+
-                   ServletUtils.javascript("locale/js/classic/layout-"+ getLanguage(locale)+".js")+
+                   ServletUtils.css("js/"+layout.toLowerCase()+"/layout.css")+
+                   ServletUtils.javascript("js/"+layout.toLowerCase()+"/layout.js")+
+                   ServletUtils.javascript("locale/js/"+layout.toLowerCase()+"/layout-"+ getLanguage(locale)+".js")+
                    ServletUtils.body()+
                    ServletUtils.div("header","")+
                    ServletUtils.footer());
