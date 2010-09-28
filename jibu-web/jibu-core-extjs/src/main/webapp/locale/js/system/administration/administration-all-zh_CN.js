@@ -83,3 +83,12 @@ if(jibu.security.authority.Grid) {
                      delMsgText:'确定要永久的删除此数据？'
                  });
 }
+
+if(jibu.security.monitor.Panel) {
+    Ext.override(jibu.security.monitor.Panel, {
+	             maxActive : '最大活动连接',
+	             numActive : '当前活动连接',
+	             numIdle : '当前空闲连接',
+                     numSession: '当前Session'
+                 });
+}

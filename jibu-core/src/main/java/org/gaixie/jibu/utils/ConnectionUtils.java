@@ -50,12 +50,27 @@ public class ConnectionUtils {
     }
 
     /**
-     * 将连接池当前状态输出到日志文件。
+     * 得到连接池最大 Active 连接数。
      * <p>
      */
-    public static void printPoolStats() {
-        BasicDataSource bds = (BasicDataSource) dataSource;
-        logger.debug("NumActive = " + bds.getNumActive()+" ; NumIdle = " + bds.getNumIdle());
+    public static int getMaxActive() {
+        return ((BasicDataSource) dataSource).getMaxActive();
+    }
+
+    /**
+     * 得到连接池当前 Active 连接数。
+     * <p>
+     */
+    public static int getNumActive() {
+        return ((BasicDataSource) dataSource).getNumActive();
+    }
+
+    /**
+     * 得到连接池当前 Idle 连接数。
+     * <p>
+     */
+    public static int getNumIdle() {
+        return ((BasicDataSource) dataSource).getNumIdle();
     }
 
     /**

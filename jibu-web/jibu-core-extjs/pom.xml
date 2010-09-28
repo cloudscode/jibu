@@ -108,6 +108,7 @@
                 <include>${build.webappDirectory}/js/system/administration/role.js</include>
                 <include>${build.webappDirectory}/js/system/administration/authority.js</include>
                 <include>${build.webappDirectory}/js/system/administration/pm.js</include>
+                <include>${build.webappDirectory}/js/system/administration/monitor.js</include>
               </includes>
             </aggregation>
             <aggregation>

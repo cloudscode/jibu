@@ -22,6 +22,7 @@ import org.gaixie.jibu.security.servlet.AuthorityServlet;
 import org.gaixie.jibu.security.servlet.LoginFilter;
 import org.gaixie.jibu.security.servlet.LoginServlet;
 import org.gaixie.jibu.security.servlet.MainServlet;
+import org.gaixie.jibu.security.servlet.MonitorServlet;
 import org.gaixie.jibu.security.servlet.RoleServlet;
 import org.gaixie.jibu.security.servlet.SettingServlet;
 import org.gaixie.jibu.security.servlet.UserServlet;
@@ -41,5 +42,6 @@ public class SecurityServletModule extends ServletModule {
         serve("/User.z").with(UserServlet.class);
         serve("/Authority.z").with(AuthorityServlet.class);
         serve("/Role.z").with(RoleServlet.class);
+        serve("/Monitor.z").with(MonitorServlet.class);
     }
 }

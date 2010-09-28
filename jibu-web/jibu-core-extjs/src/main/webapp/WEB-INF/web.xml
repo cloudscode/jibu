@@ -38,6 +38,9 @@
   <listener>
     <listener-class>org.gaixie.jibu.security.servlet.GuiceServletConfig</listener-class>
   </listener>
+  <listener>
+    <listener-class>org.gaixie.jibu.security.servlet.SessionCounter</listener-class>
+  </listener>
 
   <!-- ======================= SESSION CONFIG ========================= -->
   <session-config>

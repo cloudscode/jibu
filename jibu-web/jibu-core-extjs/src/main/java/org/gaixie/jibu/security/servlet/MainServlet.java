@@ -87,6 +87,7 @@ import org.slf4j.LoggerFactory;
         pw.println(ServletUtils.javascript("ext/adapter/ext/ext-base.js")+
                    ServletUtils.javascript("ext/ext-all.js")+
                    ServletUtils.javascript("ext/locale/ext-lang-"+ getLanguage(locale)+".js")+
+                   "<!--[if IE]>"+ServletUtils.javascript("js/html5/excanvas.js")+"<![endif]-->"+
                    ServletUtils.css("css/jibu-all.css")+
                    ServletUtils.css("js/classic/layout.css")+
                    ServletUtils.javascript("ext-ux/ext-ux-all.js")+
@@ -175,6 +176,7 @@ import org.slf4j.LoggerFactory;
         sb.append("</script>\n");
 
         // 输出拥有权限的子系统 js 文件。
+
         Iterator ite = mod.iterator();
         String module;
         while (ite.hasNext()){
@@ -190,6 +192,7 @@ import org.slf4j.LoggerFactory;
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/role.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/authority.js\"></script>\n");
           sb.append("  <script type=\"text/javascript\" src=\"js/system/setting.js\"></script>\n");
+          sb.append("  <script type=\"text/javascript\" src=\"js/system/administration/monitor.js\"></script>\n");
         */
         return sb.toString();
     }

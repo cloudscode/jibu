@@ -83,3 +83,12 @@ if(jibu.security.authority.Grid) {
                      delMsgText:'Are you sure you want to permanently delete the data?'
                  });
 }
+
+if(jibu.security.monitor.Panel) {
+    Ext.override(jibu.security.monitor.Panel, {
+	             maxActive : 'Max Active',
+	             numActive : 'Current Active',
+	             numIdle : 'Current Idle',
+                     numSession: 'Current Session'
+                 });
+}

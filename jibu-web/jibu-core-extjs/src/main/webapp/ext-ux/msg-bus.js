@@ -11,7 +11,7 @@ jibu.msg.bus = function(all,resp){
         }
     } else {
         resp.responseText='';
-        window.location = 'LoginServlet.x?ci=logout&reason=sessionExpired';
+        window.location = 'Login.x?ci=logout&reason=sessionExpired';
     }
 };
 Ext.Ajax.on('requestcomplete', jibu.msg.bus, this);
