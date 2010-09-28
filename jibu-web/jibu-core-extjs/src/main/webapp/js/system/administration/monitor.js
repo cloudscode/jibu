@@ -39,18 +39,22 @@ jibu.security.monitor.Panel =
                            ctx.stroke();
                            ctx.lineWidth = 1.5;
                            // 单位值在整个 y轴所占的比例。
-                           var ydisc = Number(125/ymax).toFixed(0);
+                           var ydisc = Number(100/ymax).toFixed(0);
                            if(data.length>0) {
                                ctx.beginPath();
                                ctx.strokeStyle ='red';
-                               var x = 625-25-5+4;
-                               var y = 175-25-data[0]*ydisc;
+                               var x = 625-25-(5*data.length)-2;
+                               // 不要与左侧Y轴重合，右移3个像素
+                               if(data.length==110) {
+                                   x = x+3;
+                               }
+                               // 不要让值为0的数据与x轴重叠，向上移动2个像素
+                               var y = 175-25-(data[0]==0 ? 2 : data[0]*ydisc);
                                for(i=0;i<data.length;i++) {
-                                   // 画实际值
-                                   // data[i]/count * 125 是当前记录在数据区的比例。
                                    ctx.moveTo(x, y);
-                                   x = 625-25-5-(5*(data.length-i))+4;
-                                   y = 175-25-data[i]*ydisc;
+                                   // 画实际值
+                                   x = 625-25-(5*(data.length-i))+3;
+                                   y = 175-25-(data[i]==0 ? 2 : data[i]*ydisc);
                                    ctx.lineTo(x, y);
                                }
                                ctx.closePath();
@@ -59,27 +63,33 @@ jibu.security.monitor.Panel =
                            if (data2.length>0){
                                ctx.beginPath();
                                ctx.strokeStyle ='green';
-                               var x = 625-25-5+4;
-                               var y = 175-25-data2[0]*ydisc;
+                               var x = 625-25-(5*data2.length)-2;
+                               if(data2.length==110) {
+                                   x = x+3;
+                               }
+                               var y = 175-25-(data2[0]==0 ? 2 : data2[0]*ydisc);
                                for(i=0;i<data2.length;i++) {
                                    ctx.moveTo(x, y);
-                                   x = 625-25-5-(5*(data2.length-i))+4;
-                                   y = 175-25-data2[i]*ydisc;
+                                   x = 625-25-(5*(data2.length-i))+3;
+                                   y = 175-25-(data2[i]==0 ? 2 : data2[i]*ydisc);
                                    ctx.lineTo(x, y);
                                }
                                ctx.closePath();
                                ctx.stroke();
                            }
-                           var lydisc = Number(125/smax).toFixed(0);
+                           var lydisc = Number(100/smax).toFixed(0);
                            if (data3.length>0){
                                ctx.beginPath();
                                ctx.strokeStyle ='blue';
-                               var x = 625-25-5+4;
-                               var y = 175-25-data3[0]*lydisc;
+                               var x = 625-25-(5*data3.length)-2;
+                               if(data3.length==110) {
+                                   x = x+3;
+                               }
+                               var y = 175-25-(data3[0]==0 ? 2 : data3[0]*lydisc);
                                for(i=0;i<data3.length;i++) {
                                    ctx.moveTo(x, y);
-                                   x = 625-25-5-(5*(data3.length-i))+4;
-                                   y = 175-25-data3[i]*lydisc;
+                                   x = 625-25-(5*(data3.length-i))+3;
+                                   y = 175-25-(data3[i]==0 ? 2 : data3[i]*lydisc);
                                    ctx.lineTo(x, y);
                                }
                                ctx.closePath();
@@ -91,11 +101,11 @@ jibu.security.monitor.Panel =
                            var ctx = canvas.getContext("2d");
                            var lwidth = ctx.measureText(lCount).width;
                            ctx.fillStyle ='#fff';
-                           ctx.fillRect(50-4-5-lwidth,25-5,lwidth,10);
+                           ctx.fillRect(50-4-5-lwidth,50-5,lwidth,10);
                            ctx.fill();
 
                            ctx.fillStyle ='#000';
-                           ctx.fillText(lCount,50-4-5-lwidth,25+3);
+                           ctx.fillText(lCount,50-4-5-lwidth,50+3);
                            ctx.stroke();
                        };
 
@@ -103,11 +113,11 @@ jibu.security.monitor.Panel =
                            var ctx = canvas.getContext("2d");
                            var rwidth = ctx.measureText(rCount).width;
                            ctx.fillStyle ='#fff';
-                           ctx.fillRect(600+4+5,25-5,rwidth,10);
+                           ctx.fillRect(600+4+5,50-5,rwidth,10);
                            ctx.fill();
 
                            ctx.fillStyle ='#000';
-                           ctx.fillText(rCount,600+4+5,25+3);
+                           ctx.fillText(rCount,600+4+5,50+3);
                            ctx.stroke();
                        };
 
@@ -245,7 +255,7 @@ jibu.security.monitor.Panel =
                                                    }
 
                                                }
-                                               intervalID = setInterval(ajax, 2000);
+                                               intervalID = setInterval(ajax, 1000);
                                            }
                                        }
                                    }]
