@@ -17,6 +17,11 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.gaixie</groupId>
+    <artifactId>gaixie</artifactId>
+    <version>1</version>
+  </parent>
 
   <groupId>org.gaixie.jibu</groupId>
   <artifactId>jibu-parent</artifactId>
@@ -27,38 +32,13 @@
   <description>稳定、高效、简洁的 Java 应用开发模板。</description>
   <inceptionYear>2010</inceptionYear>
 
-  <organization>
-    <name>Gaixie.ORG</name>
-    <url>http://www.gaixie.org/</url>
-  </organization>
-
   <url>http://www.gaixie.org/</url>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
 
   <scm>
     <connection>scm:git:git://github.com/bitorb/jibu.git</connection>
     <developerConnection>scm:git:git://github.com/bitorb/jibu.git</developerConnection>
     <url>scm:git:git://github.com/bitorb/jibu.git</url>
   </scm>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>sonatype-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>sonatype-staging</id>
-      <name>Nexus Release Repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-  </distributionManagement>
 
   <developers>
     <developer>
@@ -90,35 +70,6 @@
     <module>assemblies</module>
     <module>itest</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <build>
     <pluginManagement>
