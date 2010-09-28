@@ -255,7 +255,7 @@ jibu.security.monitor.Panel =
                                                    }
 
                                                }
-                                               intervalID = setInterval(ajax, 1000);
+                                               intervalID = setInterval(ajax, 2000);
                                            }
                                        }
                                    }]
