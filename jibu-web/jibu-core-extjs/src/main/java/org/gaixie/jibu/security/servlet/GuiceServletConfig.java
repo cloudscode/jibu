@@ -20,6 +20,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 
+import org.gaixie.jibu.config.JibuConfig;
 import org.gaixie.jibu.security.dao.SecurityDAOModule;
 import org.gaixie.jibu.security.interceptor.SecurityInterceptorModule;
 import org.gaixie.jibu.security.service.SecurityServiceModule;
@@ -50,9 +51,10 @@ public class GuiceServletConfig extends GuiceServletContextListener {
      * @return 实例化的 Injector
      */
     @Override protected Injector getInjector() {
+        String databaseType = JibuConfig.getProperty("databaseType");
         return Guice.createInjector(new SecurityServletModule(),
                                     new SecurityInterceptorModule(),
                                     new SecurityServiceModule(),
-                                    new SecurityDAOModule());
+                                    new SecurityDAOModule(databaseType));
     }
 }

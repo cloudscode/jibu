@@ -16,15 +16,14 @@
  */
 package org.gaixie.jibu.utils;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.gaixie.jibu.config.JibuConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +33,12 @@ import org.slf4j.LoggerFactory;
  */
 public class ConnectionUtils {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionUtils.class);
-    private static String PROPERTIES_FILE = "dbcp.properties";
     private static DataSource dataSource = null;
 
     static {
-        Properties prop = new Properties();
         try {
-            prop.load(ConnectionUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
-            dataSource = BasicDataSourceFactory.createDataSource(prop);
-        } catch (IOException ioe) {
-            logger.error("Failed to load file: "+PROPERTIES_FILE, ioe);
+            dataSource = BasicDataSourceFactory.createDataSource(JibuConfig.getProperties());
+            logger.info("Successfully created datasource.");
         } catch (Exception e) {
             logger.error("Create DataSource failed.", e);
         }

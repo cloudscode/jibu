@@ -39,7 +39,6 @@
         <configuration>
           <excludes>
             <exclude>dbscripts/**</exclude>
-            <exclude>dbcp.properties</exclude>
             <exclude>jibu.properties</exclude>
             <exclude>logback.xml</exclude>
           </excludes>

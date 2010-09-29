@@ -19,9 +19,7 @@ package org.gaixie.jibu;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import java.io.IOException;
-import java.util.Properties;
-
+import org.gaixie.jibu.config.JibuConfig;
 import org.gaixie.jibu.security.dao.SecurityDAOModule;
 import org.gaixie.jibu.security.service.SecurityServiceModule;
 
@@ -32,25 +30,15 @@ import org.gaixie.jibu.security.service.SecurityServiceModule;
  * 测试多种类型的数据库。
  */
 public class CoreTestSupport {
-    private static String PROPERTIES_FILE = "jibu.properties";
-    private String databaseType = "Derby";
     private static Injector injector;
 
     public synchronized Injector getInjector() {
         if(injector != null){
             return injector;
         }
-        Properties prop = new Properties();
-        try {
-            prop.load(CoreTestSupport.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE));
-            if(prop.containsKey("databaseType"))
-                databaseType = prop.getProperty("databaseType");
-
-            injector = Guice.createInjector(new SecurityServiceModule(),
+        String databaseType = JibuConfig.getProperty("databaseType");
+        injector = Guice.createInjector(new SecurityServiceModule(),
                                             new SecurityDAOModule(databaseType));
-        } catch (IOException ioe) {
-            System.out.println("Failed to load file: "+PROPERTIES_FILE);
-        }
         return injector;
     }
 }
