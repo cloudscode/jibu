@@ -89,6 +89,8 @@ if(jibu.security.monitor.Panel) {
 	             maxActive : 'Max Active',
 	             numActive : 'Current Active',
 	             numIdle : 'Current Idle',
-                     numSession: 'Current Session'
+                     numSession: 'Current Session',
+	             totalMemory : 'Total Mem (MB)',
+                     usedMemory: 'Used Mem (MB)'
                  });
 }

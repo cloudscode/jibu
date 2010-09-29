@@ -65,9 +65,14 @@ import org.slf4j.LoggerFactory;
         protected String getCount(HttpServletRequest req,
                                   Injector injector) {
         MonitorService monitorService = injector.getInstance(MonitorService.class);
+        long totalMemory = Runtime.getRuntime().totalMemory();
+        long usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
         return "{max:\""+monitorService.getMaxActive()
             +"\",active:\""+monitorService.getNumActive()
             +"\",idle:\""+monitorService.getNumIdle()
-            +"\",session:\""+SessionCounter.getActiveSessions()+"\"}";
+            +"\",session:\""+SessionCounter.getActiveSessions()
+            +"\",totalMemory:\""+(long)Math.floor(totalMemory/(1024*1024))
+            +"\",usedMemory:\""+(long)Math.floor(usedMemory/(1024*1024))
+            +"\"}";
     }
 }

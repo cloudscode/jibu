@@ -32,7 +32,10 @@ public class SessionCounter implements HttpSessionListener {
     }
 
     public void sessionDestroyed(HttpSessionEvent se) {
-        activeSessions--;
+        // 如果容器有session恢复功能，可能会导致activeSessions <0，如tomcat 的 saveOnRestart
+        if(activeSessions>0) {
+            activeSessions--;
+        }
     }
 
     public static int getActiveSessions() {

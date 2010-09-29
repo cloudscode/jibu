@@ -89,6 +89,8 @@ if(jibu.security.monitor.Panel) {
 	             maxActive : '最大活动连接',
 	             numActive : '当前活动连接',
 	             numIdle : '当前空闲连接',
-                     numSession: '当前Session'
+                     numSession: '当前Session',
+	             totalMemory : '总内存 (MB)',
+                     usedMemory: '已用内存 (MB)'
                  });
 }
