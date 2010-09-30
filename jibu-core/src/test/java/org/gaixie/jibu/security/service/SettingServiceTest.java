@@ -18,6 +18,7 @@ package org.gaixie.jibu.security.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -41,6 +42,7 @@ public class SettingServiceTest extends CoreTestSupport {
     @Before public void setup() throws Exception {
         settingService = getInjector().getInstance(SettingService.class);
         userService = getInjector().getInstance(UserService.class);
+        userService.add(new User("Administrator","admin","123456","jibu.gaixie@gmail.com",true));
         Setting setting = new Setting("theme","blue",0,true);
         settingService.add(setting);
         setting = new Setting("theme","gray",1,true);
@@ -52,6 +54,35 @@ public class SettingServiceTest extends CoreTestSupport {
         Assert.assertNotNull(setting);
         Setting s = settingService.getDefault("theme");
         Assert.assertTrue(setting.equals(s));
+        // test get(Integer) method
+        s = settingService.get(setting.getId());
+        Assert.assertTrue(setting.equals(s));
+    }
+
+    @Test public void testUpdateMe() throws Exception {
+        User user = userService.get("admin");
+        Setting setting = settingService.get("theme","gray");
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(setting.getId());
+        settingService.updateMe(list,user);
+        setting = settingService.getByUsername("theme","admin");
+        Assert.assertTrue("gray".equals(setting.getValue()));
+        // 重置后
+        settingService.reset("admin");
+        setting = settingService.getByUsername("theme","admin");
+        Assert.assertNull(setting);
+        
+    }
+
+    @Test public void testUpdateOrDelete() throws Exception {
+        Setting setting = settingService.get("theme","blue");
+        setting.setValue("tommy");
+        settingService.update(setting);
+        setting = settingService.get("theme","tommy");
+        Assert.assertNotNull(setting);
+        settingService.delete(setting);
+        setting = settingService.get("theme","tommy");
+        Assert.assertNull(setting);
     }
 
     @Test public void testGetByUsername() throws Exception {
@@ -83,6 +114,7 @@ public class SettingServiceTest extends CoreTestSupport {
             QueryRunner run = new QueryRunner();
             run.update(conn, "DELETE from user_setting_map");
             run.update(conn, "DELETE from settings");
+            run.update(conn, "DELETE from userbase");
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);

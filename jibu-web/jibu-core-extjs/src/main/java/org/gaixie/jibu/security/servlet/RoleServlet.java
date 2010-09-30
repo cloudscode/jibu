@@ -41,6 +41,7 @@ import org.gaixie.jibu.security.model.Authority;
 import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
 import org.gaixie.jibu.security.service.AuthorityService;
+import org.gaixie.jibu.security.service.RoleException;
 import org.gaixie.jibu.security.service.RoleService;
 import org.gaixie.jibu.security.service.UserService;
 import org.slf4j.Logger;
@@ -394,8 +395,11 @@ import org.slf4j.LoggerFactory;
             roleService.delete(role);
             jsonMap.put("success", true);
             jsonMap.put("message", rb.getString("message.001"));
-        } catch (JibuException e) {
-            logger.error(e.getMessage());
+        } catch (RoleException e) {
+            jsonMap.put("success", false);
+            jsonMap.put("message", rb.getString("role.message.001"));
+        } catch (JibuException je) {
+            logger.error(je.getMessage());
             jsonMap.put("success", false);
             jsonMap.put("message", rb.getString("message.002"));
         } finally {

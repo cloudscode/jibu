@@ -14,33 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.gaixie.jibu.itest;
+package org.gaixie.jibu.security.service;
 
-import com.google.inject.Injector;
+import org.gaixie.jibu.JibuException;
 
-import org.junit.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.gaixie.jibu.security.model.User;
-import org.gaixie.jibu.security.service.UserService;
-
-/*
- * 
- * 
- * 
+/**
+ * Role Exception class.
  */
-public class NewUserPermissionIT extends CoreTestSupport {
-    private UserService userService;
-    private Injector injector;
-
-    @Before public void setup() throws Exception {
-        injector = getInjector();
-        userService =  injector.getInstance(UserService.class); 
+public class RoleException extends JibuException {
+    public RoleException() {
+        super();
     }
 
-    @Test public void testNewUserPermission() throws Exception {
-        Assert.assertNull(null);
+    /**
+     * Construct RoleException with message string.
+     *
+     * @param s Error message string.
+     */
+    public RoleException(String s) {
+        super(s);
     }
-
 }

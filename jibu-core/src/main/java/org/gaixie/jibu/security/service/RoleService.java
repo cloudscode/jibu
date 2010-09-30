@@ -67,7 +67,7 @@ public interface RoleService {
     public void update(Role role) throws JibuException;
 
     /**
-     * 删除 Role。
+     * 删除一个叶子 Role。
      *
      * @param role Role
      * @exception JibuException 删除失败时抛出。

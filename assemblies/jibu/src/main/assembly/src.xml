@@ -101,14 +101,6 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../../itest/core-itest-suite</directory>
-      <outputDirectory>itest/core-itest-suite</outputDirectory>
-      <includes>
-        <include>pom.xml</include>
-        <include>src/</include>
-      </includes>
-    </fileSet>
-    <fileSet>
       <directory>../../itest/war-itest-suite</directory>
       <outputDirectory>itest/war-itest-suite</outputDirectory>
       <includes>

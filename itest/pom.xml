@@ -29,7 +29,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>core-itest-suite</module>
     <module>war-itest-suite</module>
   </modules>
 </project>

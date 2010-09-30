@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -125,6 +124,9 @@ public class LoginServiceImpl implements LoginService {
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
             throw new JibuException(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
         }
+
     }
 }

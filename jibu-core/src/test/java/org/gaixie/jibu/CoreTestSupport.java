@@ -38,7 +38,7 @@ public class CoreTestSupport {
         }
         String databaseType = JibuConfig.getProperty("databaseType");
         injector = Guice.createInjector(new SecurityServiceModule(),
-                                            new SecurityDAOModule(databaseType));
+                                        new SecurityDAOModule(databaseType));
         return injector;
     }
 }

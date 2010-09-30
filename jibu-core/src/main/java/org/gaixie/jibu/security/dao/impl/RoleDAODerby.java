@@ -108,6 +108,12 @@ public class RoleDAODerby implements RoleDAO {
         run.update(conn
                    , "DELETE FROM roles WHERE id =?"
                    , role.getId());
+	run.update(conn
+		   , "UPDATE roles set lft=lft-2 where lft > ?"
+		   , role.getLft());
+	run.update(conn
+		   , "UPDATE roles set rgt=rgt-2 where rgt > ?"
+		   , role.getLft());
     }
 
     /**

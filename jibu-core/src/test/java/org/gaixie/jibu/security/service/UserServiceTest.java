@@ -36,13 +36,16 @@ import org.gaixie.jibu.security.service.UserService;
 public class UserServiceTest extends CoreTestSupport {
     private UserService userService;
 
-    @Before public void setup() {
+    @Before public void setup() throws Exception {
         userService = getInjector().getInstance(UserService.class); 
+        userService.add(new User("Administrator","admin","123456","jibu.gaixie@gmail.com",true));
     }
 
 
     @Test public void testGet() throws Exception {
         User user = userService.get("admin");
+        Assert.assertNotNull(user);
+        user = userService.get(user.getId());
         Assert.assertNotNull(user);
         user = userService.get("notExistUser");
         Assert.assertNull(user); 
@@ -55,7 +58,22 @@ public class UserServiceTest extends CoreTestSupport {
         Assert.assertNotNull(user);
     }
 
-    @Test public void testFindByCriteria() throws Exception {
+    @Test public void testUpdate() throws Exception {
+        User user = userService.get("admin");
+        user.setFullname("updateFullname");
+        userService.update(user);
+        user = userService.get("admin");
+        Assert.assertTrue("updateFullname".equals(user.getFullname()));
+    }
+
+    @Test public void testDelete() throws Exception {
+        User user = userService.get("admin");
+        userService.delete(user);
+        user = userService.get("admin");
+        Assert.assertNull(user);
+    }
+
+    @Test public void testFind() throws Exception {
         User user = new User("tommy wang","testUserServiceAdd",
                              "123456","bitorb@gmail.com",true);
 
@@ -65,6 +83,8 @@ public class UserServiceTest extends CoreTestSupport {
         userService.add(user);
         user = new User();
         user.setFullname("tommy wang");
+        List<User> users = userService.find(user);
+        Assert.assertTrue(2 == users.size());
 
         Criteria crt = new Criteria();
         crt.setStart(0);
@@ -79,18 +99,19 @@ public class UserServiceTest extends CoreTestSupport {
         //               where R >0 AND R <=1
         //               ORDER BY username DESC
         Assert.assertTrue(0 == crt.getTotal());
-        List<User> users = userService.find(user,crt);
+        users = userService.find(user,crt);
         Assert.assertTrue(1 == users.size());
         Assert.assertTrue("testUserServiceAdd1".equals(users.get(0).getUsername()));
         Assert.assertTrue(2 == crt.getTotal());
     }
 
+    // 关于 UserService 的 find(Role),find(Authority) 方法在 AuthorityServiceTest中被测试。
     @After public void tearDown() {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(conn, "DELETE from userbase where id >1"); 
+            run.update(conn, "DELETE from userbase"); 
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);

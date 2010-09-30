@@ -49,6 +49,8 @@ public class AuthorityServiceTest extends CoreTestSupport {
         roleService = getInjector().getInstance(RoleService.class); 
         userService = getInjector().getInstance(UserService.class); 
 
+        userService.add(new User("Administrator","admin","123456","jibu.gaixie@gmail.com",true));
+
         authService.add(new Authority("sec.ast-v-auth1","/ast-v-auth1.z"));
         authService.add(new Authority("sec.ast-v-auth2","/ast-v-auth2.z"));
         authService.add(new Authority("sec.ast-v-auth3","/ast-v-auth3.z"));
@@ -59,11 +61,20 @@ public class AuthorityServiceTest extends CoreTestSupport {
         /*
          * 建立如下角色继承关系
          * ROLE_BASE
+         *     |-----ROLE_ADMIN
+         *     |
          *     |-----ast-v-role1
          *     |          |------ast-v-role2
          *     |-----ast-v-role3
          */
-        Role parent = roleService.get(1);
+        // 先插入一个 Role 的根节点。
+        Connection conn = ConnectionUtils.getConnection();
+        QueryRunner run = new QueryRunner();
+        run.update(conn, "INSERT INTO roles (name,description,lft,rgt) values ('ROLE_BASE','ROLE_BASE',1,2)"); 
+        DbUtils.commitAndClose(conn);
+
+        Role parent = roleService.get("ROLE_BASE");
+        roleService.add(new Role("ROLE_ADMIN","ROLE_ADMIN"),parent);
         roleService.add(new Role("ast-v-role1","ast-v-role1"),parent);
         roleService.add(new Role("ast-v-role3","ast-v-role3"),parent);
         parent = roleService.get("ast-v-role1");
@@ -71,6 +82,8 @@ public class AuthorityServiceTest extends CoreTestSupport {
 
         /* 将权限绑定到不同的角色
          * ROLE_BASE 
+         *     |-----ROLE_ADMIN
+         *     |
          *     |-----ast-v-role1 <==> (/ast-v-auth1.z ) (/ast-v-auth1.z?ci=addUser)
          *     |          |------ast-v-role2 
          *     |-----ast-v-role3 <==> (/ast-v-auth2.z )
@@ -84,8 +97,10 @@ public class AuthorityServiceTest extends CoreTestSupport {
         role = roleService.get("ast-v-role3");
         roleService.bind(role, auth);
 
-        /* 将用户绑定到ast-v-role2
+        /* 将用户绑定到ast-v-role2, admin 绑定到 ROLE_ADMIN
          * ROLE_BASE
+         *     |-----ROLE_ADMIN <==> (admin)
+         *     |
          *     |-----ast-v-role1
          *     |          |------ast-v-role2 <==> (ast-v-user1)
          *     |-----ast-v-role3 
@@ -93,8 +108,16 @@ public class AuthorityServiceTest extends CoreTestSupport {
         role = roleService.get("ast-v-role2");
         User user = userService.get("ast-v-user1");
         roleService.bind(role,user);
+        role = roleService.get("ROLE_ADMIN");
+        user = userService.get("admin");
+        roleService.bind(role,user);
     }
 
+    @Test public void testGet() throws Exception {
+        Authority auth = authService.get("/ast-v-auth1.z");
+        String name = authService.get(auth.getId()).getName();
+        Assert.assertTrue(auth.getName().equals(name));
+    }
 
     @Test public void testUpdateAndDelete() throws Exception {
         authService.add(new Authority("sec.test.ast-v-auth4","/ast-v-auth4.z"));
@@ -127,6 +150,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
         Assert.assertTrue(auths.size()==1);
     }
 
+    // 此用例覆盖了 RoleService.find(user) 方法。
     @Test public void testFindByUser() throws Exception {
         // 含继承关系
         User user = userService.get("ast-v-user1");
@@ -138,6 +162,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
     }
 
     // 只显示直接绑定，不取继承关系。
+    // 此用例覆盖了 UserService.find(Role) 方法。
     @Test public void testFindByRole() throws Exception {
         Role role = roleService.get("ast-v-role2");
         List<Authority> auths = authService.find(role);
@@ -146,6 +171,7 @@ public class AuthorityServiceTest extends CoreTestSupport {
         Assert.assertTrue(users.size()==1);
     }
 
+    // 此用例覆盖了 UserService.find(Authority) 和 RoleService.find(Authority) 方法。
     @Test public void testFindByAuth() throws Exception {
         // 不取继承关系的角色。
         Authority auth = authService.get("/ast-v-auth1.z");
@@ -207,13 +233,13 @@ public class AuthorityServiceTest extends CoreTestSupport {
     // @Test 
         public void testPerformance() throws Exception {
         // 增加 10 级角色，层层继承
-        Role parent = roleService.get(1);
+        Role parent = roleService.get("ROLE_BASE");
         for (int i=0;i<10;i++) {
             Role role = new Role("ast-pf-role"+i,"ast-pf-role"+1);
             roleService.add(role,parent);
             parent = roleService.get(role.getName());
         }
-        parent = roleService.get(1);
+        parent = roleService.get("ROLE_BASE");
         // 增加500个auth，算中间节点，菜单树超过1500个节点。
         // 全部绑定到ROLE_BASE
         // 全部占用160k cache
@@ -257,10 +283,10 @@ public class AuthorityServiceTest extends CoreTestSupport {
             conn = ConnectionUtils.getConnection();
             QueryRunner run = new QueryRunner();
             run.update(conn, "DELETE from role_authority_map "); 
-            run.update(conn, "DELETE from user_role_map where user_id >1"); 
-            run.update(conn, "DELETE from roles where id > 2"); 
+            run.update(conn, "DELETE from user_role_map"); 
+            run.update(conn, "DELETE from roles"); 
             run.update(conn, "DELETE from authorities "); 
-            run.update(conn, "DELETE from userbase where id >1"); 
+            run.update(conn, "DELETE from userbase"); 
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);

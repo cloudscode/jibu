@@ -33,6 +33,7 @@ import org.gaixie.jibu.security.dao.UserDAO;
 import org.gaixie.jibu.security.model.Authority;
 import org.gaixie.jibu.security.model.Role;
 import org.gaixie.jibu.security.model.User;
+import org.gaixie.jibu.security.service.RoleException;
 import org.gaixie.jibu.security.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,12 +104,18 @@ public class RoleServiceImpl implements RoleService {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
+            role = roleDAO.get(conn,role.getId());
+            if ((role.getRgt()-role.getLft()) > 1)
+                throw new RoleException("The role is not leaf node.");
 	    roleDAO.delete(conn,role);
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
             throw new JibuException(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(conn);
         }
+
     }
 
     /**
@@ -120,6 +127,9 @@ public class RoleServiceImpl implements RoleService {
         Connection conn = null;
         try {
             conn = ConnectionUtils.getConnection();
+            // 更新时不能破化树形结构
+            role.setLft(null);
+            role.setRgt(null);
 	    roleDAO.update(conn,role);
             DbUtils.commitAndClose(conn);
 	    CacheUtils.getAuthCache().clear();
