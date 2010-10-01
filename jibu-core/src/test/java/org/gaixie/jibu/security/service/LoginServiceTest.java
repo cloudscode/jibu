@@ -86,9 +86,8 @@ public class LoginServiceTest extends CoreTestSupport {
         Connection conn = ConnectionUtils.getConnection();
         QueryRunner run = new QueryRunner();
         run.update(conn
-                   , "Update tokens set expiration =? where value = ?"
-                   ,ts
-                   ,token.getValue()); 
+                   , "Update tokens set expiration =? where value = '"+token.getValue()+"'"
+                   ,ts);
         DbUtils.commitAndClose(conn);
 
         loginService.resetPassword(token.getValue(),"654321");
@@ -98,14 +97,14 @@ public class LoginServiceTest extends CoreTestSupport {
         public void testTokenInvalid() throws Exception {
         Token token = loginService.generateToken("admin");
         Assert.assertNotNull(token);
-        loginService.resetPassword("aaaaa","654321");        
+        loginService.resetPassword("aaaaa","654321");
     }
 
     @Test (expected = JibuException.class)
         public void testTokenPasswordInvalid() throws Exception {
         Token token = loginService.generateToken("admin");
         Assert.assertNotNull(token);
-        loginService.resetPassword(token.getValue(),"");        
+        loginService.resetPassword(token.getValue(),"");
     }
 
     @After public void tearDown() {
@@ -113,8 +112,8 @@ public class LoginServiceTest extends CoreTestSupport {
         try {
             conn = ConnectionUtils.getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(conn, "DELETE from tokens"); 
-            run.update(conn, "DELETE from userbase"); 
+            run.update(conn, "DELETE from tokens");
+            run.update(conn, "DELETE from userbase");
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);

@@ -37,7 +37,7 @@ public class UserServiceTest extends CoreTestSupport {
     private UserService userService;
 
     @Before public void setup() throws Exception {
-        userService = getInjector().getInstance(UserService.class); 
+        userService = getInjector().getInstance(UserService.class);
         userService.add(new User("Administrator","admin","123456","jibu.gaixie@gmail.com",true));
     }
 
@@ -48,7 +48,7 @@ public class UserServiceTest extends CoreTestSupport {
         user = userService.get(user.getId());
         Assert.assertNotNull(user);
         user = userService.get("notExistUser");
-        Assert.assertNull(user); 
+        Assert.assertNull(user);
     }
 
     @Test public void testAdd() throws Exception {
@@ -93,8 +93,8 @@ public class UserServiceTest extends CoreTestSupport {
         crt.setDir("DESC");
 
         // 没有 crt  select * from where enabled = true
-        // 有 分页 crt  SELECT * FROM ( 
-        //                            select ROW_NUMBER() OVER() AS R, userbase.* 
+        // 有 分页 crt  SELECT * FROM (
+        //                            select ROW_NUMBER() OVER() AS R, userbase.*
         //                            from userbase) as TR
         //               where R >0 AND R <=1
         //               ORDER BY username DESC
@@ -111,7 +111,7 @@ public class UserServiceTest extends CoreTestSupport {
         try {
             conn = ConnectionUtils.getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(conn, "DELETE from userbase"); 
+            run.update(conn, "DELETE from userbase");
             DbUtils.commitAndClose(conn);
         } catch(SQLException e) {
             DbUtils.rollbackAndCloseQuietly(conn);
