@@ -267,9 +267,9 @@ jibu.security.monitor.Panel =
                                                     ctx.lineWidth = 2;
                                                     ctx.beginPath();
                                                     ctx.strokeStyle ='red';
-                                                    ctx.moveTo(280, 175-10);
-                                                    ctx.lineTo(300, 175-10 );
-                                                    ctx.fillText('Used Memory (MB)',305,175-5);
+                                                    ctx.moveTo(240, 175-10);
+                                                    ctx.lineTo(260, 175-10 );
+                                                    ctx.fillText('Used Memory (MB)',265,175-5);
                                                     ctx.stroke();
                                                     draw(canvas,0,usedMemory);
                                                 }

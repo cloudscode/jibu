@@ -23,34 +23,33 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 import com.meterware.httpunit.WebRequest;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.gaixie.jibu.itest.JettyService;
-import org.gaixie.jibu.json.JSONArray;
 import org.gaixie.jibu.json.JSONObject;
 
 public class DeployWarIT {
     private static JettyService server;
     @BeforeClass
         public static void beforeClass() throws Exception {
-
         server = new JettyService(System.getProperty("warPath"));
         server.start();
         boolean started = server.isStarted();
         while (!started) {
-	    try {
-		Thread.sleep( 1000 ); // simple polling for now
-                started = server.isStarted();                
-	    }
-	    catch( InterruptedException e ) {
+            try {
+                Thread.sleep( 1000 ); // simple polling for now
+                started = server.isStarted();
+            }
+            catch( InterruptedException e ) {
             }
         }
     }
 
-
+    // 由于效率原因，这里只做简单的登录测试，确保 war 正常deploy。
     @Test
-        public void test1() throws Exception {
+        public void testLogin() throws Exception {
         // 不要在加载 ajax 文件时报错，这里不对js文件做测试，也不会调用。
         HttpUnitOptions.setExceptionsThrownOnScriptError(false);
         WebConversation wc = new WebConversation();
@@ -68,21 +67,12 @@ public class DeployWarIT {
         req.setParameter("User.emailaddress","x@x.x");
         req.setParameter("User.enabled","true");
         wr = wc.getResponse(req);
-
-        String email = null;
-        req = new PostMethodWebRequest( "http://localhost:8080/User.z" );
-        req.setParameter("ci","userFind");
-        req.setParameter("User.username","");
-        req.setParameter("User.password","");
-        req.setParameter("User.fullname","");
-        req.setParameter("User.emailaddress",email);
-        req.setParameter("User.enabled","true");
-        wr = wc.getResponse(req);
         JSONObject obj = new JSONObject(wr.getText());
-        JSONArray array = obj.getJSONArray("data");
-        JSONObject jo = array.getJSONObject(1);
-        //System.out.println(jo.getInt("id"));
+        Assert.assertTrue(obj.getBoolean("success"));
 
+        req = new PostMethodWebRequest( "http://localhost:8080/Login.x" );
+        req.setParameter("ci","logout");
+        wr = wc.getResponse(req);
     }
 
     @AfterClass
