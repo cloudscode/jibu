@@ -63,5 +63,12 @@ public class SecurityDAOModule extends AbstractModule {
             bind(SettingDAO.class).to(SettingDAOPgSQL.class);
             bind(TokenDAO.class).to(TokenDAOPgSQL.class);
         }
+        if ("MySQL".equalsIgnoreCase(databaseType)){
+            bind(UserDAO.class).to(UserDAOMySQL.class);
+            bind(AuthorityDAO.class).to(AuthorityDAOMySQL.class);
+            bind(RoleDAO.class).to(RoleDAOMySQL.class);
+            bind(SettingDAO.class).to(SettingDAOMySQL.class);
+            bind(TokenDAO.class).to(TokenDAOMySQL.class);
+        }
     }
 }

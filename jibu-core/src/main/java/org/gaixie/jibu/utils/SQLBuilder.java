@@ -79,21 +79,21 @@ public class SQLBuilder {
             return (name +" = '"+(String)value+"' ");
         } else if (Date.class.equals(type)) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            if("Derby".equals(databaseType)) {
+            if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return (name +" = '"+format.format((Date)value)+"' ");
             } else if("PostgreSQL".equals(databaseType)) {
                 return (name +" = to_date('"+format.format((Date)value)+"','YYYY-MM-DD') ");
             }
         } else if (Timestamp.class.equals(type)) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            if("Derby".equals(databaseType)) {
+            if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return (name +" = '"+format.format((Timestamp)value)+"' ");
             } else if("PostgreSQL".equals(databaseType)) {
                 return (name +" = to_timestamp('"+format.format((Timestamp)value)+"','YYYY-MM-DD HH24:MI:SS') ");
             }
 
         } else if (boolean.class.equals(type)||Boolean.class.equals(type)) {
-            if("Derby".equals(databaseType)) {
+            if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return (name +" = "+(((Boolean)value)? "1":"0") +" ");
             } else if("PostgreSQL".equals(databaseType)) {
                 return (name +" = "+(Boolean)value+" ");
@@ -173,7 +173,7 @@ public class SQLBuilder {
             if("Derby".equals(databaseType)) {
                 // 参考 ：http://db.apache.org/derby/docs/dev/ref/rrefsqljoffsetfetch.html
                 return  sql  + " OFFSET "+crt.getStart()+" ROWS FETCH NEXT "+crt.getLimit()+" ROWS ONLY ";
-            } else if("PostgreSQL".equals(databaseType)) {
+            } else if("PostgreSQL".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return  sql  + " LIMIT "+crt.getLimit()+" OFFSET "+crt.getStart()+" ";
             }
         }

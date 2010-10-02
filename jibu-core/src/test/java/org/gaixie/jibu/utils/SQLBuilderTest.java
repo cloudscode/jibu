@@ -106,7 +106,7 @@ public class SQLBuilderTest {
 
     private String getBoolean(String name, boolean value){
         String databaseType = JibuConfig.getProperty("databaseType");
-        if("Derby".equals(databaseType)) {
+        if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
             return name +" = "+((value)? "1":"0");
         } else if("PostgreSQL".equals(databaseType)) {
             return name +" = "+value;
@@ -117,7 +117,7 @@ public class SQLBuilderTest {
     private String getDate(String name, Date value){
         String databaseType = JibuConfig.getProperty("databaseType");
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        if("Derby".equals(databaseType)) {
+        if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
             return name +" = '"+format.format(value)+"'";
         } else if("PostgreSQL".equals(databaseType)) {
             return name +" = to_date('"+format.format(value)+"','YYYY-MM-DD')";
@@ -128,7 +128,7 @@ public class SQLBuilderTest {
     private String getTime(String name, Timestamp value){
         String databaseType = JibuConfig.getProperty("databaseType");
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if("Derby".equals(databaseType)) {
+        if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
             return name +" = '"+format.format(value)+"'";
         } else if("PostgreSQL".equals(databaseType)) {
             return name +" = to_timestamp('"+format.format(value)+"','YYYY-MM-DD HH24:MI:SS')";
