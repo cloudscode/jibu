@@ -107,7 +107,7 @@ public class UserDAODerby implements UserDAO {
         Integer id = user.getId();
         user.setId(null);
         try {
-            String s = SQLBuilder.beanToDerbyClause(user,",");
+            String s = SQLBuilder.beanToSQLClause(user,",");
             sql = sql + SQLBuilder.getSetClause(s) +"\n"+
                 "WHERE id=? ";
         } catch (JibuException e) {
@@ -139,7 +139,7 @@ public class UserDAODerby implements UserDAO {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
         String sql = "SELECT id,username,fullname,emailaddress,enabled FROM userbase \n";
         try {
-            String s = SQLBuilder.beanToDerbyClause(user,"AND");
+            String s = SQLBuilder.beanToSQLClause(user,"AND");
             sql = sql + SQLBuilder.getWhereClause(s);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
@@ -150,7 +150,7 @@ public class UserDAODerby implements UserDAO {
     public int getTotal( Connection conn, User user) throws SQLException {
         String sql = "SELECT COUNT(id) FROM userbase \n";
         try {
-            String s = SQLBuilder.beanToDerbyClause(user,"AND");
+            String s = SQLBuilder.beanToSQLClause(user,"AND");
             sql = sql + SQLBuilder.getWhereClause(s);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
@@ -167,10 +167,10 @@ public class UserDAODerby implements UserDAO {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
         String sql = "SELECT id,username,fullname,emailaddress,enabled FROM userbase \n";
         try {
-            String s = SQLBuilder.beanToDerbyClause(user, "AND");
+            String s = SQLBuilder.beanToSQLClause(user, "AND");
             sql = sql + SQLBuilder.getWhereClause(s);
             sql = SQLBuilder.getSortClause(sql,criteria);
-            sql = SQLBuilder.getPagingDerbyClause(sql,criteria);
+            sql = SQLBuilder.getPagingClause(sql,criteria);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }

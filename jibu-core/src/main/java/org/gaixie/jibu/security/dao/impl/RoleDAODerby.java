@@ -88,7 +88,7 @@ public class RoleDAODerby implements RoleDAO {
         Integer id = role.getId();
         role.setId(null);
         try {
-            String s = SQLBuilder.beanToDerbyClause(role,",");
+            String s = SQLBuilder.beanToSQLClause(role,",");
             sql = sql + SQLBuilder.getSetClause(s) +"\n"+
                 "WHERE id=? ";
         } catch (JibuException e) {

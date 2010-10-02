@@ -88,7 +88,7 @@ public class RoleDAOPgSQL implements RoleDAO {
         Integer id = role.getId();
         role.setId(null);
         try {
-            String s = SQLBuilder.beanToPgSQLClause(role,",");
+            String s = SQLBuilder.beanToSQLClause(role,",");
             sql = sql + SQLBuilder.getSetClause(s) +"\n"+
                 "WHERE id=? ";
         } catch (JibuException e) {

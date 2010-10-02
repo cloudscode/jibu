@@ -104,7 +104,7 @@ public class SettingDAODerby implements SettingDAO {
         Integer id = setting.getId();
         setting.setId(null);
         try {
-            String s = SQLBuilder.beanToDerbyClause(setting,",");
+            String s = SQLBuilder.beanToSQLClause(setting,",");
             sql = sql + SQLBuilder.getSetClause(s) +"\n"+
                 "WHERE id=? ";
         } catch (JibuException e) {

@@ -75,7 +75,7 @@ public class AuthorityDAODerby implements AuthorityDAO {
         Integer id = auth.getId();
         auth.setId(null);
         try {
-            String s = SQLBuilder.beanToDerbyClause(auth,",");
+            String s = SQLBuilder.beanToSQLClause(auth,",");
             sql = sql + SQLBuilder.getSetClause(s) +"\n"+
                 "WHERE id=? ";
         } catch (JibuException e) {
@@ -122,7 +122,7 @@ public class AuthorityDAODerby implements AuthorityDAO {
         ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
         String sql = "SELECT id,name,value FROM authorities \n";
         try {
-            String s = SQLBuilder.beanToDerbyClause(auth,"AND");
+            String s = SQLBuilder.beanToSQLClause(auth,"AND");
             sql = sql + SQLBuilder.getWhereClause(s);
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());

@@ -16,6 +16,7 @@
  */
 package org.gaixie.jibu.utils;
 
+import java.sql.Timestamp;
 import java.util.Date;
 /*
  * 此Bean只用于BeanConverter的测试
@@ -29,7 +30,7 @@ public class Person {
     private Boolean hasChildren;
     private float salary;
     private Date birthday;
-    
+    private Timestamp deathtime;
     public Person() {
     }
 
@@ -60,4 +61,6 @@ public class Person {
     public Date getBirthday() { return birthday; }
     public void setBirthday(Date birthday) { this.birthday = birthday; }
 
+    public Timestamp getDeathtime() { return deathtime; }
+    public void setDeathtime(Timestamp deathtime) { this.deathtime = deathtime; }
 }

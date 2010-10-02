@@ -104,13 +104,12 @@ public class LoginServiceImpl implements LoginService {
         try {
             conn = ConnectionUtils.getConnection();
             Token token = tokenDAO.get(conn,tokenValue);
-            if (token == null) throw new TokenException("Token is null");
 
+            if (token == null) throw new TokenException("Token is null");
             Calendar calendar = Calendar.getInstance();
             long time = calendar.getTimeInMillis();
             Timestamp ts = new Timestamp(time);
             if(ts.after(token.getExpiration())) throw new TokenException("Token expired.");
-
             if (password == null || password.isEmpty()) {
                 throw new JibuException("Password is invalid.");
             }

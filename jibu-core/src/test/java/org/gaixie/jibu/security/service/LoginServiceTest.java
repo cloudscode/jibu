@@ -35,6 +35,7 @@ import org.gaixie.jibu.security.service.LoginException;
 import org.gaixie.jibu.security.service.LoginService;
 import org.gaixie.jibu.security.service.UserService;
 import org.gaixie.jibu.utils.ConnectionUtils;
+import org.gaixie.jibu.utils.SQLBuilder;
 
 public class LoginServiceTest extends CoreTestSupport {
     private LoginService loginService;
@@ -77,17 +78,17 @@ public class LoginServiceTest extends CoreTestSupport {
         Token token = loginService.generateToken("admin");
         Assert.assertNotNull(token);
 
-        // 将token 的有效期提前两天，让token过期。
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(calendar.DAY_OF_MONTH, -2);
-        long time = calendar.getTimeInMillis();
+        // 修改token的有效期(设置为当前时间)，让token过期。
+        long time = Calendar.getInstance().getTimeInMillis();
         Timestamp ts = new Timestamp(time);
 
+        Token tk = new Token();
+        tk.setExpiration(ts);
         Connection conn = ConnectionUtils.getConnection();
         QueryRunner run = new QueryRunner();
-        run.update(conn
-                   , "Update tokens set expiration =? where value = '"+token.getValue()+"'"
-                   ,ts);
+        String s = SQLBuilder.beanToSQLClause(tk,",");
+        String sql = "Update tokens "+SQLBuilder.getSetClause(s)+" where value = '"+token.getValue()+"'";
+        run.update(conn, sql);
         DbUtils.commitAndClose(conn);
 
         loginService.resetPassword(token.getValue(),"654321");

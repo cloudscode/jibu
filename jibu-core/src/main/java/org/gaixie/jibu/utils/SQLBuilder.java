@@ -19,12 +19,14 @@ package org.gaixie.jibu.utils;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.gaixie.jibu.JibuException;
+import org.gaixie.jibu.config.JibuConfig;
 import org.gaixie.jibu.security.model.Criteria;
 
 /**
@@ -34,7 +36,7 @@ import org.gaixie.jibu.security.model.Criteria;
 public class SQLBuilder {
 
     /**
-     * 通过 Bean 实例转化为 Derby SQL 语句段，只转化非空属性。
+     * 通过 Bean 实例转化为 SQL 语句段，只转化非空属性。
      * <p>
      * 支持的属性类型有 int, Integer, float, Float, boolean, Boolean ,Date
      *
@@ -44,7 +46,7 @@ public class SQLBuilder {
      *
      * @exception JibuException 转化失败时抛出
      */
-    public static String beanToDerbyClause(Object bean, String split)
+    public static String beanToSQLClause(Object bean, String split)
         throws JibuException {
         StringBuilder sb = new StringBuilder();
         try{
@@ -53,9 +55,9 @@ public class SQLBuilder {
                 PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
 
                 for( PropertyDescriptor pd : pds ){
-                    String clause = derbyClause("      "+pd.getName(),
-                                                pd.getPropertyType(),
-                                                pd.getReadMethod().invoke(bean));
+                    String clause = columnClause("      "+pd.getName(),
+                                                 pd.getPropertyType(),
+                                                 pd.getReadMethod().invoke(bean));
 
                     if (null != clause) {
                         sb.append(clause + split+" \n");
@@ -68,73 +70,34 @@ public class SQLBuilder {
         return sb.toString();
     }
 
-    /**
-     * 通过 Bean 实例转化为 PostgreSQL 语句段，只转化非空属性。
-     * <p>
-     * 支持的属性类型有 int, Integer, float, Float, boolean, Boolean ,Date
-     *
-     * @param bean Bean 实例
-     * @param split sql 语句的分隔符，如 " AND " 或 " , "
-     * @return SQl 语句段，如果所有属性值都为空，返回 ""。
-     *
-     * @exception JibuException 转化失败时抛出
-     */
-    public static String beanToPgSQLClause(Object bean, String split)
-        throws JibuException {
-        StringBuilder sb = new StringBuilder();
-        try{
-            if(null != bean ) {
-                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
-                PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
-
-                for( PropertyDescriptor pd : pds ){
-                    String clause = pgsqlClause("      "+pd.getName(),
-                                                pd.getPropertyType(),
-                                                pd.getReadMethod().invoke(bean));
-
-                    if (null != clause) {
-                        sb.append(clause + split+" \n");
-                    }
-                }
+    private static String columnClause(String name, Class type, Object value){
+        if (null == value        ||
+            "class".equals(name) ||
+            "serialVersionUID".equals(name)) return null;
+        String databaseType = JibuConfig.getProperty("databaseType");
+        if (String.class.equals(type)) {
+            return (name +" = '"+(String)value+"' ");
+        } else if (Date.class.equals(type)) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            if("Derby".equals(databaseType)) {
+                return (name +" = '"+format.format((Date)value)+"' ");
+            } else if("PostgreSQL".equals(databaseType)) {
+                return (name +" = to_date('"+format.format((Date)value)+"','YYYY-MM-DD') ");
             }
-        } catch( Exception e){
-            throw new JibuException(e.getMessage());
-        }
-        return sb.toString();
-    }
-
-    private static String derbyClause(String name, Class type, Object value){
-        if (null == value        ||
-            "class".equals(name) ||
-            "serialVersionUID".equals(name)) return null;
-
-        if (String.class.equals(type)) {
-            return (name +" = '"+(String)value+"' ");
-        } else if (Date.class.equals(type)) {
+        } else if (Timestamp.class.equals(type)) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return (name +" = '"+format.format((Date)value)+"' ");
-        } else if (boolean.class.equals(type)||Boolean.class.equals(type)) {
-            return (name +" = "+(((Boolean)value)? "1":"0") +" ");
-        } else if (int.class.equals(type)||Integer.class.equals(type)) {
-            return (name +" = "+(Integer)value+" ");
-        } else if (float.class.equals(type)||Float.class.equals(type)) {
-            return (name +" = "+(Float)value+" ");
-        }
-        return null;
-    }
+            if("Derby".equals(databaseType)) {
+                return (name +" = '"+format.format((Timestamp)value)+"' ");
+            } else if("PostgreSQL".equals(databaseType)) {
+                return (name +" = to_timestamp('"+format.format((Timestamp)value)+"','YYYY-MM-DD HH24:MI:SS') ");
+            }
 
-    private static String pgsqlClause(String name, Class type, Object value){
-        if (null == value        ||
-            "class".equals(name) ||
-            "serialVersionUID".equals(name)) return null;
-
-        if (String.class.equals(type)) {
-            return (name +" = '"+(String)value+"' ");
-        } else if (Date.class.equals(type)) {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return (name +" = '"+format.format((Date)value)+"' ");
         } else if (boolean.class.equals(type)||Boolean.class.equals(type)) {
-            return (name +" = "+(Boolean)value+" ");
+            if("Derby".equals(databaseType)) {
+                return (name +" = "+(((Boolean)value)? "1":"0") +" ");
+            } else if("PostgreSQL".equals(databaseType)) {
+                return (name +" = "+(Boolean)value+" ");
+            }
         } else if (int.class.equals(type)||Integer.class.equals(type)) {
             return (name +" = "+(Integer)value+" ");
         } else if (float.class.equals(type)||Float.class.equals(type)) {
@@ -192,7 +155,7 @@ public class SQLBuilder {
     }
 
     /**
-     * 通过 criteria 生成的 Derby 分页 SQL 语句。
+     * 通过 criteria 生成分页的 SQL 语句。
      * <p>
      * 必须在 WHERE 子句全部处理完以后条用。如果有 ORDER BY，也要在其之前调用。
      * Derby 10.5 以后版本有效。
@@ -202,32 +165,17 @@ public class SQLBuilder {
      * @return 有效的 sql语句。
      * @see #getWhereClause(String sql)
      */
-    public static String getPagingDerbyClause (String sql,Criteria crt) {
+    public static String getPagingClause (String sql,Criteria crt) {
         if (null == sql ) return null;
 
         if (crt.getLimit()>0) {
-            // 参考 ：http://db.apache.org/derby/docs/dev/ref/rrefsqljoffsetfetch.html
-            return  sql  + " OFFSET "+crt.getStart()+" ROWS FETCH NEXT "+crt.getLimit()+" ROWS ONLY ";
-        }
-        return sql;
-    }
-
-    /**
-     * 通过 criteria 生成的 PostgreSQL 分页 SQL 语句。
-     * <p>
-     * 必须在 WHERE 子句全部处理完以后条用。如果有 ORDER BY，也要在其之前调用。
-     *
-     * @param sql 要处理语句。
-     * @param crt 传递分页信息。
-     * @return 有效的 sql语句。
-     * @see #getWhereClause(String sql)
-     */
-    public static String getPagingPgSQLClause (String sql,Criteria crt) {
-        if (null == sql ) return null;
-
-        if (crt.getLimit()>0) {
-            // 参考 ：http://db.apache.org/derby/docs/dev/ref/rrefsqljoffsetfetch.html
-            return  sql  + " LIMIT "+crt.getLimit()+" OFFSET "+crt.getStart()+" ";
+            String databaseType = JibuConfig.getProperty("databaseType");
+            if("Derby".equals(databaseType)) {
+                // 参考 ：http://db.apache.org/derby/docs/dev/ref/rrefsqljoffsetfetch.html
+                return  sql  + " OFFSET "+crt.getStart()+" ROWS FETCH NEXT "+crt.getLimit()+" ROWS ONLY ";
+            } else if("PostgreSQL".equals(databaseType)) {
+                return  sql  + " LIMIT "+crt.getLimit()+" OFFSET "+crt.getStart()+" ";
+            }
         }
         return sql;
     }
