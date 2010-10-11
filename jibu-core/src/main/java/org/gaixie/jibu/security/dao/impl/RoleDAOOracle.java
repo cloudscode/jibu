@@ -125,7 +125,7 @@ public class RoleDAOOracle implements RoleDAO {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn
 			  ,"SELECT node.id, node.name, node.description, node.lft, node.rgt,(COUNT(parent.name)-1) AS depth "+
-			  " FROM roles AS node, roles AS parent "+
+			  " FROM roles node, roles parent "+
 			  " WHERE node.lft BETWEEN parent.lft AND parent.rgt "+
                           " GROUP BY node.id, node.name, node.description, node.lft, node.rgt "+
 			  " ORDER BY node.lft"
@@ -154,7 +154,7 @@ public class RoleDAOOracle implements RoleDAO {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn
 			  ,"SELECT node.id, node.name, node.description, node.lft, node.rgt "+
-			  " FROM roles AS node, role_authority_map AS ram "+
+			  " FROM roles node, role_authority_map ram "+
 			  " WHERE node.id = ram.role_id "+
 			  " AND ram.authority_id = ? "
 			  , h,auth.getId());
@@ -205,7 +205,7 @@ public class RoleDAOOracle implements RoleDAO {
 	ResultSetHandler<List<Role>> h = new BeanListHandler(Role.class);
 	return  run.query(conn
 			  ,"SELECT node.id, node.name, node.description, node.lft, node.rgt "+
-			  " FROM roles AS node, user_role_map AS urm "+
+			  " FROM roles node, user_role_map urm "+
 			  " WHERE node.id = urm.role_id "+
 			  " AND urm.user_id = ? "
 			  , h,user.getId());
@@ -223,7 +223,7 @@ public class RoleDAOOracle implements RoleDAO {
 	};
 	return  run.query(conn
 			  ,"SELECT r.name "+
-			  " FROM roles AS r, role_authority_map AS ram "+
+			  " FROM roles r, role_authority_map ram "+
 			  " WHERE r.id = ram.role_id "+
 			  " AND ram.authority_id =? "
 			  , h
@@ -245,7 +245,7 @@ public class RoleDAOOracle implements RoleDAO {
 
 	return  run.query(conn
 			  ,"SELECT parent.name "+
-			  " FROM roles AS node, roles AS parent, user_role_map AS urm, userbase u "+
+			  " FROM roles node, roles parent, user_role_map urm, userbase u "+
 			  " WHERE node.id = urm.role_id "+
 			  " AND node.lft BETWEEN parent.lft AND parent.rgt "+
 			  " AND u.id = urm.user_id " +

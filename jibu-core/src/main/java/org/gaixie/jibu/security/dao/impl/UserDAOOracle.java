@@ -155,7 +155,7 @@ public class UserDAOOracle implements UserDAO {
         } catch (JibuException e) {
             throw new SQLException(e.getMessage());
         }
-        return (Integer)run.query(conn, sql, new ScalarHandler(1));
+        return ((Number)run.query(conn, sql, new ScalarHandler(1))).intValue();
     }
 
     /**
@@ -186,7 +186,7 @@ public class UserDAOOracle implements UserDAO {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
         return run.query(conn
                          ,"SELECT u.id, u.username, u.fullname, u.emailaddress,u.enabled "+
-                         " FROM roles AS r, user_role_map AS m, userbase AS u "+
+                         " FROM roles r, user_role_map m, userbase u "+
                          " WHERE u.id = m.user_id "+
                          " AND m.role_id = r.id "+
                          " AND r.id = ? "
@@ -202,7 +202,7 @@ public class UserDAOOracle implements UserDAO {
         ResultSetHandler<List<User>> h = new BeanListHandler(User.class);
         return run.query(conn
                          ,"SELECT u.id, u.username, u.fullname, u.emailaddress,u.enabled "+
-                         " FROM roles AS node, roles AS parent, user_role_map AS urm, role_authority_map AS ram, userbase AS u "+
+                         " FROM roles node, roles parent, user_role_map urm, role_authority_map ram, userbase u "+
                          " WHERE parent.id = ram.role_id "+
                          " AND node.lft BETWEEN parent.lft AND parent.rgt "+
                          " AND node.id = urm.role_id "+

@@ -140,7 +140,7 @@ public class AuthorityDAOOracle implements AuthorityDAO {
 	ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
 	return  run.query(conn
 			  ,"SELECT a.id, a.name, a.value "+
-			  " FROM roles AS node, roles AS parent, user_role_map AS urm, role_authority_map AS ram, authorities AS a "+
+			  " FROM roles node, roles parent, user_role_map urm, role_authority_map ram, authorities a "+
 			  " WHERE node.id = urm.role_id "+
 			  " AND node.lft BETWEEN parent.lft AND parent.rgt "+
 			  " AND parent.id = ram.role_id "+
@@ -158,7 +158,7 @@ public class AuthorityDAOOracle implements AuthorityDAO {
 	ResultSetHandler<List<Authority>> h = new BeanListHandler(Authority.class);
 	return  run.query(conn
 			  ,"SELECT a.id, a.name, a.value "+
-			  " FROM role_authority_map AS ram, authorities AS a "+
+			  " FROM role_authority_map ram, authorities a "+
 			  " WHERE ram.authority_id = a.id "+
 			  " AND ram.role_id = ? "
 			  , h,role.getId());
