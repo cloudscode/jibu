@@ -106,7 +106,9 @@ public class SQLBuilderTest {
 
     private String getBoolean(String name, boolean value){
         String databaseType = JibuConfig.getProperty("databaseType");
-        if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
+        if("Derby".equals(databaseType) 
+           || "MySQL".equals(databaseType) 
+           || "Oracle".equals(databaseType)) {
             return name +" = "+((value)? "1":"0");
         } else if("PostgreSQL".equals(databaseType)) {
             return name +" = "+value;
@@ -119,7 +121,7 @@ public class SQLBuilderTest {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
             return name +" = '"+format.format(value)+"'";
-        } else if("PostgreSQL".equals(databaseType)) {
+        } else if("PostgreSQL".equals(databaseType) || "Oracle".equals(databaseType)) {
             return name +" = to_date('"+format.format(value)+"','YYYY-MM-DD')";
         }
         return "";
@@ -130,7 +132,7 @@ public class SQLBuilderTest {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
             return name +" = '"+format.format(value)+"'";
-        } else if("PostgreSQL".equals(databaseType)) {
+        } else if("PostgreSQL".equals(databaseType) || "Oracle".equals(databaseType)) {
             return name +" = to_timestamp('"+format.format(value)+"','YYYY-MM-DD HH24:MI:SS')";
         }
         return "";

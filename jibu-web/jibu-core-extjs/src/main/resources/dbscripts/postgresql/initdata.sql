@@ -6,7 +6,12 @@ insert into roles(name,lft,rgt,description)
 insert into roles(name,lft,rgt,description) 
        values ('ROLE_ADMIN',2,3,'管理员角色，拥有所有权限，不要修改角色名称，无须绑定任何Autority.');
 
-insert into user_role_map(user_id,role_id) values (1,2);
+insert into user_role_map
+  (user_id,role_id) 
+values (
+  (select id from userbase where username = 'admin'),
+  (select id from roles where name = 'ROLE_ADMIN')
+);
 
 insert into authorities (name,value) values ('system.administration.monitor','Monitor.z');
 insert into authorities (name,value) values ('system.administration.pm','Role.z');

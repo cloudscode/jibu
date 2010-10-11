@@ -28,14 +28,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Token 数据访问接口的 PostgreSQL 实现。
+ * Token 数据访问接口的 Oracle 实现。
  * <p>
  */
-public class TokenDAOPgSQL implements TokenDAO {
-    private static final Logger logger = LoggerFactory.getLogger(TokenDAOPgSQL.class);
+public class TokenDAOOracle implements TokenDAO {
+    private static final Logger logger = LoggerFactory.getLogger(TokenDAOOracle.class);
     private QueryRunner run = null;
 
-    public TokenDAOPgSQL() {
+    public TokenDAOOracle() {
 	this.run = new QueryRunner();
     }
 

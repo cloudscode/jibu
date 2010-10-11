@@ -81,19 +81,19 @@ public class SQLBuilder {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return (name +" = '"+format.format((Date)value)+"' ");
-            } else if("PostgreSQL".equals(databaseType)) {
+            } else if("PostgreSQL".equals(databaseType) || "Oracle".equals(databaseType)) {
                 return (name +" = to_date('"+format.format((Date)value)+"','YYYY-MM-DD') ");
             }
         } else if (Timestamp.class.equals(type)) {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return (name +" = '"+format.format((Timestamp)value)+"' ");
-            } else if("PostgreSQL".equals(databaseType)) {
+            } else if("PostgreSQL".equals(databaseType) || "Oracle".equals(databaseType)) {
                 return (name +" = to_timestamp('"+format.format((Timestamp)value)+"','YYYY-MM-DD HH24:MI:SS') ");
             }
 
         } else if (boolean.class.equals(type)||Boolean.class.equals(type)) {
-            if("Derby".equals(databaseType) || "MySQL".equals(databaseType)) {
+            if("Derby".equals(databaseType) || "MySQL".equals(databaseType) || "Oracle".equals(databaseType)) {
                 return (name +" = "+(((Boolean)value)? "1":"0") +" ");
             } else if("PostgreSQL".equals(databaseType)) {
                 return (name +" = "+(Boolean)value+" ");
@@ -158,7 +158,7 @@ public class SQLBuilder {
      * 通过 criteria 生成分页的 SQL 语句。
      * <p>
      * 必须在 WHERE 子句全部处理完以后条用。如果有 ORDER BY，也要在其之前调用。
-     * Derby 10.5 以后版本有效。
+     * Derby 10.5，Oracle 8 以后版本有效。
      *
      * @param sql 要处理语句。
      * @param crt 传递分页信息。
@@ -175,6 +175,13 @@ public class SQLBuilder {
                 return  sql  + " OFFSET "+crt.getStart()+" ROWS FETCH NEXT "+crt.getLimit()+" ROWS ONLY ";
             } else if("PostgreSQL".equals(databaseType) || "MySQL".equals(databaseType)) {
                 return  sql  + " LIMIT "+crt.getLimit()+" OFFSET "+crt.getStart()+" ";
+            } else if("Oracle".equals(databaseType)) {
+                // http://asktom.oracle.com/pls/asktom/f?p=100:11:0::::P11_QUESTION_ID:127412348064
+                return (" SELECT * \n"+ 
+                        " FROM ( SELECT a.*, rownum rnum \n"+
+                        "        FROM ( "+ sql +" ) a \n"+
+                        "        WHERE rownum < "+(crt.getStart()+crt.getLimit())+" ) \n"+
+                        " WHERE rnum >= "+crt.getStart());
             }
         }
         return sql;

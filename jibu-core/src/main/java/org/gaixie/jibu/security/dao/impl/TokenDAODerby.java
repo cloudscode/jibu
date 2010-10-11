@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  */
 public class TokenDAODerby implements TokenDAO {
-    private static final Logger logger = LoggerFactory.getLogger(SettingDAODerby.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenDAODerby.class);
     private QueryRunner run = null;
 
     public TokenDAODerby() {

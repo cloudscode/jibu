@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  */
 public class TokenDAOMySQL implements TokenDAO {
-    private static final Logger logger = LoggerFactory.getLogger(SettingDAOMySQL.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenDAOMySQL.class);
     private QueryRunner run = null;
 
     public TokenDAOMySQL() {

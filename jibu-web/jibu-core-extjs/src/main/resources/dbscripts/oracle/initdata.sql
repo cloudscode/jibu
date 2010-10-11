@@ -1,0 +1,25 @@
+insert into userbase(username,password,fullname,emailaddress,enabled) 
+       values ('admin','e10adc3949ba59abbe56e057f20f883e','Administrator','jibu.gaixie@gmail.com',1);
+
+insert into roles(name,lft,rgt,description) 
+       values ('ROLE_BASE',1,4,'所有普通用户角色.');
+insert into roles(name,lft,rgt,description) 
+       values ('ROLE_ADMIN',2,3,'管理员角色，拥有所有权限，不要修改角色名称，无须绑定任何Autority.');
+
+insert into user_role_map
+  (user_id,role_id) 
+values (
+  (select id from userbase where username = 'admin'),
+  (select id from roles where name = 'ROLE_ADMIN')
+);
+
+insert into authorities (name,value) values ('system.administration.monitor','Monitor.z');
+insert into authorities (name,value) values ('system.administration.pm','Role.z');
+insert into authorities (name,value) values ('system.setting','Setting.y');
+
+
+insert into settings (name,value,sortindex,enabled) values ('theme','blue',0,1);
+insert into settings (name,value,sortindex,enabled) values ('theme','gray',1,1);
+insert into settings (name,value,sortindex,enabled) values ('layout','classic',0,1);
+insert into settings (name,value,sortindex,enabled) values ('language','en_US',1,1);
+insert into settings (name,value,sortindex,enabled) values ('language','zh_CN',2,1);
