@@ -31,7 +31,7 @@ CREATE TABLE user_role_map (
     user_id                integer NOT NULL,
     role_id                integer NOT NULL
 );
-ALTER TABLE user_role_map ADD CONSTRAINT user_role_map_ur_id_uq UNIQUE ( user_id,role_id );
+ALTER TABLE user_role_map ADD CONSTRAINT urmap_user_id_role_id_uq UNIQUE ( user_id,role_id );
 ALTER TABLE user_role_map ADD CONSTRAINT urmap_role_id_fk FOREIGN KEY (role_id) REFERENCES roles (id);
 ALTER TABLE user_role_map ADD CONSTRAINT urmap_user_id_fk FOREIGN KEY (user_id) REFERENCES userbase (id);
 
@@ -48,9 +48,9 @@ CREATE TABLE role_authority_map (
     role_id                integer NOT NULL,
     authority_id           integer NOT NULL
 );
-ALTER TABLE role_authority_map ADD CONSTRAINT role_authority_map_ra_id_uq UNIQUE ( role_id,authority_id );
-ALTER TABLE role_authority_map ADD CONSTRAINT rrmap_role_id_fk FOREIGN KEY (role_id) REFERENCES roles (id);
-ALTER TABLE role_authority_map ADD CONSTRAINT rrmap_authority_id_fk FOREIGN KEY (authority_id) REFERENCES authorities (id);
+ALTER TABLE role_authority_map ADD CONSTRAINT ramap_role_id_authority_id_uq UNIQUE ( role_id,authority_id );
+ALTER TABLE role_authority_map ADD CONSTRAINT ramap_role_id_fk FOREIGN KEY (role_id) REFERENCES roles (id);
+ALTER TABLE role_authority_map ADD CONSTRAINT ramap_authority_id_fk FOREIGN KEY (authority_id) REFERENCES authorities (id);
 
 -- ------------------------------------------------------
 CREATE TABLE settings(
@@ -68,7 +68,9 @@ CREATE TABLE user_setting_map(
   user_id                  integer NOT NULL,
   setting_id               integer NOT NULL
 );
-ALTER TABLE user_setting_map ADD CONSTRAINT usm_user_id_setting_id_uq UNIQUE ( user_id,setting_id );
+ALTER TABLE user_setting_map ADD CONSTRAINT usmap_user_id_setting_id_uq UNIQUE ( user_id,setting_id );
+ALTER TABLE user_setting_map ADD CONSTRAINT usmap_user_id_fk FOREIGN KEY (user_id) REFERENCES userbase (id);
+ALTER TABLE user_setting_map ADD CONSTRAINT usmap_setting_id_fk FOREIGN KEY (setting_id) REFERENCES settings (id);
 
 -- ------------------------------------------------------
 CREATE TABLE tokens (
