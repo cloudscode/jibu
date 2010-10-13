@@ -25,7 +25,7 @@
 
   <groupId>org.gaixie.jibu</groupId>
   <artifactId>jibu-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-RC1</version>
   <packaging>pom</packaging>
 
   <name>Jibu</name>
@@ -138,7 +138,7 @@
       <dependency>
         <groupId>org.gaixie.jibu</groupId>
         <artifactId>jibu-core</artifactId>
-        <version>1.0.0-SNAPSHOT </version>
+        <version>1.0.0-RC1 </version>
       </dependency>
     </dependencies>
   </dependencyManagement>
