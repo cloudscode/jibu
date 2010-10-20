@@ -34,16 +34,18 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.6</version>
         <configuration>
           <encoding>utf-8</encoding>
           <systemPropertyVariables>
-            <warPath>../../assemblies/jibu/target/jibu-${project.version}.war</warPath>
+            <warPath>../../assemblies/jibu/target/jibu-${project.version}-bin.war</warPath>
           </systemPropertyVariables>
         </configuration>
         <executions>
