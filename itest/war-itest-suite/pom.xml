@@ -45,7 +45,7 @@
         <configuration>
           <encoding>utf-8</encoding>
           <systemPropertyVariables>
-            <warPath>../../assemblies/jibu/target/jibu-${project.version}-bin.war</warPath>
+            <warPath>../../assemblies/jibu/target/jibu-${project.version}-demo.war</warPath>
           </systemPropertyVariables>
         </configuration>
         <executions>

@@ -43,8 +43,9 @@
         </executions>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
+            <descriptor>src/main/assembly/demo.xml</descriptor>
             <descriptor>src/main/assembly/src.xml</descriptor>
+            <descriptor>src/main/assembly/dist.xml</descriptor>
           </descriptors>
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
