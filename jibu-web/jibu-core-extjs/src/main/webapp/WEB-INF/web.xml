@@ -46,4 +46,9 @@
   <session-config>
     <session-timeout>10</session-timeout>
   </session-config>
+
+  <!-- ======================= WELCOME CONFIG ========================= -->
+  <welcome-file-list>
+    <welcome-file>/</welcome-file>
+  </welcome-file-list>
 </web-app>
