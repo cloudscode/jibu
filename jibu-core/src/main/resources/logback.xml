@@ -12,7 +12,7 @@
     </rollingPolicy>
 
     <encoder>
-      <pattern>%date %-5level [%thread] %logger{36} - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} [%line] - %msg%n</pattern>
     </encoder>
   </appender>
 
@@ -22,10 +22,9 @@
     </encoder>
   </appender>
 
-  <logger name="org.gaixie.jibu" level="DEBUG"/>
+  <logger name="org.gaixie.jibu" level="INFO"/>
 
   <root level="WARN">
     <appender-ref ref="FILE" />
-    <appender-ref ref="STDOUT" /> 
   </root>
 </configuration>
